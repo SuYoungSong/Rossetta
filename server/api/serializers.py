@@ -52,3 +52,24 @@ class question_board_comments_Serailizer(serializers.ModelSerializer):
 
     def create(self, data):
         return data
+
+
+class education_report_Serailizer(serializers.ModelSerializer):
+
+    class Meta:
+        model = education_report
+        fields = ['user', 'chapter']
+
+
+# class paper_Serailizer(serializers.Serializer):
+#
+#     class Meta:
+#         model = paper
+#         fields = ['sign_video_url','sign_answer']
+#
+#     def validate(self, data):
+#         if not data['sign_answer']:
+#             raise serializers.ValidationError("내용이 입력되어 있지 않습니다.")
+#         if data['sign_answer'] != data.pop[]
+#         return data
+
