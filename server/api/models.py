@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # 질문 게시판 객체
 class question_board(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, null=False, blank=False)
     body = models.TextField(null=False, blank=False)
     state = models.BooleanField(default=False)
@@ -70,25 +70,25 @@ class question_board(models.Model):
 
 # 질문 게시판 객체 - 이미지
 class question_board_images(models.Model):
-    board_id = models.ForeignKey(question_board, on_delete=models.CASCADE)
+    board = models.ForeignKey(question_board, on_delete=models.CASCADE)
     image_url = models.ImageField(upload_to='question_board_images/')
 
 
 # 질문 게시판 객체 - 답변
 class question_board_comments(models.Model):
-    board_id = models.ForeignKey(question_board, on_delete=models.CASCADE)
+    board = models.ForeignKey(question_board, on_delete=models.CASCADE)
     comment = models.TextField(null=False, blank=False)
 
 
 # 완료한 챕터 기록
 class education_report(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     chapter = models.IntegerField(null=False, blank=False)
 
 
 # 학습지(문제지)를 저장하는 객체
 class paper(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     situation = models.CharField(max_length=8, null=False, blank=False)
     sign_video_url = models.URLField(null=False, blank=False)
     sign_answer = models.CharField(max_length=8, null=False, blank=False)
@@ -97,10 +97,10 @@ class paper(models.Model):
 # 틀린 문제를 저장하는 객체
 class wrong_answer_notes(models.Model):
     paper_id = models.IntegerField(null=False, blank=False)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 # 맞춘 문제를 저장하는 객체
 class answer_notes(models.Model):
     paper_id = models.IntegerField(null=False, blank=False)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
