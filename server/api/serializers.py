@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from server.api.models import User
+from server.api.models import *
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -25,3 +25,30 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.save()
 
         return
+
+
+class question_board_Serailizer(serializers.ModelSerializer):
+    class Meta:
+        model = question_board
+        fields = ['title', 'body']
+    def validate(self, data):
+        if not data['title'] or not data['body']:
+            raise serializers.ValidationError("제목 또는 내용이 입력되어 있지 않습니다.")
+        return data
+
+    def create(self, data):
+        return data
+
+
+class question_board_comments_Serailizer(serializers.ModelSerializer):
+    class Meta:
+        model = question_board_comments
+        fields = ['comment']
+
+    def validate(self, data):
+        if not data['commment']:
+            raise serializers.ValidationError("내용이 입력되어 있지 않습니다.")
+        return data
+
+    def create(self, data):
+        return data
