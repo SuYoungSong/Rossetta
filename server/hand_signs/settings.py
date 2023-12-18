@@ -11,21 +11,35 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env_list = dict()
+local_env = open(os.path.join(BASE_DIR , '.env'))
+
+while True:
+    line = local_env.readline()
+    if not line:
+        break
+    start = line.find('=')
+    key = line[:start]
+    value = line[start+1:]
+    env_list[key] = value
+
+SECRET_KEY = env_list['SECRET_KEY']
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q3f2!qil@+$*97=5de3y%-_(moz%=ykouzn!r1zhhwtpt=f^y9'
+# SECRET_KEY = 'django-insecure-q3f2!qil@+$*97=5de3y%-_(moz%=ykouzn!r1zhhwtpt=f^y9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
 ]
 
 MIDDLEWARE = [
