@@ -29,6 +29,9 @@ while True:
     env_list[key] = value
 
 SECRET_KEY = env_list['SECRET_KEY']
+# SMS_API_KEY = env_list['SMS_API_KEY']
+# SMS_SECRET_KEY = env_list['SMS_SECRET_KEY']
+# SMS_SENDNO = env_list['SMS_SENDNO']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
