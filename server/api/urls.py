@@ -1,6 +1,6 @@
 from django.urls import path
 from .views2 import *
-from .views import UserView
+from .views import UserView, UserLoginView
 from .views3 import QuestionView, QuestionListView
 
 app_name = 'api'
@@ -10,6 +10,9 @@ urlpatterns = [
     path('user/', UserView.as_view()), # create , detail
     path('user/<str:id>/',UserView.as_view()), # update , delete api
 
+    ## Login API
+    path('login/',UserLoginView.as_view()),
+
     ## paper API
     path('paper/p/<int:id>/', PaperOneDataView.as_view()),
     path('paper/<str:type>/', PaperTypeSituationView.as_view()),
@@ -18,6 +21,7 @@ urlpatterns = [
 
     ## PracticeNote API
     path('practice-note/', PracticeNoteView.as_view()),
+    path('practice-note/<int:paper_id>/<str:user_id>',PracticeNoteView.as_view()),
 
     ## Posting API
     path('question/',QuestionView.as_view()),

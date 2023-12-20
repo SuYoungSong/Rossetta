@@ -12,6 +12,7 @@ class PaperTypeSituationView(APIView):
     '''
     GET: 타입(단어, 문장)이 들어오면 DB에 있는 상황(은행, 학교, 병원)들을 반환해준다.
     '''
+
     def get(self, request, type):
         try:
             qs = paper.objects.filter(type=type)
@@ -20,44 +21,52 @@ class PaperTypeSituationView(APIView):
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
+
 class PaperTypeSituationChapterView(APIView):
     '''
     GET: 타입(단어, 문장)과 상황 들어오면 챕터 정보를 반환해준다.
     '''
+
     def get(self, request, type, situation):
         try:
             qs = paper.objects.filter(type=type, situation=situation)
             serializer = PaperTypeSituationChapterSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
-            return Response({"error": f"'{type}' 유형과 '{situation}' 상황에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": f"'{type}' 유형과 '{situation}' 상황에 대한 데이터가 없습니다."},
+                            status=status.HTTP_404_NOT_FOUND)
+
 
 class PaperOneDataView(APIView):
     '''
     GET: 문제 번호가 들어오면 해당 문제를 반환한다.
     '''
+
     def get(self, request, id):
         try:
-            qs = paper.objects.get(id=id)
+            print(id)
+            qs = paper.objects.get(id=int(id))
             serializer = PaperDataSerializer(qs)
             return Response(serializer.data)
         except paper.DoesNotExist:
             return Response({"error": f"ID '{id}'에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
+
 class PaperManyDataView(APIView):
     '''
     GET: 특정 유형(문장,단어,자음모음)와 상황(병원,학교)와 챕터가 오면 그 챕터에 속한 문제들을 반환한다.
     '''
+
     def get(self, request, type, situation, chapter):
         try:
             qs = paper.objects.filter(type=type, situation=situation, chapter=chapter)
             serializer = PaperDataSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
-            return Response({"error": f"'{type}' 유형, '{situation}' 상황, '{chapter}' 챕터에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": f"'{type}' 유형, '{situation}' 상황, '{chapter}' 챕터에 대한 데이터가 없습니다."},
+                            status=status.HTTP_404_NOT_FOUND)
         except ValueError:
             return Response({"error": "챕터는 정수값이어야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 ##########################################################################
@@ -71,11 +80,13 @@ class PracticeNoteView(APIView):
 
     PUT: 기존 오답 이였던 문제를 정답으로 바꾼다.
     '''
+
     def get(self, request):
         type = request.GET.get('type')
         situation = request.GET.get('situation')
         chapter = request.GET.get('chapter')
         user_id = request.GET.get('user_id')
+
 
         try:
             practice_notes = practice_note.objects.select_related('paper').filter(
@@ -83,7 +94,7 @@ class PracticeNoteView(APIView):
                 paper__situation=situation,
                 paper__chapter=chapter,
                 user=user_id,
-                is_answer=True
+                is_answer=False
             )
             serializer = PracticeNoteSerializer(practice_notes, many=True)
             return Response(serializer.data)
@@ -120,6 +131,7 @@ class PaperStatesView(APIView):
     문제 개수와 정답 문제 개수가 같은 경우 틀린문제가 없으며 해당 챕터를 완강표시 합니다.
     문제 개수와 정답 문제 개수가 다른 경우 풀지 않은 문제가 있거나 오답인 문제가 존재합니다.
     '''
+
     def get(self, request):
         type = request.GET.get('type')
         situation = request.GET.get('situation')
@@ -137,7 +149,6 @@ class PaperStatesView(APIView):
             serializer = PracticeNoteSerializer(practice_notes, many=True)
 
             answer_num = len(serializer.data)
-
 
             qs = paper.objects.filter(
                 type=type,

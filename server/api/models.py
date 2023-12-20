@@ -4,34 +4,6 @@ from django.db import models
 from django.utils import timezone
 
 
-# Create your models here.
-# class CustomUserManager(BaseUserManager):
-#     def create_user(self, id, password=None, **extra_fields):
-#         extra_fields.setdefault('is_staff', False)
-#         extra_fields.setdefault('is_superuser', False)
-#         extra_fields.setdefault('is_active', True)
-#         extra_fields.setdefault('date_joined', timezone.now())
-#
-#         if not id:
-#             raise ValueError("유저 아이디를 반드시 입력해주세요")
-#
-#         user = self.model(id=id, **extra_fields)
-#         user.set_password(password)
-#         user.save()
-#         return user
-#
-#     def create_superuser(self, id, password=None, **extra_fields):
-#         extra_fields.setdefault('is_staff', True)
-#         extra_fields.setdefault('is_superuser', True)
-#         extra_fields.setdefault('is_active', True)
-#         extra_fields.setdefault('date_joined', timezone.now())
-#
-#         if extra_fields.get('is_staff') is not True:
-#             raise ValueError("관리자는 무조건 관계자이다.")
-#         if extra_fields.get('is_superuser') is not True:
-#             raise ValueError('관리자는 무조건 superuser 이다.')
-#
-#         return self.create_user(id, password, **extra_fields)
 class CustomUserManager(BaseUserManager):
     def create_user(self, id, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
@@ -60,6 +32,7 @@ class CustomUserManager(BaseUserManager):
 
         # create_user 메서드 호출 시에 password를 전달
         return self.create_user(id, password=password, **extra_fields)
+
 
 # User 객체
 class User(AbstractBaseUser, PermissionsMixin):

@@ -1,4 +1,6 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 from .models import *
 import re
@@ -8,6 +10,13 @@ from django.utils import timezone
 def password_match(password):
     pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$"
     return re.match(pattern, password)
+
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'password']
+
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):

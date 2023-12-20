@@ -1,9 +1,11 @@
+from django.contrib.auth import authenticate
 from django.shortcuts import render
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .models import User
-from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer
+from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer, UserLoginSerializer
 
 
 # Create your views here.
@@ -43,3 +45,20 @@ class UserView(APIView):
         user = User.objects.get(id=id)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserLoginView(APIView):
+    def post(self, request):
+        id = request.data.get('id')
+        password = request.data.get('password')
+
+        if id and password:
+            user = authenticate(username=id, password=password)
+            if user is not None:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response(data={"token": token.key}, status=status.HTTP_200_OK)
+            else:
+                return Response(data={"error": "해당 유저가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response(data={"error": "아이디나 비밀번호를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
