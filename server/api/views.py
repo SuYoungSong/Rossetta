@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth import logout, login
 from django.shortcuts import render
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -55,6 +56,7 @@ class UserLoginView(APIView):
         if id and password:
             user = authenticate(username=id, password=password)
             if user is not None:
+                login(request, user)
                 token, created = Token.objects.get_or_create(user=user)
                 return Response(data={"token": token.key}, status=status.HTTP_200_OK)
             else:
@@ -62,3 +64,20 @@ class UserLoginView(APIView):
 
         else:
             return Response(data={"error": "아이디나 비밀번호를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLogoutView(APIView):
+    def post(self, request):
+        # Django 로그아웃
+        logout(request)
+        if request.auth:
+            try:
+                token = request.auth
+                Token_obj =Token.objects.get(key=token)
+                Token_obj.delete()
+                return Response(status=status.HTTP_200_OK)
+            except Token.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={"error":"error"},status=status.HTTP_400_BAD_REQUEST)
+

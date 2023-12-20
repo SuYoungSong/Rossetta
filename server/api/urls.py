@@ -1,6 +1,6 @@
 from django.urls import path
 from .views2 import *
-from .views import UserView, UserLoginView
+from .views import UserView, UserLoginView, UserLogoutView
 from .views3 import QuestionView, QuestionListView
 
 app_name = 'api'
@@ -12,7 +12,7 @@ urlpatterns = [
 
     ## Login API
     path('login/',UserLoginView.as_view()),
-
+    path('logout/', UserLogoutView.as_view()),
     ## paper API
     path('paper/p/<int:id>/', PaperOneDataView.as_view()),
     path('paper/<str:type>/', PaperTypeSituationView.as_view()),
