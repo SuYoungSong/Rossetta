@@ -21,6 +21,6 @@ urlpatterns = [
 
     ## Posting API
     path('question/',QuestionView.as_view()),
-    path('question/<str:user>/<str:title>/',QuestionView.as_view()),
-    path('questionlist/',QuestionListView.as_view()),
+    path('question/<int:id>/',QuestionView.as_view()),
+    path('questionlist/<str:id>/',QuestionListView.as_view()),
 ]
