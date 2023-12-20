@@ -7,7 +7,8 @@ app_name = 'api'
 
 urlpatterns = [
     ## USER API
-    path('user/', UserView.as_view()),
+    path('user/', UserView.as_view()), # create , detail
+    path('user/<str:id>/',UserView.as_view()), # update , delete api
 
     ## paper API
     path('paper/p/<int:id>/', PaperOneDataView.as_view()),

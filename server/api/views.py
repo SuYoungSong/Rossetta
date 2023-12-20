@@ -28,20 +28,18 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 회원정보 업데이트
-    def put(self, request):
-        id = request.data.get('id')
+    def put(self, request, id):
         user = User.objects.get(id=id)
         serializer = UserUpdateSerializer(user, data=request.data)
 
         if serializer.is_valid():
             serializer.update(user, serializer.validated_data)
-            return Response(data=serializer.data , status=status.HTTP_200_OK)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 회원 정보 delete
-    def delete(self, request):
-        id = request.data.get('id')
+    def delete(self, request, id):
         user = User.objects.get(id=id)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

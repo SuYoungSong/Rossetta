@@ -4,6 +4,7 @@ from .models import *
 import re
 from django.utils import timezone
 
+
 def password_match(password):
     pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$"
     return re.match(pattern, password)
@@ -15,10 +16,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'password', 'password_check', 'name', 'phone']
-        extra_kwargs = {
-
-        }
+        fields = ['name', 'password', 'password_check', 'phone']
 
     def validate(self, data):
         if 'password' in data and 'password_check' not in data:
@@ -80,7 +78,7 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = question_board
-        fields = ['user', 'title', 'body'] # 여기는 무조건 수정
+        fields = ['user', 'title', 'body']  # 여기는 무조건 수정
 
     def validate(self, data):
         if not data['title'] or not data['body']:
@@ -101,9 +99,10 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 class QuestionUpdateSerializer(serializers.ModelSerializer):
     body = serializers.CharField(required=False)
     title2 = serializers.CharField(required=False)
+
     class Meta:
         model = question_board
-        fields = ['title2','body']
+        fields = ['title2', 'body']
 
     def validate(self, data):
         if data['title2'] and not data['body']:
@@ -113,8 +112,8 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        title2 = validated_data.pop('title2',None)
-        body = validated_data.pop('body',None)
+        title2 = validated_data.pop('title2', None)
+        body = validated_data.pop('body', None)
 
         if title2 and body:
             instance.title = title2
@@ -122,11 +121,7 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
         if not title2 and not body:
             print("업데이트 변화 없음")
         instance.created = timezone.now()
-        return super().update(instance,validated_data)
-
-
-
-
+        return super().update(instance, validated_data)
 
 
 class QuestionListSerializer(serializers.ModelSerializer):
