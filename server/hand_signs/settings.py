@@ -29,9 +29,12 @@ while True:
     env_list[key] = value
 
 SECRET_KEY = env_list['SECRET_KEY']
-# SMS_API_KEY = env_list['SMS_API_KEY']
-# SMS_SECRET_KEY = env_list['SMS_SECRET_KEY']
-# SMS_SENDNO = env_list['SMS_SENDNO']
+
+NAVER_SMS_SERVICE_ID = env_list['NAVER_SMS_SERVICE_ID']
+NAVER_SMS_ACCESS_KEY = env_list['NAVER_SMS_ACCESS_KEY']
+NAVER_SMS_SECRET_KEY = env_list['NAVER_SMS_SECRET_KEY']
+IWIN_SMS_API_KEY = env_list['IWIN_SMS_API_KEY']
+SMS_SEND_NUMBER = env_list['SMS_SEND_NUMBER']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
