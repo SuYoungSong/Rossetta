@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.CharField(max_length=30, unique=True, null=False, blank=False, primary_key=True)
     password = models.CharField(max_length=20, null=False, blank=False)
     name = models.CharField(max_length=30, null=False, blank=False)
-    phone = models.CharField(max_length=15, null=False, blank=False)
+    email = models.CharField(max_length=100, null=False, blank=False)
     token = models.CharField(max_length=70, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = ['password', 'name', 'phone']
+    REQUIRED_FIELDS = ['password', 'name', 'email']
 
     def __str__(self):
         return self.id

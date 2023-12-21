@@ -29,17 +29,21 @@ while True:
     env_list[key] = value
 
 SECRET_KEY = env_list['SECRET_KEY']
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env_list['EMAIL_HOST_USER'].replace('\n','')
+EMAIL_HOST_PASSWORD = env_list['EMAIL_HOST_PASSWORD']
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-NAVER_SMS_SERVICE_ID = env_list['NAVER_SMS_SERVICE_ID']
-NAVER_SMS_ACCESS_KEY = env_list['NAVER_SMS_ACCESS_KEY']
-NAVER_SMS_SECRET_KEY = env_list['NAVER_SMS_SECRET_KEY']
-IWIN_SMS_API_KEY = env_list['IWIN_SMS_API_KEY']
-SMS_SEND_NUMBER = env_list['SMS_SEND_NUMBER']
+CACHES = {
+    "default": {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -65,7 +69,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_CACHE_BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    'DEFAULT_CACHE_TIMEOUT': 60 * 5,
+
 }
 
 MIDDLEWARE = [

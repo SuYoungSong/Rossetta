@@ -1,6 +1,6 @@
 from django.urls import path
 from .views2 import *
-from .views import UserView, UserLoginView, UserLogoutView
+from .views import UserView, UserLoginView, UserLogoutView, EmailSendView, EmailCheckView
 from .views3 import QuestionView, QuestionListView
 
 app_name = 'api'
@@ -9,6 +9,10 @@ urlpatterns = [
     ## USER API
     path('user/', UserView.as_view()), # create , detail
     path('user/<str:id>/',UserView.as_view()), # update , delete api
+
+    ## EMAIL API
+    path('emailsend/',EmailSendView.as_view()),
+    path('emailcheck/',EmailCheckView.as_view()),
 
     ## Login API
     path('login/',UserLoginView.as_view()),

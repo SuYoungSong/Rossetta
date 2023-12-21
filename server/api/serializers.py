@@ -23,7 +23,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User  # 회원가입시 사용할 모델
-        fields = ['id', 'password', 'password_check', 'name', 'phone']  # 회원가입시 사용자가 입력해야할 정보
+        fields = ['id', 'password', 'password_check', 'name', 'email']  # 회원가입시 사용자가 입력해야할 정보
 
     def validate(self, data):
         if data['password'] != data.pop('password_check'):  # 비밀번호 일치 여부
@@ -32,9 +32,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("이미 존재하는 아이디 입니다.")
         if not password_match(data['password']):  # 비밀번호 규제 에 맞는지 일치 여부
             raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
-        if not data['phone'].isdigit():  # 전화번호에 숫자 이외의 문자가 들어가 있는지 확인 여부
-            raise serializers.ValidationError("전화번호를 확인해주세요")
-
         return data
 
     def create(self, validated_data):
@@ -48,7 +45,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User  # 조회할 모델
-        fields = ['id', 'name', 'phone']  # 사용자한테 보여줘야할 User 모델의 필드
+        fields = ['id','password', 'name', 'email']  # 사용자한테 보여줘야할 User 모델의 필드
+
+
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -59,7 +58,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User  # 사용자 데이터
-        fields = ['name', 'password', 'password_check', 'phone']  # 사용자가 변경할 데이터 필드
+        fields = ['id', 'password', 'password_check', 'name', 'email']  # 사용자가 변경할 데이터 필드
 
     def validate(self, data):
         if 'password' in data and 'password_check' not in data:  # 비밀번호 를 입력하고 비밀번호 확인을 입력 안한 경우
@@ -68,8 +67,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지않습니다.")
         if not password_match(data['password']):  # 비밀번호 규제가 맞지 않은 경우
             raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
-        if not data['phone'].isdigit():  # 핸드폰 번호가 숫자 이외의 문자가 들어간 경우
-            raise serializers.ValidationError("전화번호를 확인해주세요")
         return data
 
     def update(self, instance, validated_data):
@@ -79,12 +76,15 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)  # 사용자 데이터 업데이트
 
 
+
+
+
 class UserIDSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=30, required=True)
 
     class Meta:
         model = User
-        fields = ['name', 'phone', 'email']
+        fields = ['name', 'email']
 
 
 class UserPasswordSerializer(serializers.ModelSerializer):
@@ -93,7 +93,7 @@ class UserPasswordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name', 'id', 'phone', 'email']
+        fields = ['name', 'id', 'email']
 
     def validate(self, data):
         return data
