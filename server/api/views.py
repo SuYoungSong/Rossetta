@@ -2,11 +2,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
 from django.shortcuts import render
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from .models import User
-from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer, UserLoginSerializer
+from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer
 
 
 # Create your views here.
@@ -14,7 +16,9 @@ from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateS
 
 # 모델명 + view
 class UserView(APIView):
+
     # 회원 정보 가져오기
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])  # get 함수를 사용할때 적용하는 권한 설정
     def get(self, request):
         id = request.query_params.get('id')  # url 에서 받아온 id 값
         user = User.objects.get(id=id)  # 정보를 보고 싶은 사용자 레코드
@@ -31,6 +35,7 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 예외처리 응답
 
     # 회원정보 업데이트
+    @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated])  # get 함수를 사용할때 적용하는 권한 설정
     def put(self, request, id):
         user = User.objects.get(id=id)  # 업데이트 할 사용자 정보 조회
         serializer = UserUpdateSerializer(user, data=request.data)  # 해당 사용자 정보 직렬화 + 유저가 변경하고 싶은 정보
@@ -42,6 +47,7 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 예외처리 응답
 
     # 회원 정보 delete
+    @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated])  # get 함수를 사용할때 적용하는 권한 설정
     def delete(self, request, id):
         user = User.objects.get(id=id)  # 삭제하고 싶은 사용자 정보 조회
         user.delete()  # 사용자 정보 삭제
@@ -79,3 +85,12 @@ class UserLogoutView(APIView):
                 return Response(status=status.HTTP_400_BAD_REQUEST)  # 해당 레코드가 존재하지 않을때
         else:
             return Response(data={"error": "error"}, status=status.HTTP_400_BAD_REQUEST)  # 토큰값이 존재하지 않을때
+
+#   아이디 찾기
+# class UserIDView(APIView):
+#
+#
+#
+#
+# #   비밀번호 찾기
+# class UserPasswordView(APIView):
