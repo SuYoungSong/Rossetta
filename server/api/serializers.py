@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
@@ -12,6 +13,11 @@ def password_match(password):
     return re.match(pattern, password)
 
 
+def email_match(email):
+    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    return re.match(pattern, email)
+
+
 class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 시리얼라이저
     class Meta:
         model = User  # 사용자 모델
@@ -20,34 +26,41 @@ class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 �
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password_check = serializers.CharField(write_only=True, style={'input_type': 'password'}, required=True)  # 비밀번호 확인
+    is_auth = serializers.BooleanField(required=True)
 
     class Meta:
         model = User  # 회원가입시 사용할 모델
-        fields = ['id', 'password', 'password_check', 'name', 'email']  # 회원가입시 사용자가 입력해야할 정보
+        fields = ['id', 'password', 'password_check', 'name', 'email', 'is_auth']  # 회원가입시 사용자가 입력해야할 정보
 
     def validate(self, data):
         if data['password'] != data.pop('password_check'):  # 비밀번호 일치 여부
             raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지않습니다.")
         if User.objects.filter(id=data['id']).exists():  # 입력한 아이디가 데이터베이스에 있는지 존재 여부
             raise serializers.ValidationError("이미 존재하는 아이디 입니다.")
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError("이미 존재하는 이메일입니다.")
         if not password_match(data['password']):  # 비밀번호 규제 에 맞는지 일치 여부
             raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
+        if not email_match(data['email']):
+            raise serializers.ValidationError("이메일 규칙에 맞춰서 작성해주세요")
+        if not data['is_auth']:
+            raise serializers.ValidationError("이메일 인증을 완료해주세요")
         return data
 
     def create(self, validated_data):
+        is_auth = validated_data.pop('is_auth')
         password = validated_data.pop('password')  # password 값 을 암호화 설정 하기 위해
-        user = User.objects.create_user(**validated_data)  # request 에서 넘어온 데이터들로 create_user 생성
-        user.set_password(password)  # password 암호화
-        user.save()  # 데이터 저장
-        return user
+        if is_auth:
+            user = User.objects.create_user(**validated_data)  # request 에서 넘어온 데이터들로 create_user 생성
+            user.set_password(password)  # password 암호화
+            user.save()  # 데이터 저장
+            return user
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User  # 조회할 모델
-        fields = ['id','password', 'name', 'email']  # 사용자한테 보여줘야할 User 모델의 필드
-
-
+        fields = ['id', 'password', 'name', 'email']  # 사용자한테 보여줘야할 User 모델의 필드
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -76,30 +89,29 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)  # 사용자 데이터 업데이트
 
 
-
-
-
-class UserIDSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=30, required=True)
+class UserFindIDSerializer(serializers.ModelSerializer):
+    is_auth = serializers.BooleanField(required=True)
+    id = serializers.CharField(required=False, read_only=True)
 
     class Meta:
         model = User
-        fields = ['name', 'email']
-
-
-class UserPasswordSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=30, required=True)
-    id = serializers.CharField(max_length=30, required=True)
-
-    class Meta:
-        model = User
-        fields = ['name', 'id', 'email']
+        fields = ['name', 'email', 'is_auth', 'id']
 
     def validate(self, data):
-        return data
-
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+        name = data.get('name', None)
+        email = data.get('email', None)
+        is_auth = data.get('is_auth', None)
+        if name is None or email is None:
+            raise serializers.ValidationError("이름 , 이메일를 입력해주세요")
+        if not is_auth or is_auth is None:
+            raise serializers.ValidationError("이메일 인증을 확인하세요")
+        if not email_match(email):
+            raise serializers.ValidationError("이메일 형식에 맞게 입력해주세요")
+        try:
+            user = get_user_model().objects.get(name=name, email=email)
+        except get_user_model().DoesNotExist:
+            raise serializers.ValidationError("해당 유저의 정보가 존재하지 않습니다")
+        return {"name": name, "email": email, "is_auth": is_auth, "id": user.id}
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):

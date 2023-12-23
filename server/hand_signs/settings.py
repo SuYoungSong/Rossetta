@@ -32,7 +32,7 @@ SECRET_KEY = env_list['SECRET_KEY']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = env_list['EMAIL_HOST_USER'].replace('\n','')
+EMAIL_HOST_USER = env_list['EMAIL_HOST_USER'].replace('\n', '')
 EMAIL_HOST_PASSWORD = env_list['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
@@ -93,7 +93,7 @@ ROOT_URLCONF = 'hand_signs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'server/templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {

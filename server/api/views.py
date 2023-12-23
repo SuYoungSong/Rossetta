@@ -1,11 +1,7 @@
-import warnings
-
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
-from django.core.cache import cache
-from django.core.mail import EmailMultiAlternatives
-from django.utils import timezone
 
+from .email import email_data_set, email_data_get, key_data_get, email_send, email_return_json
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -13,9 +9,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import User
-from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer
-import random
-from django.template.loader import render_to_string
+from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer, UserFindIDSerializer
 
 
 # Create your views here.
@@ -37,7 +31,7 @@ class UserView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     # 회원가입
-    # 회원가입에 유저이름 id 비밀번호 비밀번호 확인 핸드폰번호 sms 문자 번호
+    # 회원가입에 유저이름 id 비밀번호 비밀번호 확인 이메일 인증
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)  # post 로 받은 값을 직렬화
         if serializer.is_valid():  # 유효성 검사
@@ -69,53 +63,6 @@ class UserView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)  # 정상 응답
         except user.DoesNotExist:
             return Response(data={"state": "사용자가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
-
-
-# 이메일 인증
-class EmailSendView(APIView):
-    def post(self, request):
-        email = request.data.get('email')  # post 요청으로 사용자가 입력한 이메일
-        if email:
-            six_digital_random = ''.join([str(random.randint(0, 9)) for _ in range(6)])  # 6자리 난수 생성
-            unique_number = str(timezone.now()) + six_digital_random  # 어떤 인증 번호를 받았는지 고유 식별 번호
-            cache_key = f'email_data:{unique_number}'  # cache memory 를 사용하기 위한 key
-            cache.set(cache_key, {'six_digital_random': six_digital_random}, 60 * 5)  # 5분 이내로 받기 위해 캐시 메모리를 설정
-            email = EmailMultiAlternatives(                                                # Email Message 와 다르게 html template 을 보내기 위해서는 MultiAlternative 를 같이 보낸다.
-                subject="ROSSETA 회원가입 인증번호입니다.",
-                body=f"<ROSSETA>\n [{six_digital_random}] \n 인증번호를 5분 내로 입력해주세요",
-                to=[email],
-            )
-            # context = {'six_digital_random':six_digital_random}
-            # html_content = render_to_string('html_template_path' ,context)
-            # email.attach_alternative(html_content , '<path>')
-            email.send()
-            data = {
-                "unique_number": unique_number,
-                "state": "메일 확인후 5분 내로 인증 번호를 입력해주세요"
-            }
-            return Response(data=data, status=status.HTTP_200_OK)
-        else:
-            return Response(data={"state": "이메일 데이터를 입력해주세요"},
-                            status=status.HTTP_404_NOT_FOUND)  # 만약에 이메일 을 입력하지 않고 인증 버튼을 누를경우
-
-
-class EmailCheckView(APIView):
-    def post(self, request):
-        unique_number = request.headers['uniquenumber']  # 이메일 인증번호 요청에서 보낸 고유 번호 (식별자)
-        input_number = request.data.get('input_number')  # 사용자가 입력한 내용
-        if unique_number and input_number:               # 고유번호랑 입력 받은 내용이 둘다 있어야함
-            cache_key = f"email_data:{unique_number}"    # cache_key 설정 인증번호 전송이랑 똑같이 맞춰줘야함
-            cache_data = cache.get(cache_key, None)      # cache memory 에 데이터 가 남아 있으면 데이터를 리턴 , 아니면 None 을 만든다.
-            if cache_data is not None:                   # cache data 가 존재하면
-                check = cache_data.get('six_digital_random', '')    # 해당 데이터를 가져와서 입력 받은 값이랑 비교
-                if input_number == check:
-                    return Response(data={"is_auth": "true", "state": "이메일 인증 성공"}, status=status.HTTP_200_OK)  # 정상 응답
-                else:
-                    return Response(data={"state": "이메일 인증 실패"} , status=status.HTTP_400_BAD_REQUEST)   #데이터가 없거나 데이터가 맞지 않은 경우
-            else:
-                return Response(data={"state": "5분이 지나 인증 번호를 다시 받아주세요"}, status=status.HTTP_404_NOT_FOUND) # 캐시 메모리 제한 시간이 끝난경우
-        else:
-            return Response(data={"state": "고유 번호 혹은 입력 번호가 존재하지 않습니다."}, status=status.HTTP_404_NOT_FOUND) # 고유 번호나 입력번호 가 없는 경우
 
 
 class UserLoginView(APIView):
@@ -150,11 +97,83 @@ class UserLogoutView(APIView):
         else:
             return Response(data={"error": "error"}, status=status.HTTP_400_BAD_REQUEST)  # 토큰값이 존재하지 않을때
 
-#   아이디 찾기
-# class UserIDView(APIView):
-#
-#
-#
-#
-# #   비밀번호 찾기
-# class UserPasswordView(APIView):
+
+# 아이디 찾기 인증 코드 보내기
+class UserIDEmailSendView(APIView):
+    def post(self, request):
+        email = request.data.get('email', None)  # 사용자가 입력한 이메일
+        if email:
+            try:
+                user = User.objects.get(email=email)  # 이름 과 이메일이 동시 에 매칭되는 유저 조회
+                unique_number, six_digital_random = email_data_set(type="find_id", time=300)  # 고유번호랑 난수 받아오기
+                email_send(type="find_id", context_data=six_digital_random, email=email)  # 이메일 보내기
+                data = email_return_json(unique_number)  # 인증 전송 정상 여부 JSON
+                return Response(data=data, status=status.HTTP_200_OK)  # 정상 응답
+            except user.DoesNotExist:
+                return Response(data={"state": "이름과 이메일에 일치하는 유저가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={"state": "이름 혹은 이메일을 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 비밀번호 찾기 인증 코드 보내기
+class UserPasswordEmailSendView(APIView):
+    def post(self, request):
+        email = request.data.get('email', None)
+        if email:
+            try:
+                user = User.objects.get(email=email)
+                unique_number, six_digital_random = email_data_set(type="find_pw", time=300)
+                email_send(type="find_pw", context_data=six_digital_random, email=email)
+                data = email_return_json(unique_number=unique_number)
+                return Response(data=data, status=status.HTTP_200_OK)
+            except user.DoesNotExist:
+                return Response(data={"state": "해당하는 유저 정보가 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={"state": "이름 , 아이디 , 이메일을 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 회원가입 이메일 인증 코드 보내기
+class SignUpSendView(APIView):
+    def post(self, request):
+        email = request.data.get('email')  # post 요청으로 사용자가 입력한 이메일
+        if email:
+            unique_number, six_digital_random = email_data_set(type="sign_up", time=300)
+            email_send(type="sign_up", context_data=six_digital_random, email=email)
+            data = email_return_json(unique_number=unique_number)
+            return Response(data=data, status=status.HTTP_200_OK)
+        else:
+            return Response(data={"state": "이메일 데이터를 입력해주세요"},
+                            status=status.HTTP_404_NOT_FOUND)  # 만약에 이메일 을 입력하지 않고 인증 버튼을 누를경우
+
+
+# 이메일 인증 완료 API
+class EmailCheckView(APIView):
+    def post(self, request):
+        unique_number = request.headers['uniquenumber']  # 이메일 인증번호 요청에서 보낸 고유 번호 (식별자)
+        input_number = request.data.get('input_number')  # 사용자가 입력한 내용
+        if unique_number and input_number:  # 고유번호랑 입력 받은 내용이 둘다 있어야함
+            cache_data = email_data_get(unique_number)
+            if cache_data is not None:  # cache data 가 존재하면
+                check = key_data_get(cache_data, 'six_digital_random')  # 해당 데이터를 가져와서 입력 받은 값이랑 비교
+                if input_number == check:
+                    return Response(data={"is_auth": "true", "state": "이메일 인증 성공"}, status=status.HTTP_200_OK)  # 정상 응답
+                else:
+                    return Response(data={"state": "이메일 인증 실패"},
+                                    status=status.HTTP_400_BAD_REQUEST)  # 데이터가 없거나 데이터가 맞지 않은 경우
+            else:
+                return Response(data={"state": "5분이 지나 인증 번호를 다시 받아주세요"},
+                                status=status.HTTP_404_NOT_FOUND)  # 캐시 메모리 제한 시간이 끝난경우
+        else:
+            return Response(data={"state": "고유 번호 혹은 입력 번호가 존재하지 않습니다."},
+                            status=status.HTTP_404_NOT_FOUND)  # 고유 번호나 입력번호 가 없는 경우
+
+# 인증 완료된 아이디 찾기
+class UserFindIDView(APIView):
+    def post(self,request):
+        serializer = UserFindIDSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(data={"id":serializer.data['id']},status=status.HTTP_200_OK)
+        return Response(data=serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+
+# # 인증 완료된 비밀번호 변경
+# class UserChangePWView(APIView):

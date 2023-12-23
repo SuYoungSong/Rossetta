@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Rossetta</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" bgColor="#F4F5F7" style="padding: 20px 16px 82px; color: #191919; font-family: 'Noto Sans KR', sans-serif;" class="wrapper">
+            <tbody style="display: block; max-width: 600px; margin:0 auto;">
+              <tr width="100%" style="display: block;">
+                <td width="100%" style="display: block;">
+                  <!-- 본문 -->
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" bgColor="#FFFFFF" style="display: inline-block; padding: 32px; text-align: left; border-top: 3px solid #2C858D; border-collapse: collapse;" class="container">
+                    <tbody style="display: block;">
+                      <!-- BIGPICTURE 로고 -->
+                      <tr>
+                        <td style="padding-bottom: 32px; font-size: 20px; font-weight: bold;">
+                            <a href='https://ifh.cc/v-Jamkyz' target='_blank'><img src='https://ifh.cc/g/Jamkyz.png' border='0'></a>
+                        </td>
+                      </tr>
+                      <!-- 본문 제목 -->
+                      <tr>
+                        <td style="font-size: 20px; font-weight:bold; color:black"> 이메일 인증코드를 확인하세요.</td>
+                      </tr>
+                      <!-- 본문 내용 -->
+                      {% if type == 'sign_up' %}
+                          <tr>
+                            <td style="font-size: 15px; margin:10px; line-height:20px"> Rossetta 가입을 위한 이메일 인증코드입니다.<br/>아래의 인증코드를 진행 중인 가입화면에 입력하시면 인증이 완료됩니다.</td>
+                            <td style="height: 80px;"></td>
+                          </tr>
+                      {% elif type == 'find_id' %}
+                          <tr>
+                            <td style="font-size: 15px; margin:10px; line-height:20px"> Rossetta 아이디 찾기를 위한 이메일 인증코드입니다.<br/>아래의 인증코드를 진행 중인 가입화면에 입력하시면 인증이 완료됩니다.</td>
+                            <td style="height: 80px;"></td>
+                          </tr>
+                      {% else %}
+                          <tr>
+                            <td style="font-size: 15px; margin:10px; line-height:20px"> Rossetta 비밀번호 찾기를 위한 이메일 인증코드입니다.<br/>아래의 인증코드를 진행 중인 가입화면에 입력하시면 인증이 완료됩니다.</td>
+                            <td style="height: 80px;"></td>
+                          </tr>
+                      {% endif %}
+                      <tr width="100%" style="display:block; padding-top: 5px; border-top: 1px solid #e9e9e9;">
+                        <td style="padding-bottom: 10px; color: black; font-size: 15px; font-weight:bold; line-height: 20px; display:block; text-align:center"><br/>인증코드</td>
+                      </tr>
+                    
+                      <!-- 본문 컨텐츠 영역 -->
+                      <tr width="100%" style="display: block; margin-bottom: 32px;">
+                        <td width="100%" style="display: block;">
+                          <table border="0" cellpadding="0" cellspacing="0" width="100%" bgColor="#F8F9FA" style="padding: 40px 20px; border-radius: 4px; text-align: center;" class="content">
+                            <tbody style="display: block;">
+                              <tr style="display: block;">
+                                <td style="display: block; padding-bottom: 16px; font-size: 32px; font-weight: bold;">
+                                  {{six_digital_random}}
+                                </td>
+                              </tr>
+                              <tr style="display: block;">
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <!-- 푸터(통합 서비스) -->
+                      <tr width="100%" style="display:block; padding-top: 24px; border-top: 1px solid #e9e9e9;">
+                        <td style="position: relative;">
+                            <td style="color: #A7A7A7; font-size: 12px; line-height: 2px;">© 2023 Rossetta Co., Ltd. All Rights Reserved.</td>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <td style="font-size: 10px; color:#A7A7A7; padding-top:10px;">본 이메일은 발신전용입니다. 궁금하신 점이나 불편한 사항은 홈페이지에 문의해주시기 바랍니다.</td>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </body>
+
+</html>
