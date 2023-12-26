@@ -16,7 +16,7 @@ class PaperTypeSituationView(APIView):
     def get(self, request, type):
         try:
             qs = paper.objects.filter(type=type).distinct().values('situation')
-            serializer = PaperTypeSituationSerializer(qs, many=True)
+            serializer = PaperTypeSituationSerializer(qs,many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
@@ -101,7 +101,7 @@ class PracticeNoteView(APIView):
         except practice_note.DoesNotExist:
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request):
+    def post(self, request):    # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
         serializer = PracticeNoteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
