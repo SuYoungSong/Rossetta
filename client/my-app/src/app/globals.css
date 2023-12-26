@@ -65,6 +65,18 @@ body {
   font-weight: 500;
 }
 
+.login-part {
+  display: flex;
+  flex-direction: row;
+  font-size: 1.2vw; 
+  align-items: center;
+  margin: 0 1vw;
+  font-weight: 500;
+}
+.login{
+  margin-left: 0.5vw;
+}
+
 .cus_name{
   margin: 0.5vw;
 }

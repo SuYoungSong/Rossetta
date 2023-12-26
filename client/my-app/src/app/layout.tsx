@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import './globals.css'
 import RoLogo from '../../public/Rossetta_logo.png';
+import Login from '../../public/login.png';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -32,11 +33,17 @@ export default function RootLayout({
               <Link className='nav_btn' href='/'>수어실습</Link>
               <Link className='nav_btn' href='/'>오답노트</Link>
               <Link className='nav_btn' href='/'>1:1 문의</Link>
-            </div>
-            <div className='nav_customer'>
+              {/* <div className='nav_customer'>
                 <div className='cus_name'>000님</div>
                 <img className='cus_up' src="/custom_up.png"/>
+              </div> */}
             </div>
+            <Link href="/">
+              <div className='login-part'>
+                <Image src={Login} alt='login_png'></Image>
+                <div className='login'>로그인</div>
+              </div>
+            </Link>
           </div>
           {/* <div>{props.params.id}님</div> */}
         </div>
