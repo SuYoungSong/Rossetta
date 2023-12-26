@@ -14,6 +14,7 @@ body {
   height: 99%;
   position: relative;
   justify-content: center;
+  overflow-x: hidden;
 }
 
 .nav_back{

@@ -11,17 +11,6 @@
   filter: brightness(60%);
   height: calc(100vh - 120px);
 }
-.img_text{
-  position: absolute;
-  top: 20%;
-  left: 0;
-  color: aliceblue;
-  font-size: 3vw;
-  text-align: center;
-  width: 100%;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
-}
 
 .myText {
   position: absolute;
@@ -31,8 +20,8 @@
   font-size: 3vw;
   text-align: center;
   width: 100%;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  /* -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black; */
   opacity: 0;
   transition: opacity 1s ease-in-out; 
 }
@@ -72,7 +61,7 @@
 }
 
 .div-text {
-  font-size: 3vw;
+  font-size: 2.5vw;
   align-items: center;
   text-align: center;
   font-family: Pretendard-Regular;
@@ -155,11 +144,40 @@ h2{
 
 
 /* 카드섹션 */
-.card_section {
+
+.tpg {
+  height: calc(100vh + 3600px);
+  /* outline: 2px dashed blue; */
   background-color: #A3C6C2;
-  height: 100vh;
   margin-top: 30%;
-  overflow: hidden;
+  width: 100%;
+  /* overflow: hidden; */
+}
+.slidePg{
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
+}
+.slidePg ul{
+  position: relative;
+  left: 0;
+  display: flex;
+  width: calc(100vw + 3600px);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: 0.3s ease-out;
+}
+.slidePg ul li{
+  list-style: none;
+  /* padding: 10px; */
+  margin-right: 200px;
+  margin-left: 200px;
+}
+.profilemargin{
+  margin-top: 110px;
 }
 
 

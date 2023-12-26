@@ -1,15 +1,49 @@
 "use client"
 import Image from 'next/image'
-import "@/app/App.css"
+import "@/app/App.css";
 import downside from "../../public/downside.svg";
 import main_img from "../../public/main_img.png";
-import area from "../../public/area.jpg"
+import area from "../../public/area.jpg";
 import {useInView} from 'react-intersection-observer';
+import profile from '../../public/profile.svg';
 import { useRef, useEffect, useState } from "react";
 
 import styles from "./style_animation.module.scss";
 
 export default function Home() {
+
+  const tpgRef = useRef(null);
+  const spgRef = useRef(null);
+  const mvbxRef = useRef(null);
+
+  useEffect(() => {
+    console.log('로딩완료');
+
+    const tpg = tpgRef.current;
+    const spg = spgRef.current;
+    const mvbx = mvbxRef.current;
+
+    const movePage = () => {
+      console.log(window.scrollY);
+
+      const retVal = (x) => x.getBoundingClientRect().top;
+      let tgpos = retVal(tpg);
+      console.log("바운딩값: ", tgpos);
+
+      // 적용구간 설정 0이하 -2000px 이상
+      if (tgpos <= 0 && tgpos >= -3600) mvbx.style.left = tgpos + "px";
+      else if (tgpos > 0) mvbx.style.left = '0';
+    };
+  
+      // 스크롤 이벤트 리스너 등록
+      window.addEventListener("scroll", movePage);
+  
+      // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거
+      return () => {
+        window.removeEventListener("scroll", movePage);
+      };
+    }, [tpgRef, spgRef, mvbxRef]);
+
   // 타이틀 글자 천천히
   const [isVisible, setIsVisible] = useState(false)
   useEffect(()=> {
@@ -112,13 +146,13 @@ export default function Home() {
           {/* <MainContentSecond /> */}
 
           {/* <MainContentThird /> */}
-          <section ref={magicSectionRef}>
+          {/* <section ref={magicSectionRef}>
             
             <span className={`${styles.rocket} ${magicSectionIsVisible ? styles.animateRocket : ''}`}>
             🚀
             </span>
           
-          </section>
+          </section> */}
           {/* <MainContentThird /> */}
 
           {/* <MainContentForth /> */}
@@ -152,9 +186,20 @@ export default function Home() {
             </div>
           </div>
           {/* <MainContentCard /> */}
-          <section className="card_section">
-            <div></div>
-          </section>
+          <div className="tpg" ref={tpgRef}>
+            <div className="slidePg" ref={spgRef}>
+              <ul ref={mvbxRef}>
+                <li><Image src={profile} alt=""/></li>
+                <li className="profilemargin"><Image src={profile} alt=""/></li>
+                <li><Image src={profile} alt=""/></li>
+                <li className="profilemargin"><Image src={profile} alt=""/></li>
+                <li><Image src={profile} alt=""/></li>
+                <li className="profilemargin"><Image src={profile} alt=""/></li>
+                <li><Image src={profile} alt=""/></li>
+                <li className="profilemargin"><Image src={profile} alt=""/></li>
+              </ul>
+            </div>
+          </div>
           {/* <MainContentCard /> */}
         </main>
 
@@ -162,18 +207,16 @@ export default function Home() {
         <footer>
           <div>KT_aivle_bigproject</div>
           <div>
-            <span>
+            
               <h1>한혜주 github</h1>
               <h1>이자영 github</h1>
               <h1>전우진 github</h1>
               <h1>이수빈 github</h1>
-            </span>
-            <span>
               <h1>김형진 github</h1>
               <h1>송수영 github</h1>
               <h1>천영성 github</h1>
               <h1>설형호 github</h1>
-            </span>
+            
           </div>
         </footer>
         {/* <Footer /> */}
