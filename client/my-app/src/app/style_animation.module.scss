@@ -1,0 +1,95 @@
+
+.rocket {
+    display: inline-block;
+  
+  }
+  .animateRocket {
+    animation-duration: 5s;
+    animation-name: animate-rocket;
+  }
+  @keyframes animate-rocket {
+    0%{
+      transform: scale(1) rotate(10deg);
+    }
+    5%{
+      transform: scale(1.25) rotate(-15deg);
+    }
+    10% {
+      transform: scale(1.5) rotate(-10deg);
+    }
+    20% {
+      transform: scale(2) rotate(0);
+    }
+    100% {
+      transform: scale(20) translate3d(100vw, -100vh, 0 ) rotate(0);
+    }
+  }
+
+  // 페이드인 애니메이션
+  .areadiv{
+    border-radius: 20px;
+    overflow: hidden;
+    height: 500px;
+    box-shadow: 2px 2px 2px 2px gray;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .animateareadiv{
+    transition-duration: 1.2s;
+    opacity: 1;
+    visibility: visible;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 500px;
+    box-shadow: 2px 2px 2px 2px gray;
+  }
+// a문제있음
+  .divtext {
+    font-size: 3vw;
+    align-items: center;
+    text-align: center;
+    font-family: Pretendard-Regular;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .animatedivtext{
+    transition-duration: 1.2s;
+    opacity: 1;
+    visibility: visible;
+    font-size: 3vw;
+    align-items: center;
+    text-align: center;
+    font-family: Pretendard-Regular;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .content{
+    opacity: 0;
+    visibility: hidden;
+  }
+  .animatecontent{
+    transition-duration: 1.2s;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .real{
+    opacity: 0;
+    visibility: hidden;
+  }
+  .animatereal{
+    transition-duration: 1.2s;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .oneby{
+    opacity: 0;
+    visibility: hidden;
+  }
+  .animateoneby{
+    transition-duration: 1.2s;
+    opacity: 1;
+    visibility: visible;
+  }

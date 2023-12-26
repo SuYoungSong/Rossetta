@@ -1,0 +1,158 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+*{font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;}
+
+a{
+  text-decoration: none;
+  color: #4B4B4B;
+  display: flex;
+  align-items: center;
+}
+
+body {
+  background-color: #FBF9F6;
+  width: 99%;
+  height: 99%;
+  position: relative;
+  justify-content: center;
+}
+
+.nav_back{
+  display: flex;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  background-color: white;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1000;
+  justify-content: center;
+}
+
+.nav_content{
+  display: flex;
+  flex-direction: row;
+}
+
+.nav_basic{
+  padding: 0 10vw 0 0;
+  display: flex;
+  flex-direction:row;
+}
+
+.logo{
+  width: 8vw;
+  height: auto;
+  margin: auto 3vw auto auto;
+}
+
+.nav_btn{
+  color: #4B4B4B; 
+  font-size: 1.2vw; 
+  font-weight: 600;
+  word-wrap: break-word; 
+  text-align: center;
+  margin: 0 3vw;
+}
+
+.nav_customer{
+  display: flex;
+  flex-direction: row;
+  font-size: 1.2vw; 
+  align-items: center;
+  margin: 0 3vw;
+  font-weight: 500;
+}
+
+.cus_name{
+  margin: 0.5vw;
+}
+
+.cus_up{
+  width: 2vw;
+  height: 2vw;
+}
+
+.page_margin{
+  height: 15vh;
+}
+
+/* .top_hr {
+  width: 224; 
+  height: 0; 
+  left: 848; 
+  top: 363; 
+  position: 'absolute'; 
+  border: '3px rgba(0, 0, 0, 0.20) solid';
+} */
+
+/* // 수어교육
+color: black;
+ font-size: 60px;
+ font-family: Inter;
+ font-weight: 600;
+ word-wrap: break-word
+---
+// 000님
+color: #4B4B4B;
+ font-size: 40px;
+ font-family: Pretendard Variable;
+ font-weight: 600;
+ word-wrap: break-word
+---
+// 수어교육
+color: black;
+ font-size: 40px;
+ font-family: Pretendard Variable;
+ font-weight: 600;
+ text-decoration: underline;
+ word-wrap: break-word
+---
+// 수어실습
+color: #4B4B4B;
+ font-size: 40px;
+ font-family: Pretendard Variable;
+ font-weight: 600;
+ word-wrap: break-word
+---
+// 오답노트
+color: #4B4B4B;
+ font-size: 40px;
+ font-family: Pretendard Variable;
+ font-weight: 600;
+ word-wrap: break-word
+---
+// 1:1 문의
+color: #4B4B4B;
+ font-size: 40px;
+ font-family: Pretendard Variable;
+ font-weight: 600;
+ word-wrap: break-word
+---
+// 지문자
+color: black;
+ font-size: 90px;
+ font-family: Pretendard Variable;
+ font-weight: 800;
+ word-wrap: break-word
+---
+// 단어
+color: black;
+ font-size: 90px;
+ font-family: Pretendard Variable;
+ font-weight: 800;
+ word-wrap: break-word
+---
+// 문장
+color: black;
+ font-size: 90px;
+ font-family: Pretendard Variable;
+ font-weight: 800;
+ word-wrap: break-word
+---
+// 지문자지숫자
+color: black;
+ font-size: 90px;
+ font-family: Pretendard Variable;
+ font-weight: 800;
+ word-wrap: break-word */

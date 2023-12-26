@@ -1,0 +1,78 @@
+.top_title{
+    margin: 1vh auto;
+    font-size: 1.8vw;
+    font-weight: 600;
+    text-align: center;
+}
+
+.top_hr{
+    border-bottom: 3px solid black;
+    width: 8vw;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.edu_btn{
+    width: 18vw;
+    cursor: pointer;
+    height: 65vh; 
+    position: relative; 
+    background-color: #FFF1BC;
+    border-radius: 40px;
+    margin: 2vh 1vw;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 4px; 
+    overflow: hidden
+}
+
+.edu_btn:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25) inset;
+    border: 1px solid rgba(255,255,255,1);
+}
+
+.g_btn{
+    background-color: #CCEDDB;
+}
+
+.b_btn{
+    background-color: #D0E8FF;
+}
+
+.edu_btn_txt{
+    position: absolute; 
+    text-align: center; 
+    color: black; 
+    font-size: 3vw; 
+    font-weight: 800;
+    word-wrap: break-word;
+    top: calc(50% + 22.5%); 
+    transform: translateY(-50%);
+}
+
+.e_btn_all{
+    padding: 3vh 15vw;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.edu_pic{
+    width: 75%; 
+    height: 45%; 
+    position: absolute; 
+    background-color: white; 
+    border-radius: 40px;
+    margin: 2vh;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+.edu_pic > img {
+    width: 11vw;
+    height: 28vh;
+    margin: 1vh auto 0 auto;
+    border-radius: 40px;
+}

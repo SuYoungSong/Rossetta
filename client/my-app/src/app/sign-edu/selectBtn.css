@@ -1,0 +1,81 @@
+.detail_title{
+    margin: 1vh 0;
+    font-size: 1vw;
+    font-weight: 600;
+    text-align: center;
+}
+
+.top_hr{
+    border-bottom: 3px solid black;
+    width: 8vw;
+    text-align: center;
+}
+
+.path{
+    width: 15vw;
+    text-align: left;
+    margin-top: 2vh;
+    margin-left: 22vw;
+}
+
+.gradient {
+    width: 40vw;
+    cursor: pointer;
+    height: 15vh;
+    border-radius: 16px;
+    margin: 3vh auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .gradient-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    border-radius: 16px;
+    -webkit-transform: scale(1.5);
+    transform: scale(1.5);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+  }
+  
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 16px;
+    z-index: 2;
+  }
+  
+  .btn_text {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translate(0, -50%);
+    color: white;
+    font-size: 2vw;
+    font-weight: 600;
+    word-wrap: break-word;
+    z-index: 3;
+  }
+  
+  .place_btn_all {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 50vw;
+    justify-content: center;
+    border-radius: 30px;
+    margin: 5vh auto 0 auto;
+    padding: 3vh;
+  }
+  
+  
+  .gradient:hover img{
+    -webkit-transform: scale(1);
+	  transform: scale(1);
+  }
