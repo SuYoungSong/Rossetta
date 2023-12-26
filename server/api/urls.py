@@ -1,7 +1,7 @@
 from django.urls import path
 from .views2 import *
 from .views import UserView, UserLoginView, UserLogoutView, SignUpSendView, EmailCheckView, UserIDEmailSendView, \
-    UserPasswordEmailSendView, UserFindIDView
+    UserPasswordEmailSendView, UserFindIDView, UserPasswordView, UserChangePasswordView
 from .views3 import QuestionView, QuestionListView
 
 app_name = 'api'
@@ -21,6 +21,8 @@ urlpatterns = [
 
     ## User Find
     path('userfindid/', UserFindIDView.as_view()),
+    path('userpassword/',UserPasswordView.as_view()),
+    path('userchangepassword/',UserChangePasswordView.as_view()),
 
     ## Login API
     path('login/', UserLoginView.as_view()),

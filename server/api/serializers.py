@@ -1,7 +1,5 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.db.models import Q
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 
 from .models import *
 import re
@@ -90,8 +88,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserFindIDSerializer(serializers.ModelSerializer):
-    is_auth = serializers.BooleanField(required=True)
-    id = serializers.CharField(required=False, read_only=True)
+    is_auth = serializers.BooleanField(required=True)  # 이메일 인증 여부
+    id = serializers.CharField(required=False, read_only=True)  # 이름과 이메일이 일치하는 id 
 
     class Meta:
         model = User
@@ -112,6 +110,56 @@ class UserFindIDSerializer(serializers.ModelSerializer):
         except get_user_model().DoesNotExist:
             raise serializers.ValidationError("해당 유저의 정보가 존재하지 않습니다")
         return {"name": name, "email": email, "is_auth": is_auth, "id": user.id}
+
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+    is_auth = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['name', 'id', 'email', 'is_auth']
+        read_only_fields = ('id',)
+
+    def validate(self, data):
+        name = data.get('name', None)
+        email = data.get('email', None)
+        is_auth = data.get('is_auth', None)
+
+        if name is None or email is None or is_auth is None:
+            raise serializers.ValidationError("이름 ,이메일 , 이메일 인증 여부를 작성해주세요")
+        if not is_auth:
+            raise serializers.ValidationError("이메일 인증을 확인해주세요")
+        if not email_match(email):
+            raise serializers.ValidationError("이메일 형식을 맞춰주세요")
+
+        return data
+
+
+class UserChangePasswordSerializer(serializers.ModelSerializer):       # 비밀번호 찾기로 변경할 비밀번호 조회
+    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True)      # 변경할 비밀번호
+    password_check = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True) # 변경할 비밀번호 확인
+
+    class Meta:
+        model = User                                    # 변경할 DB model
+        fields = ['id', 'password', 'password_check']   # 필요한 필드들
+
+    def validate(self, data):
+        password = data.get('password', None)
+        password_check = data.get('password_check', None)
+
+        if password is None or password_check is None:                              # 입력한 데이터가 없을떄
+            raise serializers.ValidationError("비밀번호 , 비밀번호 확인 을 입력해주세요")
+        if not password_match(password) or not password_match(password_check):      # 비밀번호 형식에 맞지 않을떄
+            raise serializers.ValidationError("비밀번호 형식에 맞춰서 입력해주세요")
+        if password != password_check:                                              # 비밀번호와 비밀번호 확인이 맞지 않을때
+            raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다")
+        return data
+
+    def update(self, instance, validated_data):            # 비밀번호 업데이트
+        password = validated_data.pop('password', None)  # 만약에 패스워드 가 들어왔을떄 랑 안들어 왔을떄를 대비하여 None 데이터 준비
+        if password:  # 비밀번호 데이터가 들어오면
+            instance.set_password(password)  # 비밀번호 암호화
+        return super().update(instance, validated_data)  # 사용자 데이터 업데이트
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):

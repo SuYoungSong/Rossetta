@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
+from django.shortcuts import get_object_or_404
 
 from .email import email_data_set, email_data_get, key_data_get, email_send, email_return_json
 from rest_framework.authtoken.models import Token
@@ -9,7 +10,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import User
-from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer, UserFindIDSerializer
+from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer, UserFindIDSerializer, \
+    UserPasswordSerializer, UserChangePasswordSerializer
 
 
 # Create your views here.
@@ -167,13 +169,45 @@ class EmailCheckView(APIView):
             return Response(data={"state": "고유 번호 혹은 입력 번호가 존재하지 않습니다."},
                             status=status.HTTP_404_NOT_FOUND)  # 고유 번호나 입력번호 가 없는 경우
 
+
 # 인증 완료된 아이디 찾기
 class UserFindIDView(APIView):
-    def post(self,request):
+    def post(self, request):
         serializer = UserFindIDSerializer(data=request.data)
         if serializer.is_valid():
-            return Response(data={"id":serializer.data['id']},status=status.HTTP_200_OK)
-        return Response(data=serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"id": serializer.data['id']}, status=status.HTTP_200_OK)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# # 인증 완료된 비밀번호 변경
-# class UserChangePWView(APIView):
+
+# 비밀번호 찾기 인증
+class UserPasswordView(APIView):
+    def post(self, request):
+        serialzier = UserPasswordSerializer(data=request.data)
+        if serialzier.is_valid():
+            data = serialzier.validated_data
+            is_user = User.objects.filter(id=request.data['id'], name=data['name'], email=data['email']).exists()
+            if is_user:
+                return Response(data={"id": request.data['id'], "state": "해당 이용자가 존재합니다 변경할 비밀번호를 입력해주세요"},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response(data={"state": "요청하신 데이터 의 유저가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data=serialzier.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 인증 완료된 비밀번호 변경
+class UserChangePasswordView(APIView):
+    def put(self, request):
+        id = request.data.get('id', None)           # id 데이터 조회
+        if id:
+            try:
+                user = User.objects.get(id=id)      # id 가 존재 한다면
+                serializer = UserChangePasswordSerializer(user, data=request.data)  # serializer 실행
+                if serializer.is_valid():   # 유효성 검사
+                    serializer.update(user, serializer.validated_data)  # 계정 업데이트
+                    return Response(data={"state": "데이터가 정상적으로 변경되었습니다"}, status=status.HTTP_200_OK)
+                else:                   # 예외처리
+                    return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except user.DoesNotExist:
+                return Response(data={"state": "요청하신 데이터의 유저가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
+        else:  # id 가 존재하지 않다면
+            return Response(data={"state": "id 정보를 입력해주세요"}, status=status.HTTP_404_NOT_FOUND)
