@@ -20,9 +20,9 @@ urlpatterns = [
     path('emailcheck/', EmailCheckView.as_view()),  # 이메일 인증 번호 확인 API
 
     ## User Find
-    path('userfindid/', UserFindIDView.as_view()),
-    path('userpassword/',UserPasswordView.as_view()),
-    path('userchangepassword/',UserChangePasswordView.as_view()),
+    path('userfindid/', UserFindIDView.as_view()),  # 아이디 인증 + 찾기
+    path('userpassword/',UserPasswordView.as_view()),   # 비밀번호 인증
+    path('userchangepassword/',UserChangePasswordView.as_view()),   # 비밀번호 변경
 
     ## Login API
     path('login/', UserLoginView.as_view()),
@@ -39,6 +39,6 @@ urlpatterns = [
 
     ## Posting API
     path('question/', QuestionView.as_view()),
-    path('question/<int:id>/', QuestionView.as_view()),
-    path('questionlist/<str:id>/', QuestionListView.as_view()),
+    path('question/<int:id>/', QuestionView.as_view()), # 게시글 상세 조회
+    path('questionlist/<str:id>/', QuestionListView.as_view()),  # 사용자가 작성한 게시글 리스트 조회
 ]

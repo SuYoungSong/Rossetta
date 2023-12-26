@@ -23,7 +23,7 @@ class QuestionView(APIView):
         serializer = QuestionCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.create(validated_data=serializer.validated_data)
-            return Response(data={'question_board': serializer.data},
+            return Response(data={'state':"게시글이 정상적으로 작성되었습니다."},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -33,13 +33,14 @@ class QuestionView(APIView):
 
         if serializer.is_valid():
             serializer.update(question, serializer.validated_data)
-            return Response(status=status.HTTP_200_OK)
+            return Response(data={"state":"게시글이 정상적으로 수정되었습니다"},status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
         user = question_board.objects.get(id=id)
         user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"state":"게시글이 정상적으로 삭제 되었습니다."},status=status.HTTP_204_NO_CONTENT)
+
 
 
 class QuestionListView(APIView):

@@ -15,7 +15,7 @@ class PaperTypeSituationView(APIView):
 
     def get(self, request, type):
         try:
-            qs = paper.objects.filter(type=type)
+            qs = paper.objects.filter(type=type).distinct().values('situation')
             serializer = PaperTypeSituationSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
@@ -29,7 +29,7 @@ class PaperTypeSituationChapterView(APIView):
 
     def get(self, request, type, situation):
         try:
-            qs = paper.objects.filter(type=type, situation=situation)
+            qs = paper.objects.filter(type=type, situation=situation).distinct().values('chapter')
             serializer = PaperTypeSituationChapterSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
