@@ -72,11 +72,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ['id', 'password', 'password_check', 'name', 'email']  # 사용자가 변경할 데이터 필드
 
     def validate(self, data):
-        id = data.get('id',None)
-        password = data.get('password',None)
-        password_check = data.get('password_check',None)
-        email = data.get('email',None)
-        name = data.get('name',None)
+        id = data.get('id', None)
+        password = data.get('password', None)
+        password_check = data.get('password_check', None)
+        email = data.get('email', None)
+        name = data.get('name', None)
         if id is None or password is None or password_check is None or email is None or name is None:
             raise serializers.ValidationError("이름 , 이메일 , 비밀번호 , 비밀번호 확인을 입력해주세요")
         if password != password_check:
@@ -85,8 +85,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
         if not email_match(data['email']):
             raise serializers.ValidationError("이메일 형식에 맞게 작성해주세요")
-        # if User.objects.filter(email=email).exists():
-        #     raise serializers.ValidationError("이미 존재하는 이메일입니다")
+        current_user = self.context.get('request').user  # request data
+        current_email = current_user.email if current_user.is_authenticated else None  # 현재 인증을 받은 사용자 여부를 통해 request.user 에 이메일 정보 를 저장
+        if email != current_email:  # 유저가 입력한 이메일이 현재 DB 에 저장된 이메일과 다르다면
+            if User.objects.filter(email=email).exists():
+                raise serializers.ValidationError("변경 할 이메일이 이미 존재합니다.")
         return data
 
     def update(self, instance, validated_data):
@@ -144,27 +147,28 @@ class UserPasswordSerializer(serializers.ModelSerializer):
         return data
 
 
-class UserChangePasswordSerializer(serializers.ModelSerializer):       # 비밀번호 찾기로 변경할 비밀번호 조회
-    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True)      # 변경할 비밀번호
-    password_check = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True) # 변경할 비밀번호 확인
+class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호 찾기로 변경할 비밀번호 조회
+    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True)  # 변경할 비밀번호
+    password_check = serializers.CharField(write_only=True, style={"input_type": "password"},
+                                           required=True)  # 변경할 비밀번호 확인
 
     class Meta:
-        model = User                                    # 변경할 DB model
-        fields = ['id', 'password', 'password_check']   # 필요한 필드들
+        model = User  # 변경할 DB model
+        fields = ['id', 'password', 'password_check']  # 필요한 필드들
 
     def validate(self, data):
         password = data.get('password', None)
         password_check = data.get('password_check', None)
 
-        if password is None or password_check is None:                              # 입력한 데이터가 없을떄
+        if password is None or password_check is None:  # 입력한 데이터가 없을떄
             raise serializers.ValidationError("비밀번호 , 비밀번호 확인 을 입력해주세요")
-        if not password_match(password) or not password_match(password_check):      # 비밀번호 형식에 맞지 않을떄
+        if not password_match(password) or not password_match(password_check):  # 비밀번호 형식에 맞지 않을떄
             raise serializers.ValidationError("비밀번호 형식에 맞춰서 입력해주세요")
-        if password != password_check:                                              # 비밀번호와 비밀번호 확인이 맞지 않을때
+        if password != password_check:  # 비밀번호와 비밀번호 확인이 맞지 않을때
             raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다")
         return data
 
-    def update(self, instance, validated_data):            # 비밀번호 업데이트
+    def update(self, instance, validated_data):  # 비밀번호 업데이트
         password = validated_data.pop('password', None)  # 만약에 패스워드 가 들어왔을떄 랑 안들어 왔을떄를 대비하여 None 데이터 준비
         if password:  # 비밀번호 데이터가 들어오면
             instance.set_password(password)  # 비밀번호 암호화
@@ -233,3 +237,29 @@ class education_report_Serailizer(serializers.ModelSerializer):
     class Meta:
         model = education_report
         fields = ['user', 'chapter']
+
+
+# paper Serializer
+
+class PaperTypeSituationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = ['situation']
+
+
+class PaperTypeSituationChapterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = ['chapter']
+
+
+class PaperDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = '__all__'
+
+
+class PracticeNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = practice_note
+        fields = '__all__'

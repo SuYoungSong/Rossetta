@@ -89,13 +89,12 @@ class education_report(models.Model):
 # 학습지(문제지)를 저장하는 객체
 class paper(models.Model):
     question_range = (
-        ('자음/모음', '자음/모음'),
         ('단어', '단어'),
         ('문장', '문장')
     )
 
     type = models.CharField(max_length=10, choices=question_range)
-    situation = models.CharField(max_length=8, null=False, blank=False)
+    situation = models.CharField(max_length=8, null=True, blank=True)
     chapter = models.IntegerField(null=False, blank=False)
     sign_video_url = models.URLField(null=False, blank=False)
     sign_answer = models.CharField(max_length=8, null=False, blank=False)
