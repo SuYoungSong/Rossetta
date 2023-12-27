@@ -1,0 +1,108 @@
+.path{
+    display: flex;
+}
+
+.backbtn {
+    width: auto;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.top_hr {
+    width: 6.5vw;
+    margin: 1vh auto;
+    text-align: center;
+}
+
+.back-title{
+    display: flex;
+    flex-direction: row;
+}
+
+.title_collection {
+    display: flex;
+    width: 12vw;
+    margin-left: -0.5vw;
+    flex-direction: column;
+}
+
+.detail_title {
+    text-align: center;
+}
+
+.outer {
+    width: 40vw;
+    height: auto;
+    border-radius: 40px;
+    overflow: hidden;
+    background-color: white;
+}
+.video {
+  position: relative;
+  width: 100%;
+  height:100%;
+  left: 0;
+  top: 0;
+  opacity: 1;
+}
+
+.section_lecture {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    text-align: center;
+    height: 60vh;
+    margin: 4vh auto;
+}
+
+.word_part {
+    display: flex;
+    width: 20vw;
+    height: 100%;
+    border-radius: 40px;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 5vw;
+    flex-direction: column;
+    margin: auto 2vw;
+    text-align: center;
+    background-color: white;
+    border: 1px #C9C9C9 solid;
+}
+
+.nextBtn {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    height: 6vh;
+    float: right;
+    margin: auto 15vw;
+}
+
+.next_txt{
+    font-size: 5vh;
+    font-weight: 700;
+    color: #616161;
+}
+
+.nextBtn:hover .next_txt{
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.nextBtn:hover .next_image{
+    transform: translateX(5px);
+}
+
+.next_image {
+    height: 6vh;
+    width: auto;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* 다음 버튼 */
+.next_word{
+    float: right;
+}

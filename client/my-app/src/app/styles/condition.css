@@ -11,23 +11,12 @@
   text-align: center;
 }
 
-.short_top_hr{
-  border-bottom: 3px solid black;
-  width: 5vw;
-}
-
-.short_path{
-  width: 5vw;
-  text-align: left;
-  margin-top: 2vh;
-  margin-left: 25vw;
-}
-
 .path{
   width: 15vw;
   text-align: left;
   margin-top: 2vh;
   margin-left: 22vw;
+  flex-direction: column;
 }
 
 .chapter {
