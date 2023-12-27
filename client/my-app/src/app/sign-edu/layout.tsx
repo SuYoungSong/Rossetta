@@ -1,5 +1,5 @@
 import React, { Children, useEffect, useState } from 'react';
-import './sign_edu.css';
+import '@/app/styles/sign_edu.css';
 
 export default function EduLayout({
     children,

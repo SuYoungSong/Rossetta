@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import "@/app/App.css";
+import "@/app/styles/App.css";
 import downside from "../../public/downside.svg";
 import main_img from "../../public/main_img.png";
 import area from "../../public/area.jpg";
@@ -112,8 +112,8 @@ export default function Home() {
 
           {/* 현장방문 사진 */}
           <div className="section">
-            <div className="container">
-              <div className="inner-container">
+            <div className="Honecontainer">
+              <div className="Homeinner-container">
                 
                 <div ref={eduRef} className={`${styles.areadiv} ${eduRefIsVisible ? styles.animateareadiv : ''}`}>
                   <Image className="area" src={area} alt="현장사진"/>

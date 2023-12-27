@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import '@/app/sign-edu/selectBtn.css'
+import '@/app/styles/selectBtn.css'
 import SelectionButton from '../../components/selectionButton';
 import Hospital from '../../../../public/hospital.jpg'
 import School from '../../../../public/school.jpg';

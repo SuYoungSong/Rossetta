@@ -1,8 +1,11 @@
+"use client"
 import React from 'react';
 import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
-import "@/app/sign-edu/condition.css"
-//whats
+// import { useRouter } from 'next/router';
+import "@/app/styles/condition.css"
+
+import { usePathname, useRouter } from 'next/navigation';
 
 interface ChapterProps {
   imagePath: StaticImageData;
@@ -11,18 +14,19 @@ interface ChapterProps {
 
 const ChapterList: React.FC<ChapterProps> = ({imagePath, selectName}) => {
   const chapters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const currentPath = usePathname();
+
 
   return (
     <div className="chapter">
       <div className="spot-area">
-        <Image className='btn-image' src={imagePath} alt="btn-image"></Image>
+        <Image className='btn-image' src={imagePath} alt="btn-image" />
         <div className="gradient-overlay"></div>
         <span className="spot-text">{selectName}</span>
-        {/* <img className="spot-img" src="/img1.jpg" alt="spot" /> */}
       </div>
       <div className="chapter-area">
         {chapters.map((chapterNumber, index) => (
-          <Link href="#" key={index}>
+          <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
             <div className="chapter-btn">Chapter {chapterNumber}</div>
           </Link>
         ))}

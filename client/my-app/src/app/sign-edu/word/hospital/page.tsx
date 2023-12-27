@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react';
 import ChapterList from '../../../components/chapters';
-import '@/app/sign-edu/condition.css'
+import '@/app/styles/condition.css'
 // import '@/app/sign-edu/selectBtn.css'
 import Hospitalpic from '../../../../../public/hospital.jpg'
 
@@ -14,7 +14,7 @@ export default function Hospital() {
             <div className='detail_title'>교육 &gt; 단어 &gt; 병원</div>
             <div className='top_hr'></div>
         </div>
-        <ChapterList  imagePath={Hospitalpic} selectName='병원'/>
+        <ChapterList imagePath={Hospitalpic} selectName='병원'/>
       </>
     );
   }

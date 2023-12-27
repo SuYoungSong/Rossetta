@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import React from 'react';
 import ChapterList from '../../../components/chapters';
-import '@/app/sign-edu/condition.css'
-// import '@/app/sign-edu/selectBtn.css'
+import '@/app/styles/condition.css'
 import Schoolpic from '../../../../../public/school.jpg'
 
 export default function School() {
