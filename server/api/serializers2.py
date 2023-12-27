@@ -8,8 +8,6 @@ class PaperTypeSituationSerializer(serializers.ModelSerializer):
         fields = ['situation']
 
 
-
-
 class PaperTypeSituationChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper

@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
-from django.shortcuts import get_object_or_404
 
 from .email import email_data_set, email_data_get, key_data_get, email_send, email_return_json
 from rest_framework.authtoken.models import Token

@@ -44,7 +44,6 @@ class PaperOneDataView(APIView):
 
     def get(self, request, id):
         try:
-            print(id)
             qs = paper.objects.get(id=int(id))
             serializer = PaperDataSerializer(qs)
             return Response(serializer.data)
