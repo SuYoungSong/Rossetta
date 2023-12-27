@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import User
 from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateSerializer, UserFindIDSerializer, \
     UserPasswordSerializer, UserChangePasswordSerializer
+from .permissions import IsTokenOwner
 
 
 # Create your views here.
@@ -18,10 +19,9 @@ from .serializers import UserDetailSerializer, UserCreateSerializer, UserUpdateS
 
 # 모델명 + view
 class UserView(APIView):
-    # permission_classes = [IsAuthenticated]
 
     # 회원 정보 가져오기
-    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])  # get 함수를 사용할때 적용하는 권한 설정
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsTokenOwner])  # get 함수를 사용할때 적용하는 권한 설정
     def get(self, request):
         id = request.query_params.get('id')  # url 에서 받아온 id 값
         try:
@@ -41,9 +41,12 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 예외처리 응답
 
     # 회원정보 업데이트
-    # @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated])  # get 함수를 사용할때 적용하는 권한 설정
-    def put(self, request, id):
+    @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated, IsTokenOwner])
+    def put(self, request):
         try:
+            id = request.data.get('id')
+            if id != request.user:
+                return Response(data={"state":"다른 사용자의 아이디 입니다 수정할수 없습니다"} , status=status.HTTP_400_BAD_REQUEST)
             user = User.objects.get(id=id)  # 업데이트 할 사용자 정보 조회
             serializer = UserUpdateSerializer(user, data=request.data)  # 해당 사용자 정보 직렬화 + 유저가 변경하고 싶은 정보
 
@@ -56,7 +59,7 @@ class UserView(APIView):
             return Response(data={"state": "회원 정보가 존재하지 않습니다."}, status=status.HTTP_404_NOT_FOUND)
 
     # 회원 정보 delete
-    @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated])  # get 함수를 사용할때 적용하는 권한 설정
+    @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated,IsTokenOwner])  # get 함수를 사용할때 적용하는 권한 설정
     def delete(self, request, id):
         try:
             user = User.objects.get(id=id)  # 삭제하고 싶은 사용자 정보 조회
@@ -92,7 +95,7 @@ class UserLogoutView(APIView):
                 token = request.auth  # request header 에 저장된 Authorization 토큰값
                 Token_obj = Token.objects.get(key=token)  # 해당 토큰값 레코드 반환
                 Token_obj.delete()  # 해당 레코드 삭제
-                return Response(data={"state":"정상적으로 로그아웃 됐습니다."},status=status.HTTP_200_OK)  # 정상 응답
+                return Response(data={"state": "정상적으로 로그아웃 됐습니다."}, status=status.HTTP_200_OK)  # 정상 응답
             except Token.DoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST)  # 해당 레코드가 존재하지 않을때
         else:

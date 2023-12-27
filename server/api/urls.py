@@ -8,8 +8,8 @@ app_name = 'api'
 
 urlpatterns = [
     ## USER API
-    path('user/', UserView.as_view()),  # create , detail
-    path('user/<str:id>/', UserView.as_view()),  # update , delete api
+    path('user/', UserView.as_view()),  # create , detail , update
+    path('user/<str:id>/', UserView.as_view()),  #  delete api
 
     ## ID PASSWORD LOST API
     path('useridemailsend/', UserIDEmailSendView.as_view()),  # 아이디 찾기 이메일 인증 번호 전송 API

@@ -72,12 +72,21 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ['id', 'password', 'password_check', 'name', 'email']  # 사용자가 변경할 데이터 필드
 
     def validate(self, data):
-        if 'password' in data and 'password_check' not in data:  # 비밀번호 를 입력하고 비밀번호 확인을 입력 안한 경우
-            raise serializers.ValidationError("비밀번호를 변경하기 위해서는 비밀번호 확인도 입력이 필요합니다.")
-        if 'password' in data and data['password'] != data.pop('password_check'):  # 비밀번호와 비밀번호 확인이 일치하지 않은 경우
-            raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지않습니다.")
+        id = data.get('id',None)
+        password = data.get('password',None)
+        password_check = data.get('password_check',None)
+        email = data.get('email',None)
+        name = data.get('name',None)
+        if id is None or password is None or password_check is None or email is None or name is None:
+            raise serializers.ValidationError("이름 , 이메일 , 비밀번호 , 비밀번호 확인을 입력해주세요")
+        if password != password_check:
+            raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다.")
         if not password_match(data['password']):  # 비밀번호 규제가 맞지 않은 경우
             raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
+        if not email_match(data['email']):
+            raise serializers.ValidationError("이메일 형식에 맞게 작성해주세요")
+        # if User.objects.filter(email=email).exists():
+        #     raise serializers.ValidationError("이미 존재하는 이메일입니다")
         return data
 
     def update(self, instance, validated_data):
