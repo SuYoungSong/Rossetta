@@ -1,8 +1,5 @@
 from django.urls import path
-from .views2 import *
-from .views import UserView, UserLoginView, UserLogoutView, SignUpSendView, EmailCheckView, UserIDEmailSendView, \
-    UserPasswordEmailSendView, UserFindIDView, UserPasswordView, UserChangePasswordView
-from .views3 import QuestionView, QuestionListView
+from .views import *
 
 app_name = 'api'
 
