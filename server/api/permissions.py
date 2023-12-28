@@ -17,3 +17,18 @@ class IsTokenOwner(permissions.BasePermission):
             return False
         return True
 
+
+class IsUserOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if user.is_staff:
+            return False
+        return True
+
+
+class IsStaffOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if not user.is_staff:
+            return False
+        return True

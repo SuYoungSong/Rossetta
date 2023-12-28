@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import *
-from .permissions import IsTokenOwner
+from .permissions import *
 
 
 # Create your views here.
@@ -24,7 +24,7 @@ class UserView(APIView):
     def get(self, request):
         id = request.query_params.get('id')  # url 에서 받아온 id 값
         if id != request.user.id:
-            return Response(data={"state":"다른 이용자의 정보입니다 열람 하실수 없습니다."})
+            return Response(data={"state": "다른 이용자의 정보입니다 열람 하실수 없습니다."})
         try:
             user = User.objects.get(id=id)  # 정보를 보고 싶은 사용자 레코드
             serializer = UserDetailSerializer(user)  # 직렬화
@@ -44,9 +44,9 @@ class UserView(APIView):
     # 회원정보 업데이트
     @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated, IsTokenOwner])
     def put(self, request):
-        id = request.data.get('id') # body 에 존재하는 이용자가 요청한 id 값
+        id = request.data.get('id')  # body 에 존재하는 이용자가 요청한 id 값
 
-        if id != request.user.id:   # id 와 request 요청으로 들어온 id 의 정보가 다르면 수정 불가
+        if id != request.user.id:  # id 와 request 요청으로 들어온 id 의 정보가 다르면 수정 불가
             return Response(data={"state": "다른 사용자의 아이디 입니다 수정할수 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(id=id)  # 업데이트 할 사용자 정보 조회
@@ -65,7 +65,7 @@ class UserView(APIView):
     @action(detail=True, methods=['delete'],
             permission_classes=[IsAuthenticated, IsTokenOwner])  # get 함수를 사용할때 적용하는 권한 설정
     def delete(self, request, id):
-        if id != request.user.id:   # url 에서 받아온 id 와 request 요청으로 들어온 아이디가 다를시에도 탈퇴 불가
+        if id != request.user.id:  # url 에서 받아온 id 와 request 요청으로 들어온 아이디가 다를시에도 탈퇴 불가
             return Response(data={"state": "다른 사용자의 아이디 입니다. 계정 탈퇴할수 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(id=id)  # 삭제하고 싶은 사용자 정보 조회
@@ -230,6 +230,7 @@ class UserChangePasswordView(APIView):
 
 # 게시글 관련 API
 class QuestionView(APIView):
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def get(self, request, id):
         # 질문에 대한 정보를 필터링 하기위한 파라미터
         # 질문에 관한 데이터만 가져온다
@@ -239,34 +240,53 @@ class QuestionView(APIView):
 
         return Response(data=question_serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def post(self, request):
+        id = request.data.get('user', None)
+        if id != request.user.id:
+            return Response(data={"state": "작성자 아이디 가 로그인한 아이디와 다릅니다"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = QuestionCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.create(validated_data=serializer.validated_data)
-            return Response(data={'state':"게시글이 정상적으로 작성되었습니다."},
+            return Response(data={'state': "게시글이 정상적으로 작성되었습니다."},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def put(self, request, id):
         question = question_board.objects.get(id=id)  # user , title , body , state create
         serializer = QuestionUpdateSerializer(question, data=request.data)
 
         if serializer.is_valid():
             serializer.update(question, serializer.validated_data)
-            return Response(data={"state":"게시글이 정상적으로 수정되었습니다"},status=status.HTTP_200_OK)
+            return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def delete(self, request, id):
         user = question_board.objects.get(id=id)
         user.delete()
-        return Response(data={"state":"게시글이 정상적으로 삭제 되었습니다."},status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"state": "게시글이 정상적으로 삭제 되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
 
 class QuestionListView(APIView):
-    def get(self, request , id):
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsTokenOwner,IsUserOwner])
+    def get(self, request, id):
+        if id != request.user.id:
+            return Response(data={"state":"로그인된 아이디와 요청하신 아이디 정보가 다릅니다 접근할수 없습니다"} , status=status.HTTP_400_BAD_REQUEST)
         queryset = question_board.objects.filter(user=id)
         serializer = QuestionListSerializer(queryset, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+
+class QuestionCommentCreateView(APIView):
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsTokenOwner, IsStaffOwner])
+    def post(self, request):
+        serializers = QuestionCommentCreateSerializer(data=request.data, context={'request': request})
+        if serializers.is_valid():
+            serializers.create(serializers.validated_data)
+            return Response(data={"state": "댓글 작성이 완료되었습니다"}, status=status.HTTP_201_CREATED)
+        return Response(data=serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 ##########################################################################
@@ -280,7 +300,7 @@ class PaperTypeSituationView(APIView):
     def get(self, request, type):
         try:
             qs = paper.objects.filter(type=type).distinct().values('situation')
-            serializer = PaperTypeSituationSerializer(qs,many=True)
+            serializer = PaperTypeSituationSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
@@ -350,7 +370,6 @@ class PracticeNoteView(APIView):
         chapter = request.GET.get('chapter')
         user_id = request.GET.get('user_id')
 
-
         try:
             practice_notes = practice_note.objects.select_related('paper').filter(
                 paper__type=type,
@@ -364,7 +383,7 @@ class PracticeNoteView(APIView):
         except practice_note.DoesNotExist:
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request):    # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
+    def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
         serializer = PracticeNoteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

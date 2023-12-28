@@ -233,6 +233,36 @@ class QuestionListSerializer(serializers.ModelSerializer):
         fields = ['user', 'title', 'state', 'created']  # 조회할 필드
 
 
+class QuestionCommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = question_board_comments
+        fields = ['comment', 'board']
+
+    def validate(self, data):
+        comment = data.get('comment', None)  # 관리자가 작성한 댓글
+        board = data.get('board', None) # 관리자가 작성할 게시글
+        board_id = int(board.id)
+        current_user = self.context.get('request').user  # request 를 보낸 유저 = 관리자
+        is_manager = current_user.is_staff if current_user.is_authenticated else None  # 인증이 된 관리자만 staff 여부를 확인 할수 있는 정보를 넘겨준다 아니면 None
+        if not is_manager:  # 관계자가 아닌경우
+            raise serializers.ValidationError("게시글을 작성할수 있는 권한이 없습니다.")
+        if comment is None or board_id is None:  # 댓글 or 게시글 정보가 없는 경우
+            raise serializers.ValidationError("댓글 , 게시글 정보가 존재하지 않습니다")
+        if not question_board.objects.filter(id=board_id).exists():  # 게시글 존재 여부
+            raise serializers.ValidationError("게시글이 존재하지 않습니다.")
+        return data
+
+    def create(self, validated_data):
+        comment = validated_data.pop('comment')
+        board = validated_data.pop('board')
+        board_id = int(board.id)
+        question_board_comments.objects.create(comment=comment, board_id=board_id)
+        question = question_board.objects.get(id=board_id)
+        question.state = True
+        question.save()
+        return True
+
+
 class education_report_Serailizer(serializers.ModelSerializer):
     class Meta:
         model = education_report
