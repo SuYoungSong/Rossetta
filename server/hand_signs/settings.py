@@ -48,6 +48,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# react-django 연동
+CORS_ALLOW_ALL_ORIGINS= True #DRF 에서 모든 origin 을 허용할건지 여부
+CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000' , 'http://127.0.0.1:8000')
+CORS_ALLOW_CREDENTIALS = True
+
+# CSRF 설정(react-django)
+CSRF_TRUSTED_ORIGINS = (
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+)
+
+
+CSRF_COOKIE_SECURE = False          # http/htttps 모든 연결에서 쿠키 전송
+CSRF_COOKIE_SAMESITE = None         # 모든 브라우저 상황에서 데이터 전송
+
 AUTH_USER_MODEL = 'api.User'
 
 # Application definition
@@ -62,13 +77,15 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',            # 로그인 은 토큰 인증 방식
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',          # CSRF 는 세션 인증 방식 을 사용한다.
     ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -79,6 +96,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
