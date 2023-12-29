@@ -69,6 +69,7 @@ CORS_ALLOW_HEADERS = [
     'Content-Type',
     'Authorization',
     'uniquenumber',  # 필요한 경우 추가
+    'X-CSRFToken',
 ]
 
 

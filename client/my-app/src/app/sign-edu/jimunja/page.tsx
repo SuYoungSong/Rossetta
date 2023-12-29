@@ -13,7 +13,7 @@ export default function Jinumber() {
             <div className='detail_title'>수어교육 &gt; 지숫자</div>
             <div className='top_hr'></div>
         </div>
-        <ChapterList imagePath={Numpic} selectName='지숫자'/>
+        <ChapterList imagePath={Numpic} selectType='jinumber' selectName='지숫자'/>
       </>
     );
   }

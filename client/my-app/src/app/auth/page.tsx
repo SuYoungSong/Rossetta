@@ -5,6 +5,7 @@ import Input from "../components/input";
 import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import {useAuth} from '@/app/components/AuthContext';
  
 const Auth =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
@@ -40,61 +41,24 @@ const Auth =()=>{
     const [RegisterPassword, setRegisterPassword] = useState("");
  
 
-    // const router = useRouter()
-const [loginvalues, setLoginValues] = useState({
+    const [loginvalues, setLoginValues] = useState({
         email: '',
         password: ''
       });
-
-    const [Registervalues, setRegister] = useState({
-        name:'',
-        RegisterId:'',
-        RegisterPassword:'',
-        confirmPassword:'',
-        email:'',
-        emailnum:'',
-    });
-
+    // const router = useRouter()
 
     const router = useRouter()
 
 
-    const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const { email, password } = loginvalues;
-
-    if (variant === 'login'){
-
-    try {
-
-      await axios.post('127.0.0.1:8000/api/login/', {
-        username,
-        password
-      });
-
-      router.push('/');
-    } catch (error: any) {
-      console.error('로그인 실패:', error.message);
-
-    }}
-    else if (variant === 'register'){
-        try {
-
-            await axios.post('/api/auth/register', {
-                name,
-                RegisterId,
-                RegisterPassword,
-                confirmPassword,
-                email,
-                emailnum,
-            });
-        }
-        catch(error:any){
+    const handleSubmit = () => {
+        if (variant === 'login'){
+            SignIn();
 
         }
-    }
-  };
+        else if (variant === 'register'){
+            SignUp();
+        }
+    };
 
     const handleSendEmailClick = () => {
         if(emailisValid){
@@ -126,25 +90,26 @@ const [loginvalues, setLoginValues] = useState({
   }
 
   const SignUp = () => {
-      axios.post("https://localhost:8000/api/user/",
+      axios.post("http://localhost:8000/api/user/",
           {"id":RegisterId, "password": RegisterPassword, "password_check": confirmPassword, "name": name, "email": email, "is_auth": authBool})
     .then((res) => {
           console.log("res >>",res);
       })
       .catch((err) => {
-        console.log("err >> ", err);
+        console.log("err >> ", err.response.data);
       });
   }
 
     const SignIn = () => {
-      axios.post("https://localhost:8000/api/user/",
-          {"id":RegisterId, "password": RegisterPassword, "password_check": confirmPassword, "name": name, "email": email, "is_auth": authBool})
+        const { login } = useAuth();
+      axios.post("http://localhost:8000/api/login/",
+          {"id":username, "password": password})
     .then((res) => {
           console.log("res >>",res);
-          console.log("test_register")
+          router.push('/');
       })
       .catch((err) => {
-        console.log("err >> ", err);
+        console.log("err >> ", err.response.data);
       });
   }
  
