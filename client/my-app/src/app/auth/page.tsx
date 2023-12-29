@@ -3,14 +3,12 @@ import { useCallback, useState } from "react";
 import Image from 'next/image';
 import Input from "../components/input";
 import '@/app/auth/auth.css'
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
  
 const Auth =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
-
-    
-
+    const [authBool, setAuthBool] = useState('');
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState("");
@@ -42,28 +40,59 @@ const Auth =()=>{
     const [RegisterPassword, setRegisterPassword] = useState("");
  
 
-    const [loginvalues, setLoginValues] = useState({
+    // const router = useRouter()
+const [loginvalues, setLoginValues] = useState({
         email: '',
         password: ''
       });
-    // const router = useRouter()
+
+    const [Registervalues, setRegister] = useState({
+        name:'',
+        RegisterId:'',
+        RegisterPassword:'',
+        confirmPassword:'',
+        email:'',
+        emailnum:'',
+    });
+
+
+    const router = useRouter()
+
+
     const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { email, password } = loginvalues;
+
+    if (variant === 'login'){
+
     try {
-      // 서버에 로그인을 시도합니다
-      await axios.post('127.0.0.1:8000/api/login/', { // Next.js에서는 API routes를 사용하는 것이 일반적입니다. 예시로 '/api/auth/login'를 사용하였습니다.
-        email,
+
+      await axios.post('127.0.0.1:8000/api/login/', {
+        username,
         password
       });
 
-      // 로그인이 성공하면 `/me`로 이동합니다
-    //   router.push('/');
+      router.push('/');
     } catch (error: any) {
-      // 로그인이 실패했을 때의 예외 처리
       console.error('로그인 실패:', error.message);
-      // 실패 시에 추가적으로 처리할 내용을 여기에 추가하세요
+
+    }}
+    else if (variant === 'register'){
+        try {
+
+            await axios.post('/api/auth/register', {
+                name,
+                RegisterId,
+                RegisterPassword,
+                confirmPassword,
+                email,
+                emailnum,
+            });
+        }
+        catch(error:any){
+
+        }
     }
   };
 
@@ -86,8 +115,33 @@ const Auth =()=>{
   }
 
     const handleCheckEmailClick = () => {
-    axios.post("http://localhost:8000/api/emailcheck/", { "input_number": emailnum},{ headers: headers })
+    axios.post("http://localhost:8000/api/emailcheck/", {"input_number": emailnum},{ headers: headers })
       .then((res) => {
+          console.log("res >>",res);
+          setAuthBool(res.data.is_auth);
+      })
+      .catch((err) => {
+        console.log("err >> ", err.response.data);
+      });
+  }
+
+  const SignUp = () => {
+      axios.post("https://localhost:8000/api/user/",
+          {"id":RegisterId, "password": RegisterPassword, "password_check": confirmPassword, "name": name, "email": email, "is_auth": authBool})
+    .then((res) => {
+          console.log("res >>",res);
+      })
+      .catch((err) => {
+        console.log("err >> ", err);
+      });
+  }
+
+    const SignIn = () => {
+      axios.post("https://localhost:8000/api/user/",
+          {"id":RegisterId, "password": RegisterPassword, "password_check": confirmPassword, "name": name, "email": email, "is_auth": authBool})
+    .then((res) => {
+          console.log("res >>",res);
+          console.log("test_register")
       })
       .catch((err) => {
         console.log("err >> ", err);
@@ -178,7 +232,7 @@ const Auth =()=>{
                             )}
                             
                         </div>
-                        <button className="auth-button" onSubmit={handleSubmit}>
+                        <button className="auth-button" onClick={handleSubmit}>
                             {variant == 'login'?'로그인':'회원가입'}
                         </button>
                         <p className="auth-paragraph">
