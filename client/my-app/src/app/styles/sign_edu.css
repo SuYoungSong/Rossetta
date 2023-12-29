@@ -13,13 +13,13 @@
 }
 
 .edu_btn{
-    width: 18vw;
+    width: 25vw;
     cursor: pointer;
     height: 65vh; 
     position: relative; 
     background-color: #FFF1BC;
     border-radius: 40px;
-    margin: 2vh 1vw;
+    margin: 2vh 2vw;
     display: flex;
     flex-direction: column; 
     justify-content: center; 
@@ -61,12 +61,12 @@
 
 .edu_pic{
     width: 75%; 
-    height: 45%; 
+    height: 48%; 
     position: absolute; 
     background-color: white; 
     border-radius: 40px;
     margin: 2vh;
-    transform: translateY(-50%);
+    transform: translateY(-40%);
     text-align: center;
 }
 

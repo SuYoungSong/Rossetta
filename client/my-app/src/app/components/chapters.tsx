@@ -1,36 +1,87 @@
 "use client"
+// api 받아오기 수정중
 import React from 'react';
 import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
 // import { useRouter } from 'next/router';
 import "@/app/styles/condition.css"
-
 import { usePathname, useRouter } from 'next/navigation';
+
+import { useEffect, useState } from 'react';
 
 interface ChapterProps {
   imagePath: StaticImageData;
+  selectType: string;
   selectName: string;
 }
 
-const ChapterList: React.FC<ChapterProps> = ({imagePath, selectName}) => {
+const ChapterList: React.FC<ChapterProps> = ({imagePath, selectType, selectName}) => {
   const chapters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const currentPath = usePathname();
+  const [data, setData] = useState<any>(null); // 데이터 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/paper/${selectType}/${selectName}/`);
+        const jsonData = await response.json();
+
+        setData(jsonData); // 받아온 JSON 데이터를 상태에 저장
+        setLoading(false); // 로딩 상태 변경
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false); // 에러가 발생하더라도 로딩 상태 변경
+      }
+    };
+
+    fetchData(); // 함수 실행
+  }, []); // 빈 배열을 두어 컴포넌트가 마운트될 때 한 번만 실행
+
+  // 여기서 data를 이용하여 화면을 구성하면 됩니다.
 
   return (
-    <div className="chapter">
-      <div className="spot-area">
-        <Image className='btn-image' src={imagePath} alt="btn-image" />
-        <div className="gradient-overlay"></div>
-        <span className="spot-text">{selectName}</span>
-      </div>
-      <div className="chapter-area">
-        {chapters.map((chapterNumber, index) => (
-          <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
-            <div className="chapter-btn">Chapter {chapterNumber}</div>
-          </Link>
-        ))}
-      </div>
+    <div>
+      {loading ? (
+        // 로딩 중일 때의 화면 구성
+        <p>Loading...</p>
+      ) : data ? (
+        <>
+          <div className="chapter">
+            <div className="spot-area">
+              <Image className='btn-image' src={imagePath} alt="btn-image" />
+              <div className="gradient-overlay"></div>
+              <span className="spot-text">{selectName}</span>
+            </div>
+            <div className="chapter-area">
+              {chapters.map((chapterNumber, index) => (
+                <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
+                  <div className="chapter-btn">Chapter {chapterNumber}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        // 데이터가 없을 때의 화면 구성
+        <>
+          <p className='temp'>[api 결과 임시]No data available</p>
+          <div className="chapter">
+            <div className="spot-area">
+              <Image className='btn-image' src={imagePath} alt="btn-image" />
+              <div className="gradient-overlay"></div>
+              <span className="spot-text">{selectName}</span>
+            </div>
+            <div className="chapter-area">
+              {chapters.map((chapterNumber, index) => (
+                <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
+                  <div className="chapter-btn">Chapter {chapterNumber}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

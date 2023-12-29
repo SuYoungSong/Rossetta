@@ -1,0 +1,110 @@
+.camera_plz {
+    text-align: center;
+    margin-top: 5vh;
+    font-size: 3vh;
+    font-weight: 700;
+    color: #2C858D;
+}
+
+.camera_right{
+    cursor: pointer;
+    width: 20vw;
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 40px;
+    border: 1px solid #C9C9C9;
+    justify-content: center;
+    padding: 5vh;
+    margin: 5vh auto 10vh auto;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 4px; 
+}
+
+.camera_right:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25) inset;
+    border: 1px solid rgba(255,255,255,1);
+}
+
+.camera_image {
+    width: 15vw;
+    height: auto;
+    margin: 3vh auto;
+}
+
+.camera_text{
+    text-align: center;
+    font-size: 5vh;
+    font-weight: 700;
+    margin: 0 auto 3vh auto;
+}
+
+.cameraFrame {
+    width: 35vw;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+    margin: auto 2vw;
+    overflow: hidden;
+    border-radius: 40px;
+}
+
+.answer_btn {
+    display: flex;
+    flex-direction: column;
+}
+
+.question{
+    width: 18vw;
+    height: 26vh;
+    background-color: white;
+    border: 1px solid #C9C9C9;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 3vh auto;
+}
+
+.quest-text{
+    font-size: 3.5vw;
+    font-weight: 700;
+    display: flex;
+    margin: auto;
+}
+
+.check{
+    width: 18vw;
+    height: 26vh;
+    border-radius: 20px;
+    border: 1px solid #C9C9C9;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.whole_camera {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    justify-content: center;
+    text-align: center;
+    margin: 8vh 20vw;
+    height: 50%;
+}
+
+.answer_img {
+    height: auto;
+    width: 8.5vw;
+    text-align: center;
+    margin: auto auto 0.5vh auto;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.answer_text{
+    font-size: 6vh;
+    font-weight: 700;
+    text-align: center;
+    margin: 2vh auto 0 auto;
+}
