@@ -84,7 +84,7 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request, user)  # user 데이터가 존재하면 로그인
                 token, created = Token.objects.get_or_create(user=user)  # 해당 유저 데이터를 기준으로 토큰값을 생성
-                return Response(data={"token": token.key}, status=status.HTTP_200_OK)  # 해당 유저의 토큰값을 반환
+                return Response(data={"token": token.key , "name":user.name}, status=status.HTTP_200_OK)  # 해당 유저의 토큰값을 반환
             else:
                 return Response(data={"error": "아이디나 비밀번호가 틀렸습니다."}, status=status.HTTP_400_BAD_REQUEST)  # user = None
         else:
@@ -245,7 +245,7 @@ class QuestionView(APIView):
         id = request.data.get('user', None)
         if id != request.user.id:
             return Response(data={"state": "작성자 아이디 가 로그인한 아이디와 다릅니다"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = QuestionCreateSerializer(data=request.data)
+        serializer = QuestionCreateSerializer(data=request.data , context={'request':request})
         if serializer.is_valid():
             serializer.create(validated_data=serializer.validated_data)
             return Response(data={'state': "게시글이 정상적으로 작성되었습니다."},
@@ -255,7 +255,7 @@ class QuestionView(APIView):
     @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def put(self, request, id):
         question = question_board.objects.get(id=id)  # user , title , body , state create
-        serializer = QuestionUpdateSerializer(question, data=request.data)
+        serializer = QuestionUpdateSerializer(question, data=request.data , context={"request":request})
 
         if serializer.is_valid():
             serializer.update(question, serializer.validated_data)
