@@ -68,14 +68,17 @@ const Auth =()=>{
   };
 
     const handleSendEmailClick = () => {
-    axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
-      .then((res) => {
-        console.log("res >> ", res);
-        setUniqueNum(res.data.unique_number);
-      })
-      .catch((err) => {
-        console.log("err >> ", err);
-      });
+        if(emailisValid){
+            axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
+            .then((res) => {
+                console.log("res >> ", res);
+                setUniqueNum(res.data.unique_number);
+            })
+            .catch((err) => {
+                console.log("err >> ", err);
+            });
+        }
+    
   }
 
   const headers= {
