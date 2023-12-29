@@ -38,7 +38,7 @@ export default function RootLayout({
                 <img className='cus_up' src="/custom_up.png"/>
               </div> */}
             </div>
-            <Link href="/">
+            <Link href="/auth">
               <div className='login-part'>
                 <Image src={Login} alt='login_png'></Image>
                 <div className='login'>로그인</div>
