@@ -66,6 +66,7 @@ body {
 }
 
 .login-part {
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   font-size: 1.2vw; 
@@ -77,8 +78,17 @@ body {
   margin-left: 0.5vw;
 }
 
-.cus_name{
-  margin: 0.5vw;
+.right-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  margin: auto;
+}
+
+.user_name{
+  margin: auto 2vw;
+  font-size: 1.2vw;
 }
 
 .cus_up{
