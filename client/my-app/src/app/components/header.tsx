@@ -6,16 +6,27 @@ import Image from 'next/image';
 import '@/app/styles/globals.css'
 import RoLogo from '../../../public/Rossetta_logo.png';
 import Login from "../../../public/login.png";
+import Logout from "../../../public/logout.png";
+import axios from 'axios';
+
 interface HeaderProps{
     username: string;
     status: boolean;
     token: string;
 }
 
+
 const logout = () => {
     let accessToken = localStorage.getItem('accessToken');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('username');
+    axios.post("http://localhost:8000/api/logout/", null,{ headers: {'Authorization':"Token " + accessToken}})
+      .then((res) => {
+          console.log("res >>",res);
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('username');
+      })
+      .catch((err) => {
+        console.log("err >> ", err);
+      });
     window.location.reload();
 };
 
@@ -37,14 +48,12 @@ const Header = ({username, status, token}: HeaderProps) => {
 
               {status ? (
                 <>
-                  <div>
-                    <div onClick={logout} className='login-part'>
-                      <Image src={Login} alt='login_png'></Image>
-                      <div className='login'>로그아웃</div>
-                    </div>
-                    <div>
-                      <div>{username}님</div>
-                    </div>
+                  <div className="right-nav">
+                      <div onClick={logout} className='login-part'>
+                        <Image src={Logout} alt='logout_png'></Image>
+                        <div className='login'>로그아웃</div>
+                      </div>
+                      <div className='user_name'>{username}님</div>
                   </div>
                 </>
             ): (
