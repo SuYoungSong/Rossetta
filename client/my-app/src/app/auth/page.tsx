@@ -1,17 +1,20 @@
 "use client"
 import { useCallback, useState } from "react";
+import {useDispatch, useSelector} from "react-redux";
 import Image from 'next/image';
 import Input from "../components/input";
 import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import {useAuth} from '@/app/components/AuthContext';
+import {loginUser} from "@/app/components/reducer/userSlice";
  
 const Auth =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
+    // const [loginName, setloginName] = useState(''); //로그인-이름
+    // const [loginToken, setloginToken] = useState(''); //로그인-토큰
     const [authBool, setAuthBool] = useState('');
-    const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState(''); //회원가입-ID
+    const [name, setName] = useState(''); //회원가입-이름
     const [email, setEmail] = useState("");
 
     const [variant, setVariant] = useState('login')
@@ -42,12 +45,13 @@ const Auth =()=>{
  
 
     const [loginvalues, setLoginValues] = useState({
-        email: '',
-        password: ''
+        token: '',
+        user: ''
       });
     // const router = useRouter()
 
-    const router = useRouter()
+    const router = useRouter();
+    const dispatch = useDispatch();
 
 
     const handleSubmit = () => {
@@ -101,17 +105,30 @@ const Auth =()=>{
   }
 
     const SignIn = () => {
-        const { login } = useAuth();
+        const router = useRouter();
+        const {user, login} = useAuth();
       axios.post("http://localhost:8000/api/login/",
           {"id":username, "password": password})
     .then((res) => {
-          console.log("res >>",res);
-          router.push('/');
+        console.log("res >>",res);
+        const accessToken = res.data.token;
+        dispatch(loginUser(res.data.data));
+        router.push('/');
+        window.location.replace('/');
       })
       .catch((err) => {
         console.log("err >> ", err.response.data);
       });
-  }
+  };
+
+  // const LoginPage = () => {
+  //       const router = useRouter();
+  //       const {user, login} = useAuth()
+  //
+  //     const handleLogin = async() => {
+  //
+  //     }
+  // }
  
     return(
         <div>
