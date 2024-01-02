@@ -7,6 +7,7 @@ import '@/app/styles/globals.css'
 import RoLogo from '../../../public/Rossetta_logo.png';
 import Login from "../../../public/login.png";
 import Logout from "../../../public/logout.png";
+import CustomUp from "../../../public/custom_up.png";
 import axios from 'axios';
 
 interface HeaderProps{
@@ -53,7 +54,11 @@ const Header = ({username, status, token}: HeaderProps) => {
                         <Image src={Logout} alt='logout_png'></Image>
                         <div className='login'>로그아웃</div>
                       </div>
-                      <div className='user_name'>{username}님</div>
+                      <div className='user_name'>
+                          <div>{username}님</div>
+                          <Image src={CustomUp} alt='flip-up'></Image>
+
+                      </div>
                   </div>
                 </>
             ): (
