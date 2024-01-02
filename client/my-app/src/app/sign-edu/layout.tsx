@@ -1,4 +1,4 @@
-import React, { Children, useEffect, useState } from 'react';
+import React from 'react';
 import '@/app/styles/sign_edu.css';
 
 export default function EduLayout({
