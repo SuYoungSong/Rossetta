@@ -1,7 +1,11 @@
+Input {
+    border: none;
+    height: 3vh;
+}
+
 .auth-container{
     width: 100%;
-    background-color: none;
-    margin-top: 120px;
+    margin-top: 7vh;
 }
 .inner-container{
     display: flex;
@@ -19,10 +23,11 @@
 }
  
 .auth-h2{
-    color: darkblue;
-    font-size: 2.25rem;
+    color: #2C858D;
+    font-size: 5vh;
     margin-bottom: 2rem;
-    font-weight: 600;
+    font-weight: 750;
+    text-align: center;
 }
 .auth-input{
     display: flex;
@@ -37,9 +42,16 @@
     margin-bottom: 1vh;
     width: calc(100% - 1.5rem - 6px);
 }
+
+.wb-input-div{
+    box-sizing: border-box;
+    position: relative;
+    width: 80%;
+}
+
 .input-style {
     display: block;
-    border-radius: 0.375rem;
+    border-radius: 3px;
     padding-left: 1.5rem;
     padding-top: 1.5rem;
     padding-bottom: 0.25rem;
@@ -47,7 +59,23 @@
     color: black;
     background-color: white;
     width: 100%;
+    border: 1px solid #D9D9D9;
   }
+
+.wb-input-style{
+    display: flex;
+    border-radius: 3px;
+    padding-left: 1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 0.25rem;
+    font-size: 1rem;
+    color: black;
+    background-color: white;
+    width: 90%;
+    border: 1px solid #D9D9D9;
+    left: -2.5px;
+    position: relative;
+}
  
   .label-style {
     position: absolute;
@@ -58,10 +86,23 @@
     transform-origin: left;
     left: 1.5rem;
   }
+
+  .wb-btn-text{
+      margin: auto;
+      text-align: center;
+      font-size: 2vh;
+      color: white;
+  }
  
  
   .input-style:not(:placeholder-shown) + .label-style,
   .input-style:focus + .label-style {
+    transition: 0.2s;
+    transform: scale(0.75) translateY(-0.75rem);
+  }
+
+  .wb-input-style:not(:placeholder-shown) + .label-style,
+  .wb-input-style:focus + .label-style {
     transition: 0.2s;
     transform: scale(0.75) translateY(-0.75rem);
   }
@@ -132,24 +173,76 @@
 .error-message{
     font-size: 0.9vw;
     color: red;
-    margin-top: -2vh;
+    margin: -2vh auto 0 0.5vw;
 }
 
 #info_id {
-  position: relative;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1vh;
+    justify-content: center;
 }
 
 .check_username {
-    position: absolute;
-    width: 5vw;
-    height: 5vh;
-    top: -1vh;
-    bottom: 0;
-    right: 1vw;
-    margin: auto;
+    display: flex;
+    width: calc(20% - 5px);
+    padding: 0.3rem;
     border-radius: 3px;
     background-color: #2C858D;
-    color:white;
-    border: none;
+    border: 1px solid #2F787F;
+}
 
+.check_username:hover {
+    background-color: white;
+}
+
+.check_username:hover .wb-btn-text {
+    color: #2C858D;
+}
+
+.whitebtn {
+    background-color: white;
+    color: #2C858D;
+    font-weight: 500;
+    display: flex;
+    width: calc(20% - 5px);
+    padding: 0.3rem;
+    border-radius: 3px;
+    border: 1px solid #2F787F;
+    transition: box-shadow 0.3s;
+}
+
+/*.whitebtn:hover {*/
+/*    box-shadow: inset 0 0 8px rgba(60, 92, 95, 0.5);*/
+/*}*/
+
+.whitebtn:hover .greentext{
+    text-decoration: underline #2C858D;
+    text-underline-offset: 3px;
+}
+
+
+.greentext {
+    margin: auto;
+    text-align: center;
+    font-size: 1.8vh;
+    color: #2C858D;
+}
+
+.graybtn {
+    background-color: #AFB3B4;
+    display: flex;
+    width: calc(20% - 5px);
+    padding: 0.3rem;
+    border-radius: 3px;
+    border: 1px solid #838383;
+}
+
+.graytext {
+    margin: auto;
+    text-align: center;
+    color: #838383;
+    font-weight: 500;
+    font-size: 2vh;
 }

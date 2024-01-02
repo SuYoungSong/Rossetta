@@ -7,6 +7,7 @@ interface InputProps{
     value: string;
     label: string;
     type?: string;
+    className?: string;
 }
 
 const Input: React.FC<InputProps> = ({

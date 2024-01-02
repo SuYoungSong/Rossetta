@@ -2,7 +2,8 @@
 import { useCallback, useState } from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Image from 'next/image';
-import Input from "../components/input";
+import Input from "@/app/components/input";
+import WBInput from "@/app/components/inputwithbtn"
 import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -21,7 +22,7 @@ const Auth =()=>{
     const toggleVariant = useCallback(() =>{
         setVariant((currentVariant)=> currentVariant == 'login' ? 'register' :'login');
     }, [])
- 
+
     //  이메일형식체크
     const [emailisValid, setEmailIsValid] = useState(true);
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,11 +39,19 @@ const Auth =()=>{
     const [emailnum, setEmailnum] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showEmailVerification, setShowEmailVerification] = useState(false);
+    const [getFocus, setGetFocus] = useState(false);
 
 
     const [RegisterId, setRegisterID] = useState("");
     const [RegisterPassword, setRegisterPassword] = useState("");
     const [isUsernameAvailable, setIsUsernameAvailable] = useState("");
+    const [isemailcheck, setIsemailcheck] = useState("")
+    const [emailbtntext, setemailBtntext] = useState("이메일 인증");
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [isnameSignAvailable, setnameIsSignAvailable] = useState("");
+    const [ispassSignAvailable, setpassIsSignAvailable] = useState("");
+
 
 
     const router = useRouter();
@@ -59,11 +68,12 @@ const Auth =()=>{
     };
 
     const handleSendEmailClick = () => {
-        if(emailisValid){
+        if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
             .then((res) => {
                 console.log("res >> ", res);
                 setUniqueNum(res.data.unique_number);
+                setemailBtntext("재전송");
             })
             .catch((err) => {
                 console.log("err >> ", err);
@@ -80,10 +90,17 @@ const Auth =()=>{
     axios.post("http://localhost:8000/api/emailcheck/", {"input_number": emailnum},{ headers: headers })
       .then((res) => {
           console.log("res >>",res);
+          setIsemailcheck("");
           setAuthBool(res.data.is_auth);
+          const errorMessage = res.data.state;
+          alert(errorMessage);
+          setIsEmailVerified(true);
       })
       .catch((err) => {
         console.log("err >> ", err.response.data);
+        if (err.response && err.response.data && err.response.status === 400) {
+            const errorMessage = err.response.data.state;
+            setIsemailcheck(errorMessage);}
       });
   }
 
@@ -92,9 +109,29 @@ const Auth =()=>{
           {"id":RegisterId, "password": RegisterPassword, "password_check": confirmPassword, "name": name, "email": email, "is_auth": authBool})
     .then((res) => {
           console.log("res >>",res);
+          setVariant("login")
+
       })
       .catch((err) => {
         console.log("err >> ", err.response.data);
+        if (err.response && err.response.data && err.response.status === 400) {
+            if (err.response.data.non_field_errors){
+                    const errorMessage = err.response.data.non_field_errors[0];
+                    console.log(errorMessage)
+                    if (name != ""){setnameIsSignAvailable("")}
+                    else if (errorMessage.slice(0,2) === "이름"){
+                        setnameIsSignAvailable(errorMessage);
+                    }
+                    if (errorMessage.slice(0,4) === "비밀번호"){
+                        setpassIsSignAvailable(errorMessage);
+                    }
+                    else if(errorMessage.slice(0,4) != "비밀번호"){
+                        setpassIsSignAvailable("");
+                    }
+                    if (errorMessage.slice(0,6) === "이메일 인증"){
+                        setIsemailcheck(errorMessage);
+                    }}
+        }
       });
   }
 
@@ -115,8 +152,8 @@ const Auth =()=>{
       .catch((err) => {
         console.log("err >> ", err.response.data);
         if (err.response && err.response.data && err.response.status === 400) {
-            const errorMessage = err.response.data.error;
-            setError(errorMessage);
+                    const errorMessage = err.response.data.error;
+                    setError(errorMessage);
       }});
   };
 
@@ -136,11 +173,15 @@ const Auth =()=>{
             .catch((err) => {
                 console.log("err >>", err.response.data);
                 if (err.response && err.response.data && err.response.status === 400) {
-                    const errorMessage = err.response.data.state;
+                    const errorMessage = err.response.data.non_field_errors;
                     setIsUsernameAvailable(errorMessage);
               }});
-        }
 
+        }
+    };
+
+    const handleInputFocus = () => {
+        setGetFocus(true);
     };
 
   // const LoginPage = () => {
@@ -170,16 +211,16 @@ const Auth =()=>{
                                     id='name'
                                     value={name}
                                 />
-                                    <div id='info_id'>
-                                        <Input
-                                            label="아이디"
-                                            onChange={(ev: any) => setRegisterID(ev.target.value)}
-                                            id='id'
-                                            type='id'
-                                            value={RegisterId}
-                                        />
-                                        <button className="check_username" onClick={CheckID}> 중복 확인</button>
-                                    </div>
+                                    {<div className="error-message">{isnameSignAvailable}</div>}
+                                    <WBInput
+                                        label="아이디"
+                                        onChange={(ev: any) => setRegisterID(ev.target.value)}
+                                        id='id'
+                                        type='id'
+                                        value={RegisterId}
+                                        onclick={CheckID}
+                                        btntext={"중복확인"}
+                                    />
                                     {<div className="error-message">{isUsernameAvailable}</div>}
                                     <Input
                                         label="비밀번호"
@@ -194,29 +235,36 @@ const Auth =()=>{
                                     id='passwordch'
                                     type='password'
                                     value={confirmPassword}
-                                />
-                       
- 
-                                <Input
-                                    label="이메일"
-                                    id="email"
-                                    onChange={(ev: any)=>{handleEmailChange(ev); setEmail(ev.target.value)}}
-                                    type='email'
-                                    value={email}
-                                   
-                                />
-                                    {!emailisValid && <p className="ch-p">유효한 이메일을 입력해주세요.</p>}
-                                    <button className="send_email" onClick={handleSendEmailClick}>이메일 인증</button>
-                                   
- 
-                                <Input
-                                    label="이메일 인증번호"
-                                    id="emailnum"
-                                    onChange={(ev: any)=>{setEmailnum(ev.target.value)}}
-                                    type='num'
-                                    value={emailnum}
-                                />
-                                <button className="check_email" onClick={handleCheckEmailClick}>인증번호 확인</button>
+                                />{<div className="error-message">{ispassSignAvailable}</div>}
+
+                                    <WBInput
+                                        label="이메일"
+                                        onChange={(ev: any)=>{handleEmailChange(ev); setEmail(ev.target.value)}}
+                                        id='email'
+                                        type='email'
+                                        value={email}
+                                        speclassName={isEmailVerified ? "graybtn" : null}
+                                        spetextclassName={isEmailVerified? "graytext": null}
+                                        onclick={isEmailVerified? null : () => {handleSendEmailClick(); handleInputFocus(); emailisValid&&email!=""?setShowEmailVerification(true):setShowEmailVerification(false);}}
+                                        btntext={isEmailVerified ? "인증 완료" : emailbtntext}
+                                    />
+
+                                    {(!emailisValid || email=="") && (getFocus) && <p className="error-message">유효한 이메일을 입력해주세요.</p>}
+
+                                    {emailisValid && showEmailVerification && (
+                                        <WBInput
+                                            label="이메일 인증번호"
+                                            onChange={(ev: any) => { setEmailnum(ev.target.value) }}
+                                            id='emailnum'
+                                            type='num'
+                                            value={emailnum}
+                                            onclick={isEmailVerified? null : handleCheckEmailClick}
+                                            speclassName={isEmailVerified ? "graybtn" : "whitebtn"}
+                                            spetextclassName={isEmailVerified? "graytext":"greentext"}
+                                            btntext={isEmailVerified? "인증 완료":"인증번호 확인"}
+                                        />
+                                    )}
+                                    {(emailisValid) && <div className="error-message"> {isemailcheck} </div>}
                                 </>
                             )}
                             {/* 로그인창에서만 뜨는거 */}
