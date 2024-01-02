@@ -18,6 +18,25 @@ class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 �
         fields = ['id', 'password']  # 로그인 여부를 확인할 필드(로그인 , 패스워드)
 
 
+class IDCheckDuplicateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
+    def validate(self, data):
+        id = data.get('id')
+        if is_blank_or_is_null(id):
+            raise serializers.ValidationError("아이디를 입력해주세요")
+        else:
+            if not id_form_check(id):
+                raise serializers.ValidationError("아이디 형식이 맞지 않습니다")
+            else:
+                if User.objects.filter(id=id).exists():
+                    raise serializers.ValidationError("이미 존재하는 아이디 입니다.")
+
+        return data
+
+
 class UserCreateSerializer(serializers.ModelSerializer):
     password_check = serializers.CharField(write_only=True, style={'input_type': 'password'}, required=False,
                                            allow_null=True, allow_blank=True)  # 비밀번호 확인
@@ -34,6 +53,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
         name = data.get('name')
         email = data.get('email')
         is_auth = data.get('is_auth')
+
+        if is_blank_or_is_null(name):
+            raise serializers.ValidationError("이름을 입력해주세요")
+        if is_blank_or_is_null(id):
+            raise serializers.ValidationError("아이디를 입력해주세요")
+        else:
+            if not id_form_check(id):
+                raise serializers.ValidationError("아이디 형식이 맞지 않습니다.")
         if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):
             raise serializers.ValidationError("비밀번호 , 비밀번호 확인은 공란이 될수 없습니다.")
         else:
@@ -50,7 +77,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             else:
                 if not email_match(email):
                     raise serializers.ValidationError("이메일 규칙에 맞춰서 작성해주세요")
-        if is_blank_or_is_null(email):
+        if is_auth is None or not is_auth:
             raise serializers.ValidationError("이메일 인증을 완료 해주세요")
         return data
 
