@@ -269,7 +269,7 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
                 default_storage.save(new_path, image_data)
 
                 # 이미지 모델에 새로운 경로 저장
-                question_board_images.objects.create(image_url=new_path,board_id=id)
+                question_board_images.objects.create(image_url=new_path, board_id=id)
 
         if title2 and body:  # 변경 제목 과 내용이 둘다 존재 할경우
             instance.title = title2
@@ -345,4 +345,32 @@ class PaperDataSerializer(serializers.ModelSerializer):
 class PracticeNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = practice_note
-        fields = '__all__'
+        fields = ['is_answer', 'paper', 'user']
+
+    def validate(self, data):
+        is_answer = data.get('is_answer', None)
+        paper = data.get('paper', None)
+        user = data.get('user', None)
+
+        if is_answer is None or paper is None or user is None:
+            raise serializers.ValidationError("문제 풀이 정보가 없습니다")
+
+        return data
+
+    def create(self, validated_data):
+        is_answer = validated_data.pop('is_answer')
+        paper = validated_data.pop('paper')
+        user = validated_data.pop('user')
+        practice_note.objects.create(is_answer=is_answer, paper=paper, user_id=user)
+        return validated_data
+
+    def update(self, instance, validated_data):
+        is_answer = validated_data.pop('is_answer')
+        paper = validated_data.pop('paper')
+        user = validated_data.pop('user')
+        instance.is_answer = is_answer
+        return super().update(instance, validated_data)
+
+
+### 암기모드 API serializer
+
