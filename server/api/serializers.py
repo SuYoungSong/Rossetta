@@ -1,7 +1,9 @@
 import os.path
+import os
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.core.files.storage import default_storage
 from rest_framework import serializers
 
 from .models import *
@@ -201,12 +203,24 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('images')
         post = question_board.objects.create(**validated_data)  # 게시판 질문 생성
+        base_path = "question_board_images/"
         ## 이미지 데이터 처리
         if len(images_data) > 0:
             for image_data in images_data:
-                file_extension = str(image_data).split('.')[-1]
-                file_name = f"question_board_images/{uuid.uuid4()}.{file_extension}"
-                question_board_images.objects.create(image_url=file_name, board=post)
+                # 파일의 이름과 확장자를 추출합니다.
+                file_name, file_extension = os.path.splitext(image_data.name)
+                unique_filename = str(uuid.uuid4())
+                new_file_name = unique_filename + file_extension
+
+                # 이미지 파일의 새로운 경로
+                new_path = os.path.join(base_path, new_file_name)
+
+                # ImageFieldFile 객체의 move 메서드를 사용하여 파일 이동
+                default_storage.save(new_path, image_data)
+
+                # 이미지 모델에 새로운 경로 저장
+                question_board_images.objects.create(image_url=new_path, board=post)
+
         return post
 
 
@@ -236,22 +250,27 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
         title2 = validated_data.pop('title2', None)  # 변경될 제목
         body = validated_data.pop('body', None)  # 변경될 내용
         id = instance.id
-        images_data = self.context['request'].FILES.getlist('images') # 이용자가 업로드 한 파일
+        images_data = self.context['request'].FILES.getlist('images')  # 이용자가 업로드 한 파일
         images_obj = question_board_images.objects.filter(board_id=id)  # 기존에 DB 에 저장되어있는 게시글의 이미지
         base_path = 'question_board_images/'
-        for obj in images_obj:
-            image_file = str(obj.image_url).split('/')[-1]
-            print(image_file)
-            file_name = image_file.split('.')[0]
-            print(file_name)
-            original_file = image_file.replace(f'{file_name}' , '')
-            print(original_file)
-            os.remove(base_path+original_file)
-        images_obj.delete()
-        for image_data in images_data:
-            file_extension = str(image_data).split('.')[-1]
-            file_name = f"question_board_images/{uuid.uuid4()}.{file_extension}"
-            question_board_images.objects.create(image_url=image_data, board_id=id)
+
+        if len(images_data) > 0:
+            images_obj.delete()
+            for image_data in images_data:
+                # 파일의 이름과 확장자를 추출합니다.
+                file_name, file_extension = os.path.splitext(image_data.name)
+                unique_filename = str(uuid.uuid4())
+                new_file_name = unique_filename + file_extension
+
+                # 이미지 파일의 새로운 경로
+                new_path = os.path.join(base_path, new_file_name)
+
+                # ImageFieldFile 객체의 move 메서드를 사용하여 파일 이동
+                default_storage.save(new_path, image_data)
+
+                # 이미지 모델에 새로운 경로 저장
+                question_board_images.objects.create(image_url=new_path,board_id=id)
+
         if title2 and body:  # 변경 제목 과 내용이 둘다 존재 할경우
             instance.title = title2
             instance.body = body
