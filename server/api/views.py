@@ -79,11 +79,14 @@ class UserView(APIView):
 class IDCheckDuplicationView(APIView):
     def post(self, request):
         id = request.data.get('id', None)
-        if id is not None:
-            if User.objects.filter(id=id).exists():
-                return Response(data={"state": "이미 사용중인 아이디 입니다"}, status=status.HTTP_400_BAD_REQUEST)
+        if not is_blank_or_is_null(id):
+            if not id_form_check(id):
+                return Response(data={"state":"아이디 형식에 맞지 않습니다."},status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(data={"state": "아이디를 사용할수 있습니다."}, status=status.HTTP_200_OK)
+                if User.objects.filter(id=id).exists():
+                    return Response(data={"state": "이미 사용중인 아이디 입니다"}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response(data={"state": "아이디를 사용할수 있습니다."}, status=status.HTTP_200_OK)
         else:
             return Response(data={"state": "아이디 가 빈칸 입니다. 아이디를 작성해주세요"}, status=status.HTTP_400_BAD_REQUEST)
 

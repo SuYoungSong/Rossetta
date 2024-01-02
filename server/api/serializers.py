@@ -9,16 +9,7 @@ from rest_framework import serializers
 from .models import *
 import re
 from django.utils import timezone
-
-
-def password_match(password):
-    pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$"
-    return re.match(pattern, password)
-
-
-def email_match(email):
-    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    return re.match(pattern, email)
+from .exception import *
 
 
 class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 시리얼라이저
@@ -28,40 +19,45 @@ class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 �
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    password_check = serializers.CharField(write_only=True, style={'input_type': 'password'}, required=True)  # 비밀번호 확인
-    is_auth = serializers.BooleanField(required=True)
+    password_check = serializers.CharField(write_only=True, style={'input_type': 'password'}, required=False,
+                                           allow_null=True, allow_blank=True)  # 비밀번호 확인
+    is_auth = serializers.BooleanField(required=False, allow_null=True)
 
     class Meta:
         model = User  # 회원가입시 사용할 모델
         fields = ['id', 'password', 'password_check', 'name', 'email', 'is_auth']  # 회원가입시 사용자가 입력해야할 정보
 
     def validate(self, data):
-        id = data.get('id', None)
-        password = data.get('password', None)
-        password_check = data.get('password_check', None)
-        name = data.get('name', None)
-        email = data.get('email', None)
-        is_auth = data.get('is_auth', None)
-
-        if id is None or password is None or password_check is None or name is None or email is None or is_auth is None:
-            raise serializers.ValidationError("회원가입에 필요한 정보가 들어있지 않습니다. 정보를 작성해주세요")
-        if data['password'] != data.pop('password_check'):  # 비밀번호 일치 여부
-            raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지않습니다.")
-        if User.objects.filter(id=data['id']).exists():  # 입력한 아이디가 데이터베이스에 있는지 존재 여부
-            raise serializers.ValidationError("이미 존재하는 아이디 입니다.")
-        if User.objects.filter(email=data['email']).exists():
-            raise serializers.ValidationError("이미 존재하는 이메일입니다.")
-        if not password_match(data['password']):  # 비밀번호 규제 에 맞는지 일치 여부
-            raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
-        if not email_match(data['email']):
-            raise serializers.ValidationError("이메일 규칙에 맞춰서 작성해주세요")
-        if not data['is_auth']:
-            raise serializers.ValidationError("이메일 인증을 완료해주세요")
+        id = data.get('id')
+        password = data.get('password')
+        password_check = data.get('password_check')
+        name = data.get('name')
+        email = data.get('email')
+        is_auth = data.get('is_auth')
+        if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):
+            raise serializers.ValidationError("비밀번호 , 비밀번호 확인은 공란이 될수 없습니다.")
+        else:
+            if password != password_check:
+                raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다.")
+            else:
+                if not password_match(password):
+                    raise serializers.ValidationError("비밀번호 형식에 맞게 작성해주세요")
+        if is_blank_or_is_null(email):
+            raise serializers.ValidationError("이메일을 작성해 주세요")
+        else:
+            if User.objects.filter(email=email).exists():
+                raise serializers.ValidationError("이미 존재하는 이메일입니다.")
+            else:
+                if not email_match(email):
+                    raise serializers.ValidationError("이메일 규칙에 맞춰서 작성해주세요")
+        if is_blank_or_is_null(email):
+            raise serializers.ValidationError("이메일 인증을 완료 해주세요")
         return data
 
     def create(self, validated_data):
         is_auth = validated_data.pop('is_auth')
         password = validated_data.pop('password')  # password 값 을 암호화 설정 하기 위해
+        password_check = validated_data.pop('password_check')
         if is_auth:
             user = User.objects.create_user(**validated_data)  # request 에서 넘어온 데이터들로 create_user 생성
             user.set_password(password)  # password 암호화

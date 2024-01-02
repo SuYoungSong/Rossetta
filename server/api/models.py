@@ -39,9 +39,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     # custom field
     # id , pw , username ,
     id = models.CharField(max_length=30, unique=True, null=False, blank=False, primary_key=True)
-    password = models.CharField(max_length=20, null=False, blank=False)
-    name = models.CharField(max_length=30, null=False, blank=False)
-    email = models.CharField(max_length=100, null=False, blank=False)
+    password = models.CharField(max_length=20, null=False, blank=True)
+    name = models.CharField(max_length=30, null=False, blank=True)
+    email = models.CharField(max_length=100, null=False, blank=True)
     token = models.CharField(max_length=70, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
