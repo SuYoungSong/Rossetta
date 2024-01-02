@@ -7,7 +7,7 @@ import '@/app/styles/globals.css'
 import Header from '@/app/components/header';
 import {useEffect, useState} from 'react';
 import {Provider, useSelector} from 'react-redux'
-import store from "@/app/components/reducer/store.js"
+import store from "@/app/components/reducer/store"
 
 const inter = Inter({ subsets: ['latin'] })
 // const {user, logout} = useAuth();
@@ -18,6 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [status, setStatus] = useState(false);
+  const [loginName, setLoginName] = useState('');
+  const [token, setToken] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('accessToken') == null) {
@@ -25,6 +27,8 @@ export default function RootLayout({
     }
     else {
       setStatus(true);
+      setLoginName(localStorage.getItem('username') || 'Undefined');
+      setToken(localStorage.getItem('accessToken') || 'Undefined');
     }
   }, []);
   return (
@@ -37,7 +41,7 @@ export default function RootLayout({
       <body>
         <div className='nav_back'>
           <div className='nav_content'>
-            <Header/>
+            <Header status={status} username={loginName} token={token}/>
           </div>
         </div>
         {children} {/*아래 다른 페이지 폴더에서 layout.js 찾기*/}

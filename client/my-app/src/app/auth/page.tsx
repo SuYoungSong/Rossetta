@@ -6,7 +6,6 @@ import Input from "../components/input";
 import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import {loginUser} from "@/app/components/reducer/userSlice";
  
 const Auth =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
@@ -57,7 +56,6 @@ const Auth =()=>{
     const handleSubmit = () => {
         if (variant === 'login'){
             SignIn();
-
         }
         else if (variant === 'register'){
             SignUp();
@@ -105,18 +103,21 @@ const Auth =()=>{
   }
 
     const SignIn = () => {
-        const router = useRouter();
+        // const router = useRouter();
       axios.post("http://localhost:8000/api/login/",
           {"id":username, "password": password})
     .then((res) => {
         console.log("res >>",res);
+        const usernamee = res.data.name;
         const accessToken = res.data.token;
-        dispatch(loginUser(res.data.data));
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('username', usernamee);
+        // dispatch(loginUser({ name: res.data.name, token: accessToken }));
         router.push('/');
         window.location.replace('/');
       })
       .catch((err) => {
-        console.log("err >> ", err.response.data);
+        console.log("err >> ", err);
       });
   };
 
