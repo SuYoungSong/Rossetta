@@ -106,7 +106,6 @@ const Auth =()=>{
 
     const SignIn = () => {
         const router = useRouter();
-        const {user, login} = useAuth();
       axios.post("http://localhost:8000/api/login/",
           {"id":username, "password": password})
     .then((res) => {
