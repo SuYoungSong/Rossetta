@@ -6,7 +6,7 @@ app_name = 'api'
 urlpatterns = [
     ## USER API
     path('user/', UserView.as_view()),  # create , detail , update
-    path('user/<str:id>/', UserView.as_view()),  #  delete api
+    path('user/<str:id>/', UserView.as_view()),  # delete api
 
     ## ID PASSWORD LOST API
     path('useridemailsend/', UserIDEmailSendView.as_view()),  # 아이디 찾기 이메일 인증 번호 전송 API
@@ -18,8 +18,8 @@ urlpatterns = [
 
     ## User Find
     path('userfindid/', UserFindIDView.as_view()),  # 아이디 인증 + 찾기
-    path('userpassword/',UserPasswordView.as_view()),   # 비밀번호 인증
-    path('userchangepassword/',UserChangePasswordView.as_view()),   # 비밀번호 변경
+    path('userpassword/', UserPasswordView.as_view()),  # 비밀번호 인증
+    path('userchangepassword/', UserChangePasswordView.as_view()),  # 비밀번호 변경
 
     ## Login API
     path('login/', UserLoginView.as_view()),
@@ -36,9 +36,9 @@ urlpatterns = [
 
     ## Posting API
     path('question/', QuestionView.as_view()),
-    path('question/<int:id>/', QuestionView.as_view()), # 게시글 상세 조회
+    path('question/<int:id>/', QuestionView.as_view()),  # 게시글 상세 조회
     path('questionlist/<str:id>/', QuestionListView.as_view()),  # 사용자가 작성한 게시글 리스트 조회
 
     ## Comment API
-    path('comment/',QuestionCommentCreateView.as_view()),
+    path('comment/', QuestionCommentCreateView.as_view()),
 ]

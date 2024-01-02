@@ -1,4 +1,9 @@
+import os.path
+import os
+import uuid
+
 from django.contrib.auth import get_user_model
+from django.core.files.storage import default_storage
 from rest_framework import serializers
 
 from .models import *
@@ -175,13 +180,20 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호
         return super().update(instance, validated_data)  # 사용자 데이터 업데이트
 
 
+class QuestionImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = question_board_images
+        fields = ['image_url']
+
+
 class QuestionCreateSerializer(serializers.ModelSerializer):
     title = serializers.CharField(required=True)  # 사용자가 관계자에게 질문할 게시글 제목
     body = serializers.CharField(required=True)  # 사용자가 관계자에게 질문할 내용
+    images = QuestionImageSerializer(many=True, required=False)
 
     class Meta:
         model = question_board  # 데이터를 생성할 DB 모델
-        fields = ['user', 'title', 'body']  # 여기는 무조건 수정
+        fields = ['user', 'title', 'body', 'images']  # 여기는 무조건 수정
 
     def validate(self, data):
         if not data['title'] or not data['body']:  # 제목이 비어 있거나 , 질문이 비어 있는 경우 예외처리
@@ -189,7 +201,26 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        images_data = self.context['request'].FILES.getlist('images')
         post = question_board.objects.create(**validated_data)  # 게시판 질문 생성
+        base_path = "question_board_images/"
+        ## 이미지 데이터 처리
+        if len(images_data) > 0:
+            for image_data in images_data:
+                # 파일의 이름과 확장자를 추출합니다.
+                file_name, file_extension = os.path.splitext(image_data.name)
+                unique_filename = str(uuid.uuid4())
+                new_file_name = unique_filename + file_extension
+
+                # 이미지 파일의 새로운 경로
+                new_path = os.path.join(base_path, new_file_name)
+
+                # ImageFieldFile 객체의 move 메서드를 사용하여 파일 이동
+                default_storage.save(new_path, image_data)
+
+                # 이미지 모델에 새로운 경로 저장
+                question_board_images.objects.create(image_url=new_path, board=post)
+
         return post
 
 
@@ -202,10 +233,11 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 class QuestionUpdateSerializer(serializers.ModelSerializer):
     title2 = serializers.CharField(required=False)  # 변경할 게시판 질문 제목 , 필수 x
     body = serializers.CharField(required=False)  # 변경할 게시판 질문 내용 , 필수 x
+    images = QuestionImageSerializer(many=True, required=False)
 
     class Meta:
         model = question_board  # 데이터를 변경할 DB
-        fields = ['title2', 'body']  # 변경될 데이터 필드
+        fields = ['title2', 'body', 'images']  # 변경될 데이터 필드
 
     def validate(self, data):
         if data['title2'] and not data['body']:  # 제목은 있으나 질문 내용이 없을때
@@ -217,6 +249,27 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         title2 = validated_data.pop('title2', None)  # 변경될 제목
         body = validated_data.pop('body', None)  # 변경될 내용
+        id = instance.id
+        images_data = self.context['request'].FILES.getlist('images')  # 이용자가 업로드 한 파일
+        images_obj = question_board_images.objects.filter(board_id=id)  # 기존에 DB 에 저장되어있는 게시글의 이미지
+        base_path = 'question_board_images/'
+
+        if len(images_data) > 0:
+            images_obj.delete()
+            for image_data in images_data:
+                # 파일의 이름과 확장자를 추출합니다.
+                file_name, file_extension = os.path.splitext(image_data.name)
+                unique_filename = str(uuid.uuid4())
+                new_file_name = unique_filename + file_extension
+
+                # 이미지 파일의 새로운 경로
+                new_path = os.path.join(base_path, new_file_name)
+
+                # ImageFieldFile 객체의 move 메서드를 사용하여 파일 이동
+                default_storage.save(new_path, image_data)
+
+                # 이미지 모델에 새로운 경로 저장
+                question_board_images.objects.create(image_url=new_path,board_id=id)
 
         if title2 and body:  # 변경 제목 과 내용이 둘다 존재 할경우
             instance.title = title2
@@ -240,7 +293,7 @@ class QuestionCommentCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         comment = data.get('comment', None)  # 관리자가 작성한 댓글
-        board = data.get('board', None) # 관리자가 작성할 게시글
+        board = data.get('board', None)  # 관리자가 작성할 게시글
         board_id = int(board.id)
         current_user = self.context.get('request').user  # request 를 보낸 유저 = 관리자
         is_manager = current_user.is_staff if current_user.is_authenticated else None  # 인증이 된 관리자만 staff 여부를 확인 할수 있는 정보를 넘겨준다 아니면 None

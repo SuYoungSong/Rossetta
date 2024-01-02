@@ -73,7 +73,6 @@ class question_board_images(models.Model):
     board = models.ForeignKey(question_board, on_delete=models.CASCADE)
     image_url = models.ImageField(upload_to='question_board_images/')
 
-
 # 질문 게시판 객체 - 답변
 class question_board_comments(models.Model):
     board = models.ForeignKey(question_board, on_delete=models.CASCADE)
