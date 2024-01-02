@@ -35,7 +35,10 @@ class UserView(APIView):
     # 회원가입
     # 회원가입에 유저이름 id 비밀번호 비밀번호 확인 이메일 인증
     def post(self, request):
+        id = request.data.get('id', None)
         serializer = UserCreateSerializer(data=request.data)  # post 로 받은 값을 직렬화
+        if User.objects.filter(id=id).exists():
+            return Response(data={"state": "이미 사용중인 아이디 입니다."}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():  # 유효성 검사
             serializer.create(serializer.validated_data)  # 사용자 계정 생성
             return Response(data={"state": "회원가입을 축하드립니다."}, status=status.HTTP_201_CREATED)  # 정상 응답
@@ -80,9 +83,9 @@ class IDCheckDuplicationView(APIView):
     def post(self, request):
         id = request.data.get('id', None)
         serializer = IDCheckDuplicateSerializer(data=request.data)
+        if User.objects.filter(id=id).exists():
+            return Response(data={"state": "이미 사용중인 아이디 입니다."}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
-            if User.objects.filter(id=id).exists():
-                return Response(data={"state": "이미 사용중 입니다."}, status=status.HTTP_400_BAD_REQUEST)
             return Response(data={"state": "사용가능한 아이디 입니다."}, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
