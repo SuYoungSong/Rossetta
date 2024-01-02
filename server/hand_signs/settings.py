@@ -72,9 +72,6 @@ CORS_ALLOW_HEADERS = [
     'X-CSRFToken',
 ]
 
-
-
-
 CSRF_COOKIE_SECURE = False          # http/htttps 모든 연결에서 쿠키 전송
 CSRF_COOKIE_SAMESITE = None         # 모든 브라우저 상황에서 데이터 전송
 

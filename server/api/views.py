@@ -12,7 +12,6 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import *
 from .permissions import *
 
-
 # Create your views here.
 
 
@@ -386,8 +385,16 @@ class PracticeNoteView(APIView):
     def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
         serializer = PracticeNoteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            paper = serializer.validated_data.get('paper',None)
+            user = serializer.validated_data.get('user',None)
+            if practice_note.objects.filter(paper_id=paper , user_id=user).exists():
+                note = practice_note.objects.get(paper_id=paper,user_id=user)
+                serializer.update(note , validated_data=serializer.validated_data)
+                return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
+            else:
+                serializer.create(validated_data=serializer.validated_data)
+                return Response(data={"state":"문제를 처음 풀었습니다"}, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, paper_id, user_id):
