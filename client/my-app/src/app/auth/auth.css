@@ -34,7 +34,7 @@
 .input-div{
     box-sizing: border-box;
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 1vh;
     width: calc(100% - 1.5rem - 6px);
 }
 .input-style {
@@ -127,4 +127,29 @@
 .forgot-link{
     font-weight: bold;
     cursor: pointer;
+}
+
+.error-message{
+    font-size: 0.9vw;
+    color: red;
+    margin-top: -2vh;
+}
+
+#info_id {
+  position: relative;
+}
+
+.check_username {
+    position: absolute;
+    width: 5vw;
+    height: 5vh;
+    top: -1vh;
+    bottom: 0;
+    right: 1vw;
+    margin: auto;
+    border-radius: 3px;
+    background-color: #2C858D;
+    color:white;
+    border: none;
+
 }

@@ -15,6 +15,7 @@ const Auth =()=>{
     const [username, setUsername] = useState(''); //회원가입-ID
     const [name, setName] = useState(''); //회원가입-이름
     const [email, setEmail] = useState("");
+    const [error, setError] = useState('');
 
     const [variant, setVariant] = useState('login')
     const toggleVariant = useCallback(() =>{
@@ -41,13 +42,8 @@ const Auth =()=>{
 
     const [RegisterId, setRegisterID] = useState("");
     const [RegisterPassword, setRegisterPassword] = useState("");
- 
+    const [isUsernameAvailable, setIsUsernameAvailable] = useState("");
 
-    const [loginvalues, setLoginValues] = useState({
-        token: '',
-        user: ''
-      });
-    // const router = useRouter()
 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -117,9 +113,35 @@ const Auth =()=>{
         window.location.replace('/');
       })
       .catch((err) => {
-        console.log("err >> ", err);
-      });
+        console.log("err >> ", err.response.data);
+        if (err.response && err.response.data && err.response.status === 400) {
+            const errorMessage = err.response.data.error;
+            setError(errorMessage);
+      }});
   };
+
+    const CheckID = () => {
+        if (!RegisterId) {
+            setIsUsernameAvailable("아이디를 입력해주세요.");  // Set an error if the ID is empty
+            return;
+          }
+
+        else{
+            axios.post("http://localhost:8000/api/idcheckduplicate/", {"id": RegisterId})
+            .then((res) => {
+                console.log("res>>", res);
+                const errorMessage = res.data.state;
+                setIsUsernameAvailable(errorMessage);
+            })
+            .catch((err) => {
+                console.log("err >>", err.response.data);
+                if (err.response && err.response.data && err.response.status === 400) {
+                    const errorMessage = err.response.data.state;
+                    setIsUsernameAvailable(errorMessage);
+              }});
+        }
+
+    };
 
   // const LoginPage = () => {
   //       const router = useRouter();
@@ -148,15 +170,19 @@ const Auth =()=>{
                                     id='name'
                                     value={name}
                                 />
-                                <Input
-                                    label="아이디"
-                                    onChange={(ev: any)=>setRegisterID(ev.target.value)}
-                                    id='id'
-                                    type='id'
-                                    value={RegisterId}
-                                />
-                                <Input
-                                    label="비밀번호"
+                                    <div id='info_id'>
+                                        <Input
+                                            label="아이디"
+                                            onChange={(ev: any) => setRegisterID(ev.target.value)}
+                                            id='id'
+                                            type='id'
+                                            value={RegisterId}
+                                        />
+                                        <button className="check_username" onClick={CheckID}> 중복 확인</button>
+                                    </div>
+                                    {<div className="error-message">{isUsernameAvailable}</div>}
+                                    <Input
+                                        label="비밀번호"
                                     onChange={(ev: any)=>{setRegisterPassword(ev.target.value)}}
                                     id='password'
                                     type='password'
@@ -196,20 +222,21 @@ const Auth =()=>{
                             {/* 로그인창에서만 뜨는거 */}
                             {variant === 'login' && (
                             <>
-                            <Input
-                                label="아이디"
-                                onChange={(ev: any)=>setUsername(ev.target.value)}
-                                id='id'
-                                type='id'
-                                value={username}
-                            />
-                            <Input
-                                label="비밀번호"
-                                onChange={(ev: any)=>{setPassword(ev.target.value)}}
+                                <Input
+                                    label="아이디"
+                                    onChange={(ev: any) => setUsername(ev.target.value)}
+                                    id='id'
+                                    type='id'
+                                    value={username}>
+                                </Input>
+                                <Input
+                                    label="비밀번호"
+                                    onChange={(ev: any)=>{setPassword(ev.target.value)}}
                                 id='password'
                                 type='password'
                                 value={password}
                                 />
+                                {error && <div className="error-message" dangerouslySetInnerHTML={{ __html: error }}></div>}
                             </>
                             )}
                             
