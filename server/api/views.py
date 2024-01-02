@@ -74,6 +74,13 @@ class UserView(APIView):
             return Response(data={"state": "사용자가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
+# 아이디 중복 확인 API
+class IDCheckDuplicationView(APIView):
+    def post(self ,request):
+        serializers = IDCheckDuplicationSerializer(data=request.data)
+        if serializers.is_valid():
+            return Response(data={"state":"사용가능한 아이디 입니다"} , status=status.HTTP_200_OK)
+        return Response(serializers.errors ,status=status.HTTP_400_BAD_REQUEST)
 class UserLoginView(APIView):
     def post(self, request):
         id = request.data.get('id')  # 사용자가 입력한 아이디

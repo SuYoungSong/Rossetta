@@ -12,6 +12,9 @@ urlpatterns = [
     path('useridemailsend/', UserIDEmailSendView.as_view()),  # 아이디 찾기 이메일 인증 번호 전송 API
     path('userpasswordemailsend/', UserPasswordEmailSendView.as_view()),  # 비밀번호 찾기 이메일 인증번호 전송 API
 
+    ## ID Check duplication
+    path('idcheckduplicate/',IDCheckDuplicationView.as_view()), # 아이디 중복확인 api url
+
     ## Sign API
     path('signupemailsend/', SignUpSendView.as_view()),  # 회원가입 이메일 인증 번호 전송 API
     path('emailcheck/', EmailCheckView.as_view()),  # 이메일 인증 번호 확인 API

@@ -20,6 +20,20 @@ def email_match(email):
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email)
 
+class IDCheckDuplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
+    def validate(self, data):
+        id = data.get('id',None)
+
+        if id is None:
+            raise serializers.ValidationError("아이디가 빈칸입니다 다시 작성해주세요")
+        if User.objects.filter(id=id).exists():
+            raise serializers.ValidationError("이미 사용중인 아이디 입니다.")
+        return data
+
 
 class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 시리얼라이저
     class Meta:
@@ -36,6 +50,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'password', 'password_check', 'name', 'email', 'is_auth']  # 회원가입시 사용자가 입력해야할 정보
 
     def validate(self, data):
+        id = data.get('id', None)
+        password = data.get('password', None)
+        password_check = data.get('password_check', None)
+        name = data.get('name', None)
+        email = data.get('email', None)
+        is_auth = data.get('is_auth', None)
+
+        if id is None or password is None or password_check is None or name is None or email is None or is_auth is None:
+            raise serializers.ValidationError("회원가입에 필요한 정보가 들어있지 않습니다. 정보를 작성해주세요")
         if data['password'] != data.pop('password_check'):  # 비밀번호 일치 여부
             raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지않습니다.")
         if User.objects.filter(id=data['id']).exists():  # 입력한 아이디가 데이터베이스에 있는지 존재 여부
@@ -371,6 +394,4 @@ class PracticeNoteSerializer(serializers.ModelSerializer):
         instance.is_answer = is_answer
         return super().update(instance, validated_data)
 
-
 ### 암기모드 API serializer
-
