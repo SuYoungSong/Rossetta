@@ -20,20 +20,6 @@ def email_match(email):
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email)
 
-class IDCheckDuplicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id']
-
-    def validate(self, data):
-        id = data.get('id',None)
-
-        if id is None:
-            raise serializers.ValidationError("아이디가 빈칸입니다 다시 작성해주세요")
-        if User.objects.filter(id=id).exists():
-            raise serializers.ValidationError("이미 사용중인 아이디 입니다.")
-        return data
-
 
 class UserLoginSerializer(serializers.ModelSerializer):  # 사용자 로그인 시리얼라이저
     class Meta:

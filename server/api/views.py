@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import *
 from .permissions import *
 
+
 # Create your views here.
 
 
@@ -76,11 +77,17 @@ class UserView(APIView):
 
 # 아이디 중복 확인 API
 class IDCheckDuplicationView(APIView):
-    def post(self ,request):
-        serializers = IDCheckDuplicationSerializer(data=request.data)
-        if serializers.is_valid():
-            return Response(data={"state":"사용가능한 아이디 입니다"} , status=status.HTTP_200_OK)
-        return Response(serializers.errors ,status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        id = request.data.get('id', None)
+        if id is not None:
+            if User.objects.filter(id=id).exists():
+                return Response(data={"state": "이미 사용중인 아이디 입니다"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(data={"state": "아이디를 사용할수 있습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response(data={"state": "아이디 가 빈칸 입니다. 아이디를 작성해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserLoginView(APIView):
     def post(self, request):
         id = request.data.get('id')  # 사용자가 입력한 아이디
@@ -90,7 +97,8 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request, user)  # user 데이터가 존재하면 로그인
                 token, created = Token.objects.get_or_create(user=user)  # 해당 유저 데이터를 기준으로 토큰값을 생성
-                return Response(data={"token": token.key , "name":user.name}, status=status.HTTP_200_OK)  # 해당 유저의 토큰값을 반환
+                return Response(data={"token": token.key, "name": user.name},
+                                status=status.HTTP_200_OK)  # 해당 유저의 토큰값을 반환
             else:
                 return Response(data={"error": "아이디나 비밀번호가 틀렸습니다."}, status=status.HTTP_400_BAD_REQUEST)  # user = None
         else:
@@ -251,7 +259,7 @@ class QuestionView(APIView):
         id = request.data.get('user', None)
         if id != request.user.id:
             return Response(data={"state": "작성자 아이디 가 로그인한 아이디와 다릅니다"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = QuestionCreateSerializer(data=request.data , context={'request':request})
+        serializer = QuestionCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.create(validated_data=serializer.validated_data)
             return Response(data={'state': "게시글이 정상적으로 작성되었습니다."},
@@ -261,7 +269,7 @@ class QuestionView(APIView):
     @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def put(self, request, id):
         question = question_board.objects.get(id=id)  # user , title , body , state create
-        serializer = QuestionUpdateSerializer(question, data=request.data , context={"request":request})
+        serializer = QuestionUpdateSerializer(question, data=request.data, context={"request": request})
 
         if serializer.is_valid():
             serializer.update(question, serializer.validated_data)
@@ -276,10 +284,10 @@ class QuestionView(APIView):
 
 
 class QuestionListView(APIView):
-    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsTokenOwner,IsUserOwner])
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def get(self, request, id):
         if id != request.user.id:
-            return Response(data={"state":"로그인된 아이디와 요청하신 아이디 정보가 다릅니다 접근할수 없습니다"} , status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"state": "로그인된 아이디와 요청하신 아이디 정보가 다릅니다 접근할수 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         queryset = question_board.objects.filter(user=id)
         serializer = QuestionListSerializer(queryset, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -392,15 +400,15 @@ class PracticeNoteView(APIView):
     def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
         serializer = PracticeNoteSerializer(data=request.data)
         if serializer.is_valid():
-            paper = serializer.validated_data.get('paper',None)
-            user = serializer.validated_data.get('user',None)
-            if practice_note.objects.filter(paper_id=paper , user_id=user).exists():
-                note = practice_note.objects.get(paper_id=paper,user_id=user)
-                serializer.update(note , validated_data=serializer.validated_data)
+            paper = serializer.validated_data.get('paper', None)
+            user = serializer.validated_data.get('user', None)
+            if practice_note.objects.filter(paper_id=paper, user_id=user).exists():
+                note = practice_note.objects.get(paper_id=paper, user_id=user)
+                serializer.update(note, validated_data=serializer.validated_data)
                 return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
             else:
                 serializer.create(validated_data=serializer.validated_data)
-                return Response(data={"state":"문제를 처음 풀었습니다"}, status=status.HTTP_201_CREATED)
+                return Response(data={"state": "문제를 처음 풀었습니다"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
