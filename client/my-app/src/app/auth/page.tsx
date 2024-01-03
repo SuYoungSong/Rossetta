@@ -132,6 +132,10 @@ const Auth =()=>{
                     if (errorMessage.slice(0,6) === "이메일 인증"){
                         setIsemailcheck(errorMessage);
                     }}
+
+            if (err.response.data.id){
+                    const errorMessage = err.response.data.id;
+                    setIsUsernameAvailable(errorMessage);}
         }
       });
   }
