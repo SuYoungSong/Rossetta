@@ -7,8 +7,9 @@ import '@/app/styles/globals.css'
 import RoLogo from '../../../public/Rossetta_logo.png';
 import Login from "../../../public/login.png";
 import Logout from "../../../public/logout.png";
-import CustomUp from "../../../public/custom_up.png";
 import axios from 'axios';
+import { Dropdown } from 'flowbite-react';
+import { HiCog, HiLogout} from 'react-icons/hi';
 
 interface HeaderProps{
     username: string;
@@ -50,18 +51,20 @@ const Header = ({username, status, token}: HeaderProps) => {
               {status ? (
                 <>
                   <div className="right-nav">
-                      <div onClick={logout} className='login-part'>
-                        <Image src={Logout} alt='logout_png'></Image>
-                        <div className='login'>로그아웃</div>
-                      </div>
+                      {/*<div onClick={logout} className='login-part'>*/}
+                      {/*  <Image src={Logout} alt='logout_png'></Image>*/}
+                      {/*  <div className='login'>로그아웃</div>*/}
+                      {/*</div>*/}
                       <div className='user_name'>
-                          <div>{username}님</div>
-                          <Image src={CustomUp} alt='flip-up'></Image>
-
+                          <Dropdown label={`${username}님`} inline className="dropdown-container">
+                              <Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item>
+                              <Dropdown.Divider className="divider-drop"/>
+                              <Dropdown.Item icon={HiLogout} onClick={logout}>로그아웃</Dropdown.Item>
+                            </Dropdown>
                       </div>
                   </div>
                 </>
-            ): (
+              ): (
                 <>
                   <Link href="/auth">
                     <div className='login-part'>
