@@ -6,10 +6,10 @@ import Image from 'next/image';
 import '@/app/styles/globals.css'
 import RoLogo from '../../../public/Rossetta_logo.png';
 import Login from "../../../public/login.png";
-import Logout from "../../../public/logout.png";
 import axios from 'axios';
 import { Dropdown } from 'flowbite-react';
 import { HiCog, HiLogout} from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
 
 interface HeaderProps{
     username: string;
@@ -17,27 +17,26 @@ interface HeaderProps{
     token: string;
 }
 
+const Header = ({username, status, token}: HeaderProps) => {
+    const router = useRouter();
 
-const logout = () => {
+    const logout = () => {
     let accessToken = localStorage.getItem('accessToken');
     axios.post("http://localhost:8000/api/logout/", null,{ headers: {'Authorization':"Token " + accessToken}})
       .then((res) => {
           console.log("res >>",res);
           localStorage.removeItem('accessToken');
           localStorage.removeItem('username');
+          router.push('/');
+          window.location.replace('/');
       })
       .catch((err) => {
         console.log("err >> ", err);
       });
-    window.location.reload();
 };
 
-const Header = ({username, status, token}: HeaderProps) => {
-    // const dispatch = useDispatch();
-    // const user = useSelector((state) => state.data)||{};
-    // const Logout = () => {
-    //     dispatch(clearUser());
-    // }
+
+
     return (
         <>
             <div className="nav_basic">
@@ -57,7 +56,7 @@ const Header = ({username, status, token}: HeaderProps) => {
                       {/*</div>*/}
                       <div className='user_name'>
                           <Dropdown label={`${username}님`} inline className="dropdown-container">
-                              <Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item>
+                              <Link href='/mypage'><Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item></Link>
                               <Dropdown.Divider className="divider-drop"/>
                               <Dropdown.Item icon={HiLogout} onClick={logout}>로그아웃</Dropdown.Item>
                             </Dropdown>
