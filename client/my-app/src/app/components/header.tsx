@@ -45,7 +45,7 @@ const Header = ({username, status, token}: HeaderProps) => {
                 <Link className='nav_btn' href='/sign-edu'>수어교육</Link>
                 <Link className='nav_btn' href='/'>수어실습</Link>
                 <Link className='nav_btn' href='/wrongnote'>오답노트</Link>
-                <Link className='nav_btn' href='/'>1:1 문의</Link>
+                <Link className='nav_btn' href='/board'>1:1 문의</Link>
             </div>
 
               {status ? (
