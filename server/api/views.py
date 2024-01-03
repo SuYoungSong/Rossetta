@@ -238,7 +238,7 @@ class UserChangePasswordView(APIView):
                     return Response(data={"state": "데이터가 정상적으로 변경되었습니다"}, status=status.HTTP_200_OK)
                 else:  # 예외처리 에러
                     return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            except user.DoesNotExist:  # DB 조회되는 데이터가 없을떄
+            except User.DoesNotExist:  # DB 조회되는 데이터가 없을떄
                 return Response(data={"state": "요청하신 데이터의 유저가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         else:  # id 가 존재하지 않다면
             return Response(data={"state": "id 정보를 입력해주세요"}, status=status.HTTP_404_NOT_FOUND)
@@ -250,11 +250,13 @@ class QuestionView(APIView):
     def get(self, request, id):
         # 질문에 대한 정보를 필터링 하기위한 파라미터
         # 질문에 관한 데이터만 가져온다
-        question = question_board.objects.get(id=id)
-        # 질문에 대한 데이터 의 직렬화
-        question_serializer = QuestionDetailSerializer(question)
-
-        return Response(data=question_serializer.data, status=status.HTTP_200_OK)
+        try:
+            question = question_board.objects.get(id=id)
+            # 질문에 대한 데이터 의 직렬화
+            question_serializer = QuestionDetailSerializer(question)
+            return Response(data=question_serializer.data, status=status.HTTP_200_OK)
+        except question_board.DoesNotExist:
+            return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def post(self, request):
@@ -270,19 +272,25 @@ class QuestionView(APIView):
 
     @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def put(self, request, id):
-        question = question_board.objects.get(id=id)  # user , title , body , state create
-        serializer = QuestionUpdateSerializer(question, data=request.data, context={"request": request})
+        try:
+            question = question_board.objects.get(id=id)  # user , title , body , state create
+            serializer = QuestionUpdateSerializer(question, data=request.data, context={"request": request})
 
-        if serializer.is_valid():
-            serializer.update(question, serializer.validated_data)
-            return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
+            if serializer.is_valid():
+                serializer.update(question, serializer.validated_data)
+                return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
+        except question_board.DoesNotExist:
+            return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def delete(self, request, id):
-        user = question_board.objects.get(id=id)
-        user.delete()
-        return Response(data={"state": "게시글이 정상적으로 삭제 되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+        try:
+            user = question_board.objects.get(id=id)
+            user.delete()
+            return Response(data={"state": "게시글이 정상적으로 삭제 되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+        except question_board.DoesNotExist:
+            return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class QuestionListView(APIView):
@@ -298,6 +306,14 @@ class QuestionListView(APIView):
 class QuestionCommentCreateView(APIView):
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsTokenOwner, IsStaffOwner])
     def post(self, request):
+        board = request.data.get('board')
+        comment = request.data.get('comment')
+        if is_blank_or_is_null(board) or is_blank_or_is_null(comment):
+            return Response(data={"state": "게시글 , 댓글 정보를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+        board_id = int(board)
+        count = question_board.objects.all().count()
+        if not (0 < board_id <= count):
+            return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         serializers = QuestionCommentCreateSerializer(data=request.data, context={'request': request})
         if serializers.is_valid():
             serializers.create(serializers.validated_data)
@@ -400,12 +416,19 @@ class PracticeNoteView(APIView):
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
+        paper_id = request.data.get('paper', None)
+        user = request.data.get('user', None)
+        count = paper.objects.all().count()
+        if is_blank_or_is_null(user) or is_blank_or_is_null(paper_id):
+            return Response(data={"state": "문제지 혹은 사용자 정보가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
+        if not (0 < int(paper_id) <=count):
+            return Response(data={"state":"문제지 정보가 조회되지 않습니다."} , status=status.HTTP_404_NOT_FOUND)
+        if not User.objects.filter(id=user).exists():
+            return Response(data={"state": "유저 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PracticeNoteSerializer(data=request.data)
         if serializer.is_valid():
-            paper = serializer.validated_data.get('paper', None)
-            user = serializer.validated_data.get('user', None)
-            if practice_note.objects.filter(paper_id=paper, user_id=user).exists():
-                note = practice_note.objects.get(paper_id=paper, user_id=user)
+            if practice_note.objects.filter(paper_id=paper_id, user_id=user).exists():
+                note = practice_note.objects.get(paper_id=paper_id, user_id=user)
                 serializer.update(note, validated_data=serializer.validated_data)
                 return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
             else:
@@ -418,7 +441,7 @@ class PracticeNoteView(APIView):
         try:
             practice_note_instance = practice_note.objects.get(paper=paper_id, user=user_id)
         except practice_note.DoesNotExist:
-            return Response({"error": f"paper_id '{paper_id}', user_id '{user_id}'에 대한 데이터가 없습니다."},
+            return Response({"error": f"문제 풀이 기록이 존재하지 않습니다."},
                             status=status.HTTP_404_NOT_FOUND)
 
         practice_note_instance.is_answer = True

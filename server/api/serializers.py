@@ -56,11 +56,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
         if is_blank_or_is_null(name):
             raise serializers.ValidationError("이름을 입력해주세요")
+
         if is_blank_or_is_null(id):
             raise serializers.ValidationError("아이디를 입력해주세요")
         else:
             if not id_form_check(id):
                 raise serializers.ValidationError("아이디 형식이 맞지 않습니다.")
+
         if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):
             raise serializers.ValidationError("비밀번호 , 비밀번호 확인은 공란이 될수 없습니다.")
         else:
@@ -69,6 +71,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             else:
                 if not password_match(password):
                     raise serializers.ValidationError("비밀번호 형식에 맞게 작성해주세요")
+
         if is_blank_or_is_null(email):
             raise serializers.ValidationError("이메일을 작성해 주세요")
         else:
@@ -77,6 +80,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             else:
                 if not email_match(email):
                     raise serializers.ValidationError("이메일 규칙에 맞춰서 작성해주세요")
+
         if is_auth is None or not is_auth:
             raise serializers.ValidationError("이메일 인증을 완료 해주세요")
         return data
@@ -100,28 +104,40 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'},
-                                     required=False)  # 사용자가 변경할 비밀번호 , 필수 x
+                                     required=False,allow_blank=True)  # 사용자가 변경할 비밀번호 , 필수 x
     password_check = serializers.CharField(write_only=True, style={'input_type': 'password'},
-                                           required=False)  # 비밀번호 확인  , 필수 x
+                                           required=False,allow_blank=True)  # 비밀번호 확인  , 필수 x
 
     class Meta:
         model = User  # 사용자 데이터
         fields = ['id', 'password', 'password_check', 'name', 'email']  # 사용자가 변경할 데이터 필드
 
     def validate(self, data):
-        id = data.get('id', None)
-        password = data.get('password', None)
-        password_check = data.get('password_check', None)
-        email = data.get('email', None)
-        name = data.get('name', None)
-        if id is None or password is None or password_check is None or email is None or name is None:
-            raise serializers.ValidationError("이름 , 이메일 , 비밀번호 , 비밀번호 확인을 입력해주세요")
-        if password != password_check:
-            raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다.")
-        if not password_match(data['password']):  # 비밀번호 규제가 맞지 않은 경우
-            raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
-        if not email_match(data['email']):
-            raise serializers.ValidationError("이메일 형식에 맞게 작성해주세요")
+        id = data.get('id')
+        password = data.get('password')
+        password_check = data.get('password_check')
+        email = data.get('email')
+        name = data.get('name')
+        if is_blank_or_is_null(name):
+            raise serializers.ValidationError("이름을 입력해주세요")
+        if is_blank_or_is_null(id):
+            raise serializers.ValidationError("아이디를 입력해주세요")
+        else:
+            if not id_form_check(id):
+                raise serializers.ValidationError("아이디 형식이 맞지 않습니다.")
+        if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):
+            raise serializers.ValidationError("비밀번호 , 비밀번호 확인은 공란이 될수 없습니다.")
+        else:
+            if password != password_check:
+                raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다.")
+            else:
+                if not password_match(password):  # 비밀번호 규제가 맞지 않은 경우
+                    raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
+        if is_blank_or_is_null(email):
+            raise serializers.ValidationError("이메일을 입력해주세요")
+        else:
+            if not email_match(email):
+                raise serializers.ValidationError("이메일 형식에 맞게 작성해주세요")
         current_user = self.context.get('request').user  # request data
         current_email = current_user.email if current_user.is_authenticated else None  # 현재 인증을 받은 사용자 여부를 통해 request.user 에 이메일 정보 를 저장
         if email != current_email:  # 유저가 입력한 이메일이 현재 DB 에 저장된 이메일과 다르다면
@@ -145,15 +161,18 @@ class UserFindIDSerializer(serializers.ModelSerializer):
         fields = ['name', 'email', 'is_auth', 'id']
 
     def validate(self, data):
-        name = data.get('name', None)
-        email = data.get('email', None)
-        is_auth = data.get('is_auth', None)
-        if name is None or email is None:
-            raise serializers.ValidationError("이름 , 이메일를 입력해주세요")
+        name = data.get('name')
+        email = data.get('email')
+        is_auth = data.get('is_auth')
+        if is_blank_or_is_null(name):
+            raise serializers.ValidationError("이름을 입력해주세요")
+        if is_blank_or_is_null(email):
+            raise serializers.ValidationError("이메일을 입력해주세요")
+        else:
+            if not email_match(email):
+                raise serializers.ValidationError("이메일 형식에 맞게 입력해주세요")
         if not is_auth or is_auth is None:
             raise serializers.ValidationError("이메일 인증을 확인하세요")
-        if not email_match(email):
-            raise serializers.ValidationError("이메일 형식에 맞게 입력해주세요")
         try:
             user = get_user_model().objects.get(name=name, email=email)
         except get_user_model().DoesNotExist:
@@ -170,39 +189,42 @@ class UserPasswordSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
     def validate(self, data):
-        name = data.get('name', None)
-        email = data.get('email', None)
-        is_auth = data.get('is_auth', None)
-
-        if name is None or email is None or is_auth is None:
-            raise serializers.ValidationError("이름 ,이메일 , 이메일 인증 여부를 작성해주세요")
-        if not is_auth:
+        name = data.get('name')
+        email = data.get('email')
+        is_auth = data.get('is_auth')
+        if is_blank_or_is_null(name):
+            raise serializers.ValidationError("이름을 입력해주세요")
+        if is_blank_or_is_null(email):
+            raise serializers.ValidationError("이메일을 입력해주세요")
+        else:
+            if not email_match(email):
+                raise serializers.ValidationError("이메일 형식을 맞춰주세요")
+        if not is_auth or is_auth is None:
             raise serializers.ValidationError("이메일 인증을 확인해주세요")
-        if not email_match(email):
-            raise serializers.ValidationError("이메일 형식을 맞춰주세요")
-
         return data
 
 
 class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호 찾기로 변경할 비밀번호 조회
-    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True)  # 변경할 비밀번호
+    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True,allow_blank=True)  # 변경할 비밀번호
     password_check = serializers.CharField(write_only=True, style={"input_type": "password"},
-                                           required=True)  # 변경할 비밀번호 확인
+                                           required=True,allow_blank=True)  # 변경할 비밀번호 확인
 
     class Meta:
         model = User  # 변경할 DB model
         fields = ['id', 'password', 'password_check']  # 필요한 필드들
 
     def validate(self, data):
-        password = data.get('password', None)
-        password_check = data.get('password_check', None)
+        password = data.get('password')
+        password_check = data.get('password_check')
 
-        if password is None or password_check is None:  # 입력한 데이터가 없을떄
-            raise serializers.ValidationError("비밀번호 , 비밀번호 확인 을 입력해주세요")
-        if not password_match(password) or not password_match(password_check):  # 비밀번호 형식에 맞지 않을떄
-            raise serializers.ValidationError("비밀번호 형식에 맞춰서 입력해주세요")
-        if password != password_check:  # 비밀번호와 비밀번호 확인이 맞지 않을때
-            raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다")
+        if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):    # 비밀번호 입력
+            raise serializers.ValidationError("비밀번호 , 비밀번호 확인을 입력해주세요")
+        else:
+            if not password_match(password) or not password_match(password_check):  # 비밀번호 형식에 맞지 않을떄
+                raise serializers.ValidationError("비밀번호 형식에 맞춰서 입력해주세요")
+            else:
+                if password != password_check:  # 비밀번호와 비밀번호 확인이 맞지 않을때
+                    raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다")
         return data
 
     def update(self, instance, validated_data):  # 비밀번호 업데이트
@@ -219,8 +241,8 @@ class QuestionImageSerializer(serializers.ModelSerializer):
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(required=True)  # 사용자가 관계자에게 질문할 게시글 제목
-    body = serializers.CharField(required=True)  # 사용자가 관계자에게 질문할 내용
+    title = serializers.CharField(required=True , allow_blank=True)  # 사용자가 관계자에게 질문할 게시글 제목
+    body = serializers.CharField(required=True,allow_blank=True)  # 사용자가 관계자에게 질문할 내용
     images = QuestionImageSerializer(many=True, required=False)
 
     class Meta:
@@ -228,8 +250,10 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
         fields = ['user', 'title', 'body', 'images']  # 여기는 무조건 수정
 
     def validate(self, data):
-        if not data['title'] or not data['body']:  # 제목이 비어 있거나 , 질문이 비어 있는 경우 예외처리
-            raise serializers.ValidationError('title 또는 body 의 내용이 비어있습니다.')
+        title = data.get('title')
+        body = data.get('body')
+        if is_blank_or_is_null(title) or is_blank_or_is_null(body):  # 제목이 비어 있거나 , 질문이 비어 있는 경우 예외처리
+            raise serializers.ValidationError('게시글 제목 또는 게시글 내용이 비어있습니다.')
         return data
 
     def create(self, validated_data):
@@ -263,8 +287,8 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
 
 class QuestionUpdateSerializer(serializers.ModelSerializer):
-    title2 = serializers.CharField(required=False)  # 변경할 게시판 질문 제목 , 필수 x
-    body = serializers.CharField(required=False)  # 변경할 게시판 질문 내용 , 필수 x
+    title2 = serializers.CharField(required=False , allow_blank=True)  # 변경할 게시판 질문 제목 , 필수 x
+    body = serializers.CharField(required=False , allow_blank=True)  # 변경할 게시판 질문 내용 , 필수 x
     images = QuestionImageSerializer(many=True, required=False)
 
     class Meta:
@@ -272,10 +296,10 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
         fields = ['title2', 'body', 'images']  # 변경될 데이터 필드
 
     def validate(self, data):
-        if data['title2'] and not data['body']:  # 제목은 있으나 질문 내용이 없을때
-            raise serializers.ValidationError("본문에 내용을 입력해주세요")
-        if not data['title2'] and data['body']:  # 질문 내용은 있는데 제목이 없을떄
-            raise serializers.ValidationError("변경된 게시글 제목을 입력해주세요")
+        title2 = data.get('title2')
+        body = data.get('body')
+        if is_blank_or_is_null(title2) or is_blank_or_is_null(body):
+            raise serializers.ValidationError("게시글 제목 또는 게시글 내용이 비어있습니다.")
         return data
 
     def update(self, instance, validated_data):
@@ -324,17 +348,13 @@ class QuestionCommentCreateSerializer(serializers.ModelSerializer):
         fields = ['comment', 'board']
 
     def validate(self, data):
-        comment = data.get('comment', None)  # 관리자가 작성한 댓글
-        board = data.get('board', None)  # 관리자가 작성할 게시글
-        board_id = int(board.id)
+        comment = data.get('comment')  # 관리자가 작성한 댓글
         current_user = self.context.get('request').user  # request 를 보낸 유저 = 관리자
         is_manager = current_user.is_staff if current_user.is_authenticated else None  # 인증이 된 관리자만 staff 여부를 확인 할수 있는 정보를 넘겨준다 아니면 None
         if not is_manager:  # 관계자가 아닌경우
             raise serializers.ValidationError("게시글을 작성할수 있는 권한이 없습니다.")
-        if comment is None or board_id is None:  # 댓글 or 게시글 정보가 없는 경우
+        if is_blank_or_is_null(comment):
             raise serializers.ValidationError("댓글 , 게시글 정보가 존재하지 않습니다")
-        if not question_board.objects.filter(id=board_id).exists():  # 게시글 존재 여부
-            raise serializers.ValidationError("게시글이 존재하지 않습니다.")
         return data
 
     def create(self, validated_data):
@@ -380,13 +400,17 @@ class PracticeNoteSerializer(serializers.ModelSerializer):
         fields = ['is_answer', 'paper', 'user']
 
     def validate(self, data):
-        is_answer = data.get('is_answer', None)
-        paper = data.get('paper', None)
-        user = data.get('user', None)
-
-        if is_answer is None or paper is None or user is None:
-            raise serializers.ValidationError("문제 풀이 정보가 없습니다")
-
+        is_answer = data.get('is_answer')
+        paper = data.get('paper')
+        user = data.get('user')
+        paper_id = paper.id
+        user_id = user.id
+        if is_blank_or_is_null(user_id):
+            raise serializers.ValidationError("유저 정보를 입력해주세요.")
+        if paper_id is None:
+            raise serializers.ValidationError("문제지 정보를 입력해주세요")
+        if is_answer is None:
+            raise serializers.ValidationError("정답 정보가 존재하지 않습니다.")
         return data
 
     def create(self, validated_data):
