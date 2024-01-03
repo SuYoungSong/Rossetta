@@ -150,6 +150,7 @@ const Auth =()=>{
         const accessToken = res.data.token;
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('username', usernamee);
+        localStorage.setItem('id', username);
         // dispatch(loginUser({ name: res.data.name, token: accessToken }));
         router.push('/');
         window.location.replace('/');

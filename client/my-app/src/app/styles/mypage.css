@@ -1,0 +1,99 @@
+* {
+    box-sizing: inherit;
+}
+
+.h2-info{
+    margin: 5vh auto 3vh 5vw;
+    font-size: 1rem;
+    line-height: 1.48;
+    font-family: "Pretendard Variable", Pretendard, "Noto Sans KR", sans-serif;
+    font-weight: 700;
+    color: black;
+}
+
+.info-back{
+    background-color: white;
+    border-radius: 30px;
+    width: 50vw;
+    display: flex;
+    margin: 5vh auto;
+    border: 1px solid #F4F4F4;
+    flex-direction: column;
+    height: 65vh;
+}
+
+.info-back table{
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 40vw;
+    height: 45vh;
+}
+
+/*td{*/
+/*    width: 30vw;*/
+/*    display: flex;*/
+/*    margin: auto 2vw;*/
+/*    align-items: center;*/
+/*}*/
+
+.table-title{
+    padding: 1rem;
+    width: 18%;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    color: rgb(110, 121, 135);
+    font-size: 0.75rem;
+    font-weight: bold;
+    background-color: #FBF9F6;
+    word-break: keep-all;
+    text-align: center;
+}
+
+tr{
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+.td-option{
+    padding: 1rem 2rem;
+}
+
+.td-value{
+    display: flex;
+    font-size: 1vw;
+    flex-direction: row;
+    gap: 0.25rem;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.flex-box{
+    display: flex;
+    flex-direction: row;
+}
+
+.btn-edit{
+    margin: auto 2vw;
+    background-color: #FBF9F6;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #4B4B4B;
+    border-radius:40px;
+    font-size: 2vh;
+    width: 8vw;
+    height: 4vh;
+    display: flex;
+    justify-content: center;
+}
+
+.svgIcon{
+    user-select: none;
+    width: 1.2vw;
+    height: auto;
+    display: inline-block;
+    fill: currentcolor;
+    flex-shrink: 0;
+    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    font-size: 1.5rem;
+}
