@@ -12,7 +12,7 @@ def email_match(email):
 
 
 def id_form_check(id):
-    if not (8 <= len(id) <= 15):  # 아이디 글자수 8 ~ 15 자리 제한
+    if not (4 <= len(id) <= 15):  # 아이디 글자수 8 ~ 15 자리 제한
         return False
     if not re.match("^[a-zA-Z0-9]+$", id):  # 아이디는 영어 대소문자 , 숫자만 가능
         return False
