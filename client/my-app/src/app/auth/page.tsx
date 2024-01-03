@@ -7,6 +7,7 @@ import WBInput from "@/app/components/inputwithbtn"
 import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import Link from "next/link";
  
 const Auth =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
@@ -184,6 +185,13 @@ const Auth =()=>{
         setGetFocus(true);
     };
 
+  const handleOnKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+        handleSubmit();
+    }
+};
+
+
   // const LoginPage = () => {
   //       const router = useRouter();
   //       const {user, login} = useAuth()
@@ -199,18 +207,19 @@ const Auth =()=>{
                 <div className="inner-container">
                     <div className="auth-div">
                         <h2 className="auth-h2">
-                           {variant == 'login' ? '로그인' : '회원가입'}
+                            {variant == 'login' ? '로그인' : '회원가입'}
                         </h2>
                         <div className="auth-input">
                             {/* 회원가입 창에서만 뜸 */}
                             {variant === 'register' && (
                                 <>
-                                <Input
-                                    label="이름"
-                                    onChange={(ev: any)=>setName(ev.target.value)}
-                                    id='name'
-                                    value={name}
-                                />
+                                    <Input
+                                        label="이름"
+                                        onChange={(ev: any) => setName(ev.target.value)}
+                                        id='name'
+                                        value={name}
+                                        onKeyPress={handleOnKeyPress}
+                                    />
                                     {<div className="error-message">{isnameSignAvailable}</div>}
                                     <WBInput
                                         label="아이디"
@@ -220,48 +229,67 @@ const Auth =()=>{
                                         value={RegisterId}
                                         onclick={CheckID}
                                         btntext={"중복확인"}
+                                        spelabelclassName={"wb-label-style"}
                                     />
                                     {<div className="error-message">{isUsernameAvailable}</div>}
                                     <Input
                                         label="비밀번호"
-                                    onChange={(ev: any)=>{setRegisterPassword(ev.target.value)}}
-                                    id='password'
-                                    type='password'
-                                    value={RegisterPassword}
-                                />
-                                <Input
-                                    label="비밀번호확인"
-                                    onChange={(ev: any)=>{setConfirmPassword(ev.target.value)}}
-                                    id='passwordch'
-                                    type='password'
-                                    value={confirmPassword}
-                                />{<div className="error-message">{ispassSignAvailable}</div>}
+                                        onChange={(ev: any) => {
+                                            setRegisterPassword(ev.target.value)
+                                        }}
+                                        id='password'
+                                        type='password'
+                                        value={RegisterPassword}
+                                        onKeyPress={handleOnKeyPress}
+                                    />
+                                    <Input
+                                        label="비밀번호확인"
+                                        onChange={(ev: any) => {
+                                            setConfirmPassword(ev.target.value)
+                                        }}
+                                        id='passwordch'
+                                        type='password'
+                                        value={confirmPassword}
+                                        onKeyPress={handleOnKeyPress}
+                                    />{<div className="error-message">{ispassSignAvailable}</div>}
 
                                     <WBInput
                                         label="이메일"
-                                        onChange={(ev: any)=>{handleEmailChange(ev); setEmail(ev.target.value)}}
+                                        onChange={(ev: any) => {
+                                            handleEmailChange(ev);
+                                            setEmail(ev.target.value)
+                                        }}
                                         id='email'
                                         type='email'
                                         value={email}
                                         speclassName={isEmailVerified ? "graybtn" : null}
-                                        spetextclassName={isEmailVerified? "graytext": null}
-                                        onclick={isEmailVerified? null : () => {handleSendEmailClick(); handleInputFocus(); emailisValid&&email!=""?setShowEmailVerification(true):setShowEmailVerification(false);}}
+                                        spetextclassName={isEmailVerified ? "graytext" : null}
+                                        spelabelclassName={"wb-label-style"}
+                                        onclick={isEmailVerified ? null : () => {
+                                            handleSendEmailClick();
+                                            handleInputFocus();
+                                            emailisValid && email != "" ? setShowEmailVerification(true) : setShowEmailVerification(false);
+                                        }}
                                         btntext={isEmailVerified ? "인증 완료" : emailbtntext}
                                     />
 
-                                    {(!emailisValid || email=="") && (getFocus) && <p className="error-message">유효한 이메일을 입력해주세요.</p>}
+                                    {(!emailisValid || email == "") && (getFocus) &&
+                                        <p className="error-message">유효한 이메일을 입력해주세요.</p>}
 
                                     {emailisValid && showEmailVerification && (
                                         <WBInput
                                             label="이메일 인증번호"
-                                            onChange={(ev: any) => { setEmailnum(ev.target.value) }}
+                                            onChange={(ev: any) => {
+                                                setEmailnum(ev.target.value)
+                                            }}
                                             id='emailnum'
                                             type='num'
                                             value={emailnum}
-                                            onclick={isEmailVerified? null : handleCheckEmailClick}
+                                            onclick={isEmailVerified ? null : handleCheckEmailClick}
+                                            spelabelclassName={"wb-label-style"}
                                             speclassName={isEmailVerified ? "graybtn" : "whitebtn"}
-                                            spetextclassName={isEmailVerified? "graytext":"greentext"}
-                                            btntext={isEmailVerified? "인증 완료":"인증번호 확인"}
+                                            spetextclassName={isEmailVerified ? "graytext" : "greentext"}
+                                            btntext={isEmailVerified ? "인증 완료" : "인증번호 확인"}
                                         />
                                     )}
                                     {(emailisValid) && <div className="error-message"> {isemailcheck} </div>}
@@ -269,43 +297,50 @@ const Auth =()=>{
                             )}
                             {/* 로그인창에서만 뜨는거 */}
                             {variant === 'login' && (
-                            <>
-                                <Input
-                                    label="아이디"
-                                    onChange={(ev: any) => setUsername(ev.target.value)}
-                                    id='id'
-                                    type='id'
-                                    value={username}>
-                                </Input>
-                                <Input
-                                    label="비밀번호"
-                                    onChange={(ev: any)=>{setPassword(ev.target.value)}}
-                                id='password'
-                                type='password'
-                                value={password}
-                                />
-                                {error && <div className="error-message" dangerouslySetInnerHTML={{ __html: error }}></div>}
-                            </>
+                                <>
+                                    <Input
+                                        label="아이디"
+                                        onChange={(ev: any) => setUsername(ev.target.value)}
+                                        id='id'
+                                        type='id'
+                                        value={username} onKeyPress={undefined}>
+                                    </Input>
+                                    <Input
+                                        label="비밀번호"
+                                        onChange={(ev: any) => {
+                                            setPassword(ev.target.value)
+                                        }}
+                                        id='password'
+                                        type='password'
+                                        value={password}
+                                        onKeyPress={handleOnKeyPress}
+                                    />
+                                    {error &&
+                                        <div className="error-message" dangerouslySetInnerHTML={{__html: error}}></div>}
+                                </>
                             )}
-                            
+
                         </div>
+
                         <button className="auth-button" onClick={handleSubmit}>
-                            {variant == 'login'?'로그인':'회원가입'}
+                            {variant == 'login' ? '로그인' : '회원가입'}
                         </button>
-                        <p className="auth-paragraph">
-                            {variant == 'login' ? '처음입니다!!':'계정있어요!!'}  
-                            <span onClick={toggleVariant} className="auth-span">
-                                {variant == 'login'?'회원가입':'로그인'}
-                            </span>
-                        </p>
-                        <span className="auth-forget" >
-                            잊어버렸어요!!
-                            
-                        <a className= 'forgot-link'
-                        href="/auth/forgot">계정찾기</a>
-                        </span>  
-                        
-                        
+                        <div className="detail-btn">
+                            <div className="forgot">
+                                <div className="auth-forget">{variant == 'login' ? '처음이신가요?' : '계정이 있으신가요?'}</div>
+                                <span onClick={toggleVariant} className="forgot-link">
+                                    {variant == 'login' ? '회원가입' : '로그인'}
+                                </span>
+                            </div>
+                            <span className="middle-bar">|</span>
+
+                            <div className="forgot">
+                                <div className="auth-forget"> 잊어버리셨나요?</div>
+                                <Link className='forgot-link' href="/auth/forgot">계정찾기</Link>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
