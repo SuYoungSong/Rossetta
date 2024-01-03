@@ -70,7 +70,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다.")
             else:
                 if not password_match(password):
-                    raise serializers.ValidationError("비밀번호 형식에 맞게 작성해주세요")
+                    raise serializers.ValidationError("비밀번호 는 대문자 소문자 숫자 특수문자가 1개이상 포함된 8자리 이상으로 만들어주세요")
 
         if is_blank_or_is_null(email):
             raise serializers.ValidationError("이메일을 작성해 주세요")
@@ -132,7 +132,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다.")
             else:
                 if not password_match(password):  # 비밀번호 규제가 맞지 않은 경우
-                    raise serializers.ValidationError("비밀번호 규칙에 맞춰서 작성해주세요")
+                    raise serializers.ValidationError("비밀번호 는 대문자 소문자 숫자 특수문자가 1개이상 포함된 8자리 이상으로 만들어주세요")
         if is_blank_or_is_null(email):
             raise serializers.ValidationError("이메일을 입력해주세요")
         else:
@@ -221,7 +221,7 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호
             raise serializers.ValidationError("비밀번호 , 비밀번호 확인을 입력해주세요")
         else:
             if not password_match(password) or not password_match(password_check):  # 비밀번호 형식에 맞지 않을떄
-                raise serializers.ValidationError("비밀번호 형식에 맞춰서 입력해주세요")
+                raise serializers.ValidationError("비밀번호는 대문자 소문자 숫자 특수문자를 1자리 이상 포함한 8자리 이상으로 만들어주세요")
             else:
                 if password != password_check:  # 비밀번호와 비밀번호 확인이 맞지 않을때
                     raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다")
@@ -427,4 +427,5 @@ class PracticeNoteSerializer(serializers.ModelSerializer):
         instance.is_answer = is_answer
         return super().update(instance, validated_data)
 
-### 암기모드 API serializer
+
+
