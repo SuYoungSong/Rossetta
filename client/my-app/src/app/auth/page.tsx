@@ -173,7 +173,7 @@ const Auth =()=>{
             .catch((err) => {
                 console.log("err >>", err.response.data);
                 if (err.response && err.response.data && err.response.status === 400) {
-                    const errorMessage = err.response.data.non_field_errors;
+                    const errorMessage = err.response.data.state;
                     setIsUsernameAvailable(errorMessage);
               }});
 
