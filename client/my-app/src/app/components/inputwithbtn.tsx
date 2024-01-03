@@ -11,6 +11,7 @@ interface InputPropsWB{
     btntext: string;
     speclassName?:any;
     spetextclassName?:any;
+    spelabelclassName?:any;
 }
 
 const InputWB: React.FC<InputPropsWB> = ({
@@ -23,6 +24,7 @@ const InputWB: React.FC<InputPropsWB> = ({
     speclassName,
     btntext,
     spetextclassName,
+    spelabelclassName,
 }) => {
     return (
         <>
@@ -37,7 +39,7 @@ const InputWB: React.FC<InputPropsWB> = ({
                         placeholder=""
                     />
                     <label
-                        className="label-style"
+                        className={spelabelclassName? spelabelclassName:"label-style"}
                         htmlFor={id}>
                         {label}
                     </label>

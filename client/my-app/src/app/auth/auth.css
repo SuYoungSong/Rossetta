@@ -1,11 +1,14 @@
 Input {
     border: none;
-    height: 3vh;
+    height: 8vh;
 }
 
 .auth-container{
     width: 100%;
-    margin-top: 7vh;
+    margin-top: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .inner-container{
     display: flex;
@@ -18,7 +21,7 @@ Input {
 @media (min-width:1024px) {
     .auth-div{
         width: 40%;
-        max-width: 28rem;
+        max-width: 40%;
     }
 }
  
@@ -39,14 +42,14 @@ Input {
 .input-div{
     box-sizing: border-box;
     position: relative;
-    margin-bottom: 1vh;
     width: calc(100% - 1.5rem - 6px);
+    margin: auto auto 1vh auto;
 }
 
 .wb-input-div{
     box-sizing: border-box;
     position: relative;
-    width: 80%;
+    width: calc(100% - 1.5rem - 6px);
 }
 
 .input-style {
@@ -58,8 +61,10 @@ Input {
     font-size: 1rem;
     color: black;
     background-color: white;
-    width: 100%;
+    width: 85%;
     border: 1px solid #D9D9D9;
+    height: 8vh;
+    margin: auto;
   }
 
 .wb-input-style{
@@ -71,10 +76,11 @@ Input {
     font-size: 1rem;
     color: black;
     background-color: white;
-    width: 90%;
+    width: 95%;
     border: 1px solid #D9D9D9;
     left: -2.5px;
     position: relative;
+    height: 8vh;
 }
  
   .label-style {
@@ -84,13 +90,23 @@ Input {
     top: 1rem;
     z-index: 10;
     transform-origin: left;
-    left: 1.5rem;
+    left: 4rem;
+  }
+
+  .wb-label-style{
+      position: absolute;
+      font-size: 1rem;
+      color: #71717a;
+      top: 1rem;
+      z-index: 10;
+      transform-origin: left;
+      left: 2rem;
   }
 
   .wb-btn-text{
       margin: auto;
       text-align: center;
-      font-size: 2vh;
+      font-size: 1.8vh;
       color: white;
   }
  
@@ -101,8 +117,8 @@ Input {
     transform: scale(0.75) translateY(-0.75rem);
   }
 
-  .wb-input-style:not(:placeholder-shown) + .label-style,
-  .wb-input-style:focus + .label-style {
+  .wb-input-style:not(:placeholder-shown) + .wb-label-style,
+  .wb-input-style:focus + .wb-label-style {
     transition: 0.2s;
     transform: scale(0.75) translateY(-0.75rem);
   }
@@ -114,30 +130,29 @@ Input {
     padding-bottom: 0.75rem;
     color: white;
     border-radius: 0.375rem;
-    width: 100%;
-    margin: 0 auto;
-    margin-top: 20px;
+    width: 85%;
+    margin: 20px auto auto auto;
     box-shadow: 2px 2px 2px gray;
+    display: flex;
+    justify-content: center;
 }
 .auth-button:hover{
     transition: background-color 0.2s;
-    background-color: skyblue;
+    background-color: #4B4B4B;
     box-shadow:none;
 }
  
-.auth-paragraph{
-    color: blue;
-    margin-top: 3rem;
+.detail-btn{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-top: 5vh;
 }
- 
-.auth-span{
-    color: blue;
-    font-weight: bold;
-    margin-left: 0.5rem;
-    text-decoration: none;
-    cursor: pointer;
+
+.middle-bar{
+    margin: auto 1.5vw;
 }
- 
+
 .auth-span:hover{
     text-decoration: underline;
 }
@@ -163,30 +178,46 @@ Input {
     color: whitesmoke;
 }
 .auth-forget{
+    margin-right: 10px;
+    font-size: 1vw;
     
+}
+.forgot{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
 }
 .forgot-link{
     font-weight: bold;
     cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.5vh;
+    color: #4B4B4B;
+    font-size: 1vw;
+}
+
+.forgot-link:hover {
+    color: #2C858D;
 }
 
 .error-message{
     font-size: 0.9vw;
     color: red;
-    margin: -2vh auto 0 0.5vw;
+    margin: -2vh auto 0 3.5vw;
 }
 
 #info_id {
     position: relative;
     display: flex;
     flex-direction: row;
-    margin-bottom: 1vh;
+    margin: auto auto 1vh auto;
     justify-content: center;
+    width: calc((100% - 1.5rem - 6px)*0.85);
 }
 
 .check_username {
     display: flex;
-    width: calc(20% - 5px);
+    width: calc(30% - 5px);
     padding: 0.3rem;
     border-radius: 3px;
     background-color: #2C858D;
