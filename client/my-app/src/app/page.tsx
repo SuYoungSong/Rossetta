@@ -84,13 +84,13 @@ export default function Home() {
   }, []);
 
   // opacity 이벤트
+  if (typeof document !== 'undefined') {
   const Content1Img = document.querySelector('.con_img')
   const Content1Text = document.querySelector('.content1_textwrap')
   const Content2Img = document.querySelector('.fam')
   const Text = document.querySelector('.textwrap h2')
   const Text2 = document.querySelector('.textwrap2')
-
-  const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  const windowHeight = typeof window !== 'undefined' ? window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight : 0;
 
   const OpacityEvent = (item)=>{
     if (item) { // item이 null이 아닌 경우에만 실행
@@ -113,7 +113,8 @@ export default function Home() {
       OpacityEvent(Text2)
   }
 
-  window.addEventListener('scroll', ScrollHandler)
+  window.addEventListener('scroll', ScrollHandler)};
+
 
   // 페이지 이동버튼
   const handleScroll = (elementId) => {
@@ -183,7 +184,7 @@ export default function Home() {
           
           {/* 현장방문 사진 */}
           <div className="section">
-            <div className="Honecontainer">
+            <div className="Homecontainer">
               <div className="Homeinner-container">
                 
                 <div ref={eduRef} className={`${styles.areadiv} ${eduRefIsVisible ? styles.animateareadiv : ''}`}>
