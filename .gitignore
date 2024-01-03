@@ -5,3 +5,7 @@ server/.env
 db.sqlite3
 server/migrations
 server/api/__pycache__
+server/api/__pycache__/
+server/api/__pycache__/urls.cpython-311.pyc
+server/api/__pycache__/views.cpython-311.pyc
+server/api/__pycache__/exception.cpython-311.pyc
