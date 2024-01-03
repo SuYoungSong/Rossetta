@@ -8,6 +8,7 @@ interface InputProps{
     label: string;
     type?: string;
     className?: string;
+    onKeyPress: any;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -15,7 +16,8 @@ const Input: React.FC<InputProps> = ({
     onChange,
     value,
     label,
-    type
+    type,
+    onKeyPress,
 }) => {
     return(
         <div className="input-div">
@@ -26,6 +28,7 @@ const Input: React.FC<InputProps> = ({
                 id={id}
                 className="input-style"
                 placeholder=""
+                onKeyPress={onKeyPress}
                 />
             <label 
                 className="label-style"
