@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
 
@@ -421,8 +423,8 @@ class PracticeNoteView(APIView):
         count = paper.objects.all().count()
         if is_blank_or_is_null(user) or is_blank_or_is_null(paper_id):
             return Response(data={"state": "문제지 혹은 사용자 정보가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
-        if not (0 < int(paper_id) <=count):
-            return Response(data={"state":"문제지 정보가 조회되지 않습니다."} , status=status.HTTP_404_NOT_FOUND)
+        if not (0 < int(paper_id) <= count):
+            return Response(data={"state": "문제지 정보가 조회되지 않습니다."}, status=status.HTTP_404_NOT_FOUND)
         if not User.objects.filter(id=user).exists():
             return Response(data={"state": "유저 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PracticeNoteSerializer(data=request.data)
@@ -494,3 +496,97 @@ class PaperStatesView(APIView):
             return Response(response_data)
         except practice_note.DoesNotExist:
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class WordQuestionView(APIView):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+    def post(self, request):
+        id = request.data.get('id')  # 사용자 id
+        type = request.data.get('type')  # 단어/문장
+        situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
+        chapter = request.data.get('chapter')  # chapter
+        is_deaf = request.data.get('is_deaf')  # 농아인 여부
+        help_return = word_data_check(id, type, situation, chapter, is_deaf)        # 예외처리 함수
+        help_text,error_code = help_return[0] , help_return[1]                      # 예외 처리 결과
+        if help_text != "":
+            if error_code == "400":
+                return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+            if error_code == "404":
+                return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+
+        paper_ids = paper.objects.filter(type=type, situation=situation, chapter=chapter).values_list('id')
+        result = dict()  # response dict
+        if is_deaf:  # 수어 영상이 나오면 4개중에 하나를 선택해서 한글 을 맞추는거
+            for paper_id in paper_ids:
+                if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():  # 사용자가 처음 푼 기록 이라면
+                    answer_info = paper.objects.get(id=paper_id[0])  # 해당 문제의 정보를 저장
+                    result['answer'] = dict()  # 정답 dict 생성
+                    result['answer']['sign_answer'] = answer_info.sign_answer  # 정답에 관련된 내용
+                    result['answer']['sign_video_url'] = answer_info.sign_video_url  # 정답에 관련된 비디오
+                    wrong_infos = paper.objects.exclude(id=answer_info.id).filter(type=answer_info.type,
+                                                                                  situation=answer_info.situation)  # 오답 (유형 , 상황이 같은것) + 정답 문제 제외한
+                    wrong_infos_len = len(wrong_infos)  # 전체 오답 문제 들의 길이
+                    random.seed(answer_info.id)  # seed 값 설정
+                    random_numbers = random.sample(range(wrong_infos_len), 3)  # 3개의 문제 뽑기
+                    for i in range(len(random_numbers)):
+                        wrong_info = wrong_infos[random_numbers[i]]  # 랜덤한 오답 정보 저장
+                        result[f'wrong_{i + 1}'] = dict()
+                        result[f'wrong_{i + 1}']['sign_answer'] = wrong_info.sign_answer
+                        result[f'wrong_{i + 1}']['sign_video_url'] = wrong_info.sign_video_url
+                return Response(data={"문제": result}, status=status.HTTP_200_OK)  # 정상 Response
+        else:  # 한글 이 보이면 수어를 따라해서 정답 여부
+            for paper_id in paper_ids:
+                if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():  # 만약 사용자가 학습 기록이 없을때
+                    answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
+                    result['answer'] = dict()
+                    result['answer']['sign_answer'] = answer_info.sign_answer
+                    result['answer']['sign_video_url'] = answer_info.sign_video_url
+                    return Response(data={"문제": result}, status=status.HTTP_200_OK)
+
+
+class SentenceQuestionView(APIView):
+
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+    def post(self, request):
+        id = request.data.get('id')  # 사용자 id
+        type = request.data.get('type')  # 문장
+        chapter = request.data.get('chapter')  # chapter
+        is_deaf = request.data.get('is_deaf')  # 농아인 여부
+
+        help_return = sentence_data_check(id, type, chapter, is_deaf)                   # 예외처리 함수
+        help_text,error_code = help_return[0] , help_return[1]                      # 예외 처리 결과
+        if help_text != "":                                                         # 예외 처리가 존재 한다면
+            if error_code == "400":
+                return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+            if error_code == "404":
+                return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+
+        paper_ids = paper.objects.filter(type=type, chapter=chapter).values_list('id')
+        result = dict()
+        if is_deaf:
+            for paper_id in paper_ids:
+                if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():
+                    answer_info = paper.objects.get(id=paper_id[0])
+                    result['answer'] = dict()
+                    result['answer']['sign_answer'] = answer_info.sign_answer
+                    result['answer']['sign_video_url'] = answer_info.sign_video_url
+                    wrong_infos = paper.objects.exclude(id=answer_info.id).filter(
+                        type=answer_info.type)  # 오답 (유형) + 정답 문제 제외한
+                    wrong_infos_len = len(wrong_infos)  # 전체 오답 문제 들의 길이
+                    random.seed(answer_info.id)  # seed 값 설정
+                    random_numbers = random.sample(range(wrong_infos_len), 3)  # 3개의 문제 뽑기
+                    for i in range(len(random_numbers)):
+                        wrong_info = wrong_infos[random_numbers[i]]  # 랜덤한 오답 정보 저장
+                        result[f'wrong_{i + 1}'] = dict()
+                        result[f'wrong_{i + 1}']['sign_answer'] = wrong_info.sign_answer
+                        result[f'wrong_{i + 1}']['sign_video_url'] = wrong_info.sign_video_url
+                return Response(data={"문제": result}, status=status.HTTP_200_OK)  # 정상 Response
+
+        else:  # 한글 이 보이면 수어를 따라해서 정답 여부
+            for paper_id in paper_ids:
+                if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():  # 만약 사용자가 학습 기록이 없을때
+                    answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
+                    result['answer'] = dict()
+                    result['answer']['sign_answer'] = answer_info.sign_answer
+                    result['answer']['sign_video_url'] = answer_info.sign_video_url
+                    return Response(data={"문제": result}, status=status.HTTP_200_OK)
