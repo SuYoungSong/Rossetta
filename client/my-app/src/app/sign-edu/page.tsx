@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import '@/app/styles/sign_edu.css';
 
