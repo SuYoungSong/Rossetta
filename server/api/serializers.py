@@ -393,7 +393,12 @@ class PaperTypeChapterSentenceSerializer(serializers.ModelSerializer):
         model = paper
         fields = ['chapter']
 
-class PaperDataSerializer(serializers.ModelSerializer):
+class PaperDataWordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = '__all__'
+
+class PaperDataSentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper
         fields = '__all__'

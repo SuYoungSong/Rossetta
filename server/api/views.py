@@ -427,10 +427,25 @@ class PaperManyDataWordView(APIView):
     def get(self, request, type, situation, chapter):
         try:
             qs = paper.objects.filter(type=type, situation=situation, chapter=chapter)
-            serializer = PaperDataSerializer(qs, many=True)
+            serializer = PaperDataWordSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형, '{situation}' 상황, '{chapter}' 챕터에 대한 데이터가 없습니다."},
+                            status=status.HTTP_404_NOT_FOUND)
+        except ValueError:
+            return Response({"error": "챕터는 정수값이어야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+class PaperManyDataSentenceView(APIView):
+    '''
+    GET : 문장 + 챕터 -> 챕터에 있는 문제 리스트 조회
+    '''
+    def get(self, request, type, chapter):
+        try:
+            qs = paper.objects.filter(type=type, chapter=chapter)
+            serializer = PaperDataSentenceSerializer(qs, many=True)
+            return Response(serializer.data)
+        except paper.DoesNotExist:
+            return Response({"error": f"'{type}' 상황, '{chapter}' 챕터에 대한 데이터가 없습니다."},
                             status=status.HTTP_404_NOT_FOUND)
         except ValueError:
             return Response({"error": "챕터는 정수값이어야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
