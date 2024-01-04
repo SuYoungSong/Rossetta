@@ -1,11 +1,13 @@
+"use client"
 import React, { Children, useEffect, useState } from 'react';
 import '@/app/styles/sign_edu.css';
+import withAuth from "@/app/HOC/withAuth";
 
-export default function EduLayout({
+const WrongLayout = ({
     children,
 }: {
     children: React.ReactNode
-}){
+}) => {
     return(
         <>
             <div className="page_margin"></div>
@@ -13,3 +15,5 @@ export default function EduLayout({
         </>
     )
 }
+
+export default withAuth(WrongLayout);

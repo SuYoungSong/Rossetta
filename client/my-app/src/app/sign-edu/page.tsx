@@ -2,7 +2,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import '@/app/styles/sign_edu.css';
 
-export default function Edu(){
+export default function Edu() {
   return(
     <>
       <div className='top_title'>수어교육</div>

@@ -3,7 +3,7 @@ import React from 'react';
 import '@/app/styles/sign_edu.css';
 import withAuth from "@/app/HOC/withAuth"
 
-const MyPageLayout = ({
+const BoardLayout = ({
     children,
 }: {
     children: React.ReactNode
@@ -15,4 +15,4 @@ const MyPageLayout = ({
         </>
     )
 };
-export default withAuth(MyPageLayout);
+export default withAuth(BoardLayout);
