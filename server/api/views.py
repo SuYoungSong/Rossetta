@@ -383,7 +383,7 @@ class PaperTypeChapterSentenceView(APIView):
     def get(self , request , type):
         try:
             qs = paper.objects.filter(type=type).distinct().values('chapter')
-            serializers = PaperTypeSituationChapterSentenceSerializer(qs , many=True)
+            serializers = PaperTypeChapterSentenceSerializer(qs , many=True)
             max_chapter = max(serializers.data , key=lambda x:x['chapter'])['chapter']
             return Response(data={"chapter":max_chapter},status=status.HTTP_200_OK)
         except paper.DoesNotExist:
