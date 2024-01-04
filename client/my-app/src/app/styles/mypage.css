@@ -26,7 +26,7 @@
     margin: 0 auto;
     border-collapse: collapse;
     width: 40vw;
-    height: 45vh;
+    height: 40vh;
 }
 
 /*td{*/
@@ -80,7 +80,7 @@ tr{
     border: 1px solid rgba(0, 0, 0, 0.06);
     color: #4B4B4B;
     border-radius:40px;
-    font-size: 2vh;
+    font-size: 0.8vw;
     width: 8vw;
     height: 4vh;
     display: flex;
