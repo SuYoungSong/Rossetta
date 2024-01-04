@@ -22,7 +22,6 @@ const Header = ({username, status, token}: HeaderProps) => {
 
     const logout = () => {
     let accessToken = localStorage.getItem('accessToken');
-    console.log(accessToken);
     axios.post("http://localhost:8000/api/logout/", null,{ headers: {'Authorization':`Token ${accessToken}`}})
       .then((res) => {
           console.log("res >>",res);
