@@ -73,6 +73,7 @@ class question_board_images(models.Model):
     board = models.ForeignKey(question_board, on_delete=models.CASCADE)
     image_url = models.ImageField(upload_to='question_board_images/')
 
+
 # 질문 게시판 객체 - 답변
 class question_board_comments(models.Model):
     board = models.ForeignKey(question_board, on_delete=models.CASCADE)
@@ -103,3 +104,12 @@ class practice_note(models.Model):
     paper = models.ForeignKey(paper, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_answer = models.BooleanField()
+
+
+### 말벗 시나리오 DB
+class Scenario(models.Model):
+    situation = models.CharField(max_length=10, null=False, blank=True) # 상황
+    role = models.CharField(max_length=10, null=False, blank=True)   # 역할
+    video = models.URLField(null=True, blank=True)                   # 비디오 영상 (아바타 만 있음)
+    take = models.IntegerField(null=False, blank=True)               # 시나리오 순서
+    subtitle = models.CharField(max_length=40,null=False,blank=True) # 자막
