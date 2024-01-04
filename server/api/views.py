@@ -553,7 +553,7 @@ class SentenceQuestionView(APIView):
         chapter = request.data.get('chapter')  # chapter
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
 
-        help_return = sentence_data_check(id, type, chapter, is_deaf)                   # 예외처리 함수
+        help_return = sentence_data_check(id, type, chapter, is_deaf)               # 예외처리 함수
         help_text,error_code = help_return[0] , help_return[1]                      # 예외 처리 결과
         if help_text != "":                                                         # 예외 처리가 존재 한다면
             if error_code == "400":
