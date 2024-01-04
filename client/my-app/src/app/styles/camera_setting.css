@@ -80,6 +80,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .whole_camera {
@@ -107,4 +108,8 @@
     font-weight: 700;
     text-align: center;
     margin: 2vh auto 0 auto;
+}
+
+.real_cameara {
+    display: none;
 }
