@@ -29,7 +29,6 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
         </div>
 
         <div className='modalMain'>
-          <input type='hidden' value={"admin"} name="user"/>
           <div className='modalMainTitle'>제목</div>
           <input name='title' className='inputTitle' type="text" placeholder="제목을 입력하세요" />
           <div className='modalMainContent'>내용</div>
