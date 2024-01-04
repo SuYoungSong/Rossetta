@@ -32,8 +32,8 @@ urlpatterns = [
     path('paper/word/<str:type>/', PaperTypeSituationView.as_view()), # 단어 유형 -> situation
     path('paper/word/<str:type>/<str:situation>/', PaperTypeSituationChapterWordView.as_view()), # 단어 + 상황 -> chapter
     path('paper/sentence/<str:type>/' , PaperTypeChapterSentenceView.as_view()),            # 문장 유형 -> chapter
-    path('paper/<str:type>/<str:situation>/<int:chapter>/', PaperManyDataWordView.as_view()),   # 단어 + 상황 + 챕터 -> 해당 챕터에 있는 문제 list
-
+    path('paper/word/<str:type>/<str:situation>/<int:chapter>/', PaperManyDataWordView.as_view()),   # 단어 + 상황 + 챕터 -> 해당 챕터에 있는 문제 list
+    path('paper/sentence/<str:type>/<int:chapter>/',PaperManyDataSentenceView.as_view()), # 문장 + 챕터 -> 챕터 안에 있는 문제 list
     ## PracticeNote API
     path('practice-note/', PracticeNoteView.as_view()),
     path('practice-note/<int:paper_id>/<str:user_id>', PracticeNoteView.as_view()),
