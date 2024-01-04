@@ -46,9 +46,9 @@ body {
 }
 
 .logo{
-  width: 8vw;
+  width: 85px;
   height: auto;
-  margin: auto 3vw auto auto;
+  margin: auto 30px auto 30px;
 }
 
 .nav_btn{
@@ -58,6 +58,11 @@ body {
   word-wrap: break-word; 
   text-align: center;
   margin: 0 3vw;
+}
+
+.nav_btn:hover{
+  font-weight: bolder;
+  color: #2C858D;
 }
 
 .nav_customer{
