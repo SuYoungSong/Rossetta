@@ -61,7 +61,7 @@ Input {
     font-size: 1rem;
     color: black;
     background-color: white;
-    width: 85%;
+    width: 87%;
     border: 1px solid #D9D9D9;
     height: 8vh;
     margin: auto;
@@ -76,7 +76,7 @@ Input {
     font-size: 1rem;
     color: black;
     background-color: white;
-    width: 95%;
+    width: 100%;
     border: 1px solid #D9D9D9;
     left: -2.5px;
     position: relative;
@@ -90,7 +90,7 @@ Input {
     top: 1rem;
     z-index: 10;
     transform-origin: left;
-    left: 4rem;
+    left: 3.2rem;
   }
 
   .wb-label-style{
@@ -100,7 +100,7 @@ Input {
       top: 1rem;
       z-index: 10;
       transform-origin: left;
-      left: 2rem;
+      left: 1.3rem;
   }
 
   .wb-btn-text{
@@ -130,16 +130,16 @@ Input {
     padding-bottom: 0.75rem;
     color: white;
     border-radius: 0.375rem;
-    width: 85%;
+    width: 80%;
     margin: 20px auto auto auto;
-    box-shadow: 2px 2px 2px gray;
+    box-shadow: 1.2px 1.2px 1.2px gray;
     display: flex;
     justify-content: center;
 }
 .auth-button:hover{
     transition: background-color 0.2s;
     background-color: #4B4B4B;
-    box-shadow:none;
+    box-shadow: 1.2px 1.2px 1.2px gray;
 }
  
 .detail-btn{
@@ -225,12 +225,9 @@ Input {
 }
 
 .check_username:hover {
-    background-color: white;
+    background-color: #2c7076;
 }
 
-.check_username:hover .wb-btn-text {
-    color: #2C858D;
-}
 
 .whitebtn {
     background-color: white;
