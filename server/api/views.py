@@ -2,7 +2,7 @@ import random
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
-
+from django.utils import timezone
 from .email import email_data_set, email_data_get, key_data_get, email_send, email_return_json
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -10,12 +10,25 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-
 from .serializers import *
 from .permissions import *
 
 
-# Create your views here.
+
+# 로그인 서버 시간 갱신 API
+class RenewalTokenTimeView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+    def post(self, request):
+        token_info = request.headers['Authorization']
+        user_token = token_info.split(' ')[-1]
+        renewal_time = timezone.now()
+        try:
+            user = Token.objects.get(key=user_token)
+            user.created = renewal_time
+            user.save()
+        except Token.DoesNotExist:
+            return Response(data={"state":"로그인 한 유저의 정보가 존재하지 않습니다"} ,status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"token": user_token,"renewal_time":renewal_time}, status=status.HTTP_200_OK)
 
 
 # 모델명 + view
@@ -91,7 +104,7 @@ class IDCheckDuplicationView(APIView):
             return Response(data={"state": "사용가능한 아이디 입니다."}, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# 로그인 API
 class UserLoginView(APIView):
     def post(self, request):
         id = request.data.get('id')  # 사용자가 입력한 아이디
@@ -110,6 +123,7 @@ class UserLoginView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)  # 입력받은 아이디나 비밀번호 데이터가 없는 경우
 
 
+# 로그아웃 API
 class UserLogoutView(APIView):
     def post(self, request):
         # Django 로그아웃
@@ -125,6 +139,25 @@ class UserLogoutView(APIView):
         else:
             return Response(data={"error": "error"}, status=status.HTTP_400_BAD_REQUEST)  # 토큰값이 존재하지 않을때
 
+# 자동 로그아웃 API
+class AutoLogoutView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+
+    def post(self,request):
+        token_info = request.headers['Authorization']
+        user_token = token_info.split(' ')[-1]
+        current_time = timezone.now()
+        try:
+            user = Token.objects.get(key=user_token)
+            login_time = user.created
+            diff_time = current_time-login_time
+            diff_time = diff_time.seconds
+            if diff_time > 3600:
+                return Response(data={"state": "제한시간 1시간이 지나 자동 로그아웃 됩니다", "bool": False}, status=status.HTTP_200_OK)
+            return Response(data={"state": "제한시간을 넘기지 않았습니다", "bool": True, "Time_Remain": f'{diff_time}초'},
+                            status=status.HTTP_200_OK)
+        except Token.DoesNotExist:
+            return Response(data={"state":"로그인한 유저 정보가 없습니다."} , status=status.HTTP_404_NOT_FOUND)
 
 # 아이디 찾기 인증 코드 보내기
 class UserIDEmailSendView(APIView):
