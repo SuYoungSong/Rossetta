@@ -36,8 +36,6 @@ const Header = ({username, status, token}: HeaderProps) => {
       });
 };
 
-
-
     return (
         <>
             <div className="nav_basic">
@@ -57,7 +55,7 @@ const Header = ({username, status, token}: HeaderProps) => {
                       {/*</div>*/}
                       <div className='user_name'>
                           <Dropdown label={`${username}님`} inline className="dropdown-container">
-                              <Link href='/mypage'><Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item></Link>
+                              <Dropdown.Item icon={HiCog}><Link href='/mypage'>내 정보</Link></Dropdown.Item>
                               <Dropdown.Divider className="divider-drop"/>
                               <Dropdown.Item icon={HiLogout} onClick={logout}>로그아웃</Dropdown.Item>
                             </Dropdown>

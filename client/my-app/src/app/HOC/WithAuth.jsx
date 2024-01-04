@@ -11,7 +11,6 @@ const withAuth = (WrappedComponent) => {
       const checkAuth = async () => {
         if (typeof window !== "undefined") {
           const accessToken = localStorage.getItem("accessToken");
-
           // If there is no access token, redirect to "/" page.
           if (!accessToken) {
             alert("로그인이 필요한 서비스입니다.");
