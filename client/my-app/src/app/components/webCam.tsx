@@ -8,8 +8,8 @@ import IncorrectImage from "../../../public/incorrect_image.png"
 import idkImage from "../../../public/idknow.png"
 import { css } from "@emotion/css";
 import { Camera } from "@mediapipe/camera_utils";
-import { Hands, Results } from "@mediapipe/hands";
-import { drawCanvas } from "@/app/utils/drawCanvas";
+import {HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
+import {drawCanvas} from "@/app/utils/drawCanvas";
 
 const webCam = () => {
     const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
@@ -31,28 +31,25 @@ const webCam = () => {
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
 
-    // ==============================================
-    // styles
-
     const canvasCtx = canvasRef.current!.getContext("2d")!;
     drawCanvas(canvasCtx, results);
   }, []);
 
     useEffect(() => {
-        const hands = new Hands({
+        const holistic = new Holistic({
           locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
           },
         });
 
-        hands.setOptions({
-          maxNumHands: 2,
-          modelComplexity: 1,
-          minDetectionConfidence: 0.5,
-          minTrackingConfidence: 0.5,
+        holistic.setOptions({
+            modelComplexity: 1,
+            enableSegmentation: true,
+            smoothSegmentation: true,
+            minTrackingConfidence: 0.5,
+            minDetectionConfidence: 0.5
         });
-
-        hands.onResults(onResults);
+        holistic.onResults(onResults);
 
         if (
           typeof webcamRef.current !== "undefined" &&
@@ -60,22 +57,33 @@ const webCam = () => {
         ) {
           const camera = new Camera(webcamRef.current.video!, {
             onFrame: async () => {
-              await hands.send({ image: webcamRef.current!.video! });
+              await holistic.send({ image: webcamRef.current!.video! });
             },
-            width: 1280,
-            height: 720,
+            width: 640,
+            height: 480,
           });
           camera.start();
         }
+        const intervalId = setInterval(() => {
+          const result = resultsRef.current;
+
+          if (result && result.poseLandmarks && (result.leftHandLandmarks || result.rightHandLandmarks)) {
+            OutputData();
+          }
+        }, 100); // 1초에 10번 불러옴
+
+        return () => {
+          clearInterval(intervalId);
+        };
   }, [onResults]);
 
   /*  랜드마크들의 좌표를 콘솔에 출력 */
   const OutputData = () => {
     const results = resultsRef.current!;
-    console.log(results.multiHandLandmarks);
+    console.log({"poseLandmarks":results.poseLandmarks, "leftHandLandmarks":results.leftHandLandmarks, "rightHandLandmarks":results.rightHandLandmarks});
   };
 
-  const styles = {
+    const styles = {
       container: css`
         position: relative;
         width: 100vw;
@@ -103,8 +111,10 @@ const webCam = () => {
         border-radius: 5px;
         padding: 10px 10px;
         cursor: pointer;
+          margin-top: 50vw;
       `,
     };
+
 
   return (
     <>
@@ -122,19 +132,19 @@ const webCam = () => {
             <div className="cameraFrame {styles.container}">
                 <Webcam
                     audio={false}
-                    width={1280}
-                    height={720}
+                    width={640}
+                    height={480}
                     ref={webcamRef}
                     screenshotFormat="image/jpeg"
-                    videoConstraints={{width: 1280, height: 720, facingMode: "user"}}
+                    videoConstraints={{width: 640, height: 480, facingMode: "user"}}
                     className="real_cameara"
                     style={{objectFit: "cover"}}
                 />
                 <canvas
                     ref={canvasRef}
                     className={styles.canvas}
-                    width={1280}
-                    height={720}
+                    width={640}
+                    height={480}
                 />
                 {/* 좌표 출력 */}
                 <div className={styles.buttonContainer}>
@@ -154,7 +164,6 @@ const webCam = () => {
             </div>
         </div>
         </>
-      {/*)}*/}
     </>
   );
 };
