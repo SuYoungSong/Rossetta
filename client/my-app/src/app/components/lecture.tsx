@@ -1,24 +1,42 @@
-"use client"
-
-import React from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import Link from 'next/link';
-import Image, { StaticImageData } from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import VideoPlayer from "@/app/components/VideoPlayer";
 import "@/app/styles/situation_num.css"
 import backBtn from '../../../public/arrow_back.png'
 
 interface LectureProps {
     situation: string;
-    chapnum : number;
-    wordnum : number;
-    word_str: string[][];
+    chapnum: number;
+    wordnum: number;
 }
 
-const LecturePage: React.FC<LectureProps> = ({situation, chapnum, wordnum=0, word_str}) => {
+interface VideoData {
+    id: number;
+    type: string;
+    situation: string;
+    chapter: number;
+    sign_video_url: string;
+    sign_answer: string;
+}
+
+const LecturePage: React.FC<LectureProps> = ({situation, chapnum, wordnum=0}) => {
+    const [videoData, setVideoData] = useState<VideoData[]>([]);
     const router = useRouter();
-    const urls = ["http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"]
-  
+
+    useEffect(() => {
+        console.log(`Situation: ${situation}`);
+        console.log(`Chapter number: ${chapnum}`);
+    
+        const API_URL = `http://127.0.0.1:8000/api/paper/word/단어/${situation}/${chapnum}`;
+        fetch(API_URL)
+            .then(response => response.json())
+            .then(data => setVideoData(data));
+    }, [situation, chapnum]);
+
+    const urls = videoData.filter(video => video.situation === situation && video.chapter === chapnum)
+        .map(video => video.sign_video_url);
+
     return (
         <>
             <div className='path' style={{margin: 'auto auto auto 18vw'}}>
@@ -33,10 +51,9 @@ const LecturePage: React.FC<LectureProps> = ({situation, chapnum, wordnum=0, wor
 
             <div className='section_lecture'>
                 <VideoPlayer src_url={urls} count={wordnum}/>
-                <div className='word_part'>{word_str[chapnum-1][wordnum]}</div>
+                <div className='word_part'>{videoData[wordnum]?.sign_answer}</div>
             </div>
         </>
-        
   );
 };
 
