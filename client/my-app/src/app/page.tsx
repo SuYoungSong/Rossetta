@@ -206,9 +206,7 @@ export default function Home() {
             <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`} >
               <h2>수어교육</h2>
               <h1>
-                지문자, 지숫자와
-                <br />
-                단어, 문장을 학습할 수 있어요
+                단어와 문장을 학습할 수 있어요
               </h1>
             </div>
             <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`}>
