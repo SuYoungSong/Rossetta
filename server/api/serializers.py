@@ -376,6 +376,10 @@ class education_report_Serailizer(serializers.ModelSerializer):
 
 
 # paper Serializer
+class PaperDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = '__all__'
 
 class PaperTypeSituationSerializer(serializers.ModelSerializer):
     class Meta:
