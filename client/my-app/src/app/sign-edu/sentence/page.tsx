@@ -13,7 +13,7 @@ export default function Sentence() {
             <div className='detail_title'>수어교육 &gt; 문장</div>
             <div className='top_hr'></div>
         </div>
-        <ChapterList imagePath={Numpic} selectName='문장'/>
+        <ChapterList imagePath={Numpic} selectType="병원" selectName='문장'/>
       </>
     );
   }
