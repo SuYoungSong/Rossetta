@@ -26,6 +26,7 @@ const ChapterList: React.FC<ChapterProps> = ({imagePath, selectType, selectName}
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/paper/${selectType}/${selectName}/`);
         const jsonData = await response.json();
+        console.log(jsonData)
 
         setData(jsonData); // 받아온 JSON 데이터를 상태에 저장
         setLoading(false); // 로딩 상태 변경
@@ -65,7 +66,6 @@ const ChapterList: React.FC<ChapterProps> = ({imagePath, selectType, selectName}
       ) : (
         // 데이터가 없을 때의 화면 구성
         <>
-          <p className='temp'>[api 결과 임시]No data available</p>
           <div className="chapter">
             <div className="spot-area">
               <Image className='btn-image' src={imagePath} alt="btn-image" />
