@@ -25,10 +25,14 @@ const LecturePage: React.FC<LectureProps> = ({situation, chapnum, wordnum=0}) =>
     const router = useRouter();
 
     useEffect(() => {
-        console.log(`Situation: ${situation}`);
-        console.log(`Chapter number: ${chapnum}`);
     
-        const API_URL = `http://127.0.0.1:8000/api/paper/word/단어/${situation}/${chapnum}`;
+        var API_URL;
+        if (situation == "문장") {
+            API_URL = `http://127.0.0.1:8000/api/paper/sentence/${situation}/${chapnum}`;
+        } else {
+            API_URL = `http://127.0.0.1:8000/api/paper/word/단어/${situation}/${chapnum}`;
+        }
+        
         fetch(API_URL)
             .then(response => response.json())
             .then(data => setVideoData(data));
