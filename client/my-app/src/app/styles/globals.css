@@ -122,6 +122,9 @@ body {
   background-color: #AFB3B4;
 }
 
+.py-1 {
+  overflow: hidden;
+}
 /* .top_hr {
   width: 224; 
   height: 0; 

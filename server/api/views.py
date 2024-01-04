@@ -14,21 +14,21 @@ from .serializers import *
 from .permissions import *
 
 
-
 # 로그인 서버 시간 갱신 API
 class RenewalTokenTimeView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
-    def post(self, request):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+
+    def post(self, request):                            # ex) 서버에서 새로고침이나 페이지 이동시
         token_info = request.headers['Authorization']
         user_token = token_info.split(' ')[-1]
-        renewal_time = timezone.now()
+        renewal_time = timezone.now()                   # ex) 서버에서 제공하는 현재 시간
         try:
-            user = Token.objects.get(key=user_token)
-            user.created = renewal_time
+            user = Token.objects.get(key=user_token)    # 사용자가 작업중인 로그인 정보
+            user.created = renewal_time                 # 사용중인 토큰 시간 갱신
             user.save()
         except Token.DoesNotExist:
-            return Response(data={"state":"로그인 한 유저의 정보가 존재하지 않습니다"} ,status=status.HTTP_404_NOT_FOUND)
-        return Response(data={"token": user_token,"renewal_time":renewal_time}, status=status.HTTP_200_OK)
+            return Response(data={"state": "로그인 한 유저의 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"token": user_token, "renewal_time": renewal_time}, status=status.HTTP_200_OK)
 
 
 # 모델명 + view
@@ -104,6 +104,7 @@ class IDCheckDuplicationView(APIView):
             return Response(data={"state": "사용가능한 아이디 입니다."}, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # 로그인 API
 class UserLoginView(APIView):
     def post(self, request):
@@ -139,25 +140,27 @@ class UserLogoutView(APIView):
         else:
             return Response(data={"error": "error"}, status=status.HTTP_400_BAD_REQUEST)  # 토큰값이 존재하지 않을때
 
+
 # 자동 로그아웃 API
 class AutoLogoutView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
-    def post(self,request):
+    def post(self, request):
         token_info = request.headers['Authorization']
         user_token = token_info.split(' ')[-1]
         current_time = timezone.now()
         try:
-            user = Token.objects.get(key=user_token)
-            login_time = user.created
-            diff_time = current_time-login_time
-            diff_time = diff_time.seconds
-            if diff_time > 3600:
-                return Response(data={"state": "제한시간 1시간이 지나 자동 로그아웃 됩니다", "bool": False}, status=status.HTTP_200_OK)
+            user = Token.objects.get(key=user_token)        # 현재 로그인된 정보
+            login_time = user.created                       # 갱신된 시간 정보
+            diff_time = current_time - login_time           # 현재 시간에서 - 갱신 시간
+            diff_time = diff_time.seconds                   # 초로 변환
+            if diff_time > 3600:                            # 차이 시간 이 3600초 = 1시간 이면 False 값 Response
+                return Response(data={"state": "제한시간 1시간이 지나 자동 로그아웃 됩니다", "bool": False}, status=status.HTTP_404_NOT_FOUND)
             return Response(data={"state": "제한시간을 넘기지 않았습니다", "bool": True, "Time_Remain": f'{diff_time}초'},
                             status=status.HTTP_200_OK)
         except Token.DoesNotExist:
-            return Response(data={"state":"로그인한 유저 정보가 없습니다."} , status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"state": "로그인한 유저 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
 
 # 아이디 찾기 인증 코드 보내기
 class UserIDEmailSendView(APIView):
@@ -373,7 +376,20 @@ class PaperTypeSituationView(APIView):
             return Response({"error": f"'{type}' 유형에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
 
-class PaperTypeSituationChapterView(APIView):
+class PaperTypeChapterSentenceView(APIView):
+    '''
+    GET : 타입 (문장) 이 들어오면 챕터 정보를 반환해준다.
+    '''
+    def get(self , request , type):
+        try:
+            qs = paper.objects.filter(type=type).distinct().values('chapter')
+            serializers = PaperTypeChapterSentenceSerializer(qs , many=True)
+            max_chapter = max(serializers.data , key=lambda x:x['chapter'])['chapter']
+            return Response(data={"chapter":max_chapter},status=status.HTTP_200_OK)
+        except paper.DoesNotExist:
+            return Response({"error": f"'{type}' 유형에 대한 데이터가 없습니다."},
+                            status=status.HTTP_404_NOT_FOUND)
+class PaperTypeSituationChapterWordView(APIView):
     '''
     GET: 타입(단어, 문장)과 상황 들어오면 챕터 정보를 반환해준다.
     '''
@@ -381,9 +397,9 @@ class PaperTypeSituationChapterView(APIView):
     def get(self, request, type, situation):
         try:
             qs = paper.objects.filter(type=type, situation=situation).distinct().values('chapter')
-            serializer = PaperTypeSituationChapterSerializer(qs, many=True)
-            max_chapter = max(serializer.data , key=lambda x:x['chapter'])['chapter']
-            return Response(data={"chapter":max_chapter} , status=status.HTTP_200_OK)
+            serializer = PaperTypeSituationChapterWordSerializer(qs, many=True)
+            max_chapter = max(serializer.data, key=lambda x: x['chapter'])['chapter']
+            return Response(data={"chapter": max_chapter}, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형과 '{situation}' 상황에 대한 데이터가 없습니다."},
                             status=status.HTTP_404_NOT_FOUND)
@@ -403,7 +419,7 @@ class PaperOneDataView(APIView):
             return Response({"error": f"ID '{id}'에 대한 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
 
-class PaperManyDataView(APIView):
+class PaperManyDataWordView(APIView):
     '''
     GET: 특정 유형(문장,단어,자음모음)와 상황(병원,학교)와 챕터가 오면 그 챕터에 속한 문제들을 반환한다.
     '''
@@ -411,10 +427,25 @@ class PaperManyDataView(APIView):
     def get(self, request, type, situation, chapter):
         try:
             qs = paper.objects.filter(type=type, situation=situation, chapter=chapter)
-            serializer = PaperDataSerializer(qs, many=True)
+            serializer = PaperDataWordSerializer(qs, many=True)
             return Response(serializer.data)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형, '{situation}' 상황, '{chapter}' 챕터에 대한 데이터가 없습니다."},
+                            status=status.HTTP_404_NOT_FOUND)
+        except ValueError:
+            return Response({"error": "챕터는 정수값이어야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+class PaperManyDataSentenceView(APIView):
+    '''
+    GET : 문장 + 챕터 -> 챕터에 있는 문제 리스트 조회
+    '''
+    def get(self, request, type, chapter):
+        try:
+            qs = paper.objects.filter(type=type, chapter=chapter)
+            serializer = PaperDataSentenceSerializer(qs, many=True)
+            return Response(serializer.data)
+        except paper.DoesNotExist:
+            return Response({"error": f"'{type}' 상황, '{chapter}' 챕터에 대한 데이터가 없습니다."},
                             status=status.HTTP_404_NOT_FOUND)
         except ValueError:
             return Response({"error": "챕터는 정수값이어야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
@@ -534,14 +565,15 @@ class PaperStatesView(APIView):
 
 class WordQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
+
     def post(self, request):
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 단어/문장
         situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
         chapter = request.data.get('chapter')  # chapter
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
-        help_return = word_data_check(id, type, situation, chapter, is_deaf)        # 예외처리 함수
-        help_text,error_code = help_return[0] , help_return[1]                      # 예외 처리 결과
+        help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
         if help_text != "":
             if error_code == "400":
                 return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
@@ -579,17 +611,17 @@ class WordQuestionView(APIView):
 
 
 class SentenceQuestionView(APIView):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
-    permission_classes = [IsAuthenticated , IsTokenOwner]
     def post(self, request):
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 문장
         chapter = request.data.get('chapter')  # chapter
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
 
-        help_return = sentence_data_check(id, type, chapter, is_deaf)               # 예외처리 함수
-        help_text,error_code = help_return[0] , help_return[1]                      # 예외 처리 결과
-        if help_text != "":                                                         # 예외 처리가 존재 한다면
+        help_return = sentence_data_check(id, type, chapter, is_deaf)  # 예외처리 함수
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+        if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
                 return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
             if error_code == "404":

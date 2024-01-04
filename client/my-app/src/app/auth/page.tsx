@@ -36,7 +36,7 @@ const Auth =()=>{
         setEmail(newEmail);
         }
     };
-
+ 
     const [emailnum, setEmailnum] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -148,9 +148,8 @@ const Auth =()=>{
         console.log("res >>",res);
         const usernamee = res.data.name;
         const accessToken = res.data.token;
-        localStorage.setItem('accessToken', `${accessToken}`);
+        localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('username', usernamee);
-        localStorage.setItem('id', username);
         // dispatch(loginUser({ name: res.data.name, token: accessToken }));
         router.push('/');
         window.location.replace('/');
@@ -196,16 +195,6 @@ const Auth =()=>{
     }
 };
 
-
-  // const LoginPage = () => {
-  //       const router = useRouter();
-  //       const {user, login} = useAuth()
-  //
-  //     const handleLogin = async() => {
-  //
-  //     }
-  // }
- 
     return(
         <div>
             <div className='auth-container'>
@@ -341,11 +330,10 @@ const Auth =()=>{
 
                             <div className="forgot">
                                 <div className="auth-forget"> 잊어버리셨나요?</div>
-                                <Link className='forgot-link' href="/auth/forgot">계정찾기</Link>
+                                <Link className='forgot-link' href="/auth/find_id">아이디 찾기</Link>
+                                <Link className='forgot-link' href="/auth/find_pw">비밀번호 찾기</Link>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>

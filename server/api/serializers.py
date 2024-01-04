@@ -374,6 +374,7 @@ class education_report_Serailizer(serializers.ModelSerializer):
         fields = ['user', 'chapter']
 
 
+
 # paper Serializer
 
 class PaperTypeSituationSerializer(serializers.ModelSerializer):
@@ -382,13 +383,22 @@ class PaperTypeSituationSerializer(serializers.ModelSerializer):
         fields = ['situation']
 
 
-class PaperTypeSituationChapterSerializer(serializers.ModelSerializer):
+class PaperTypeSituationChapterWordSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper
         fields = ['chapter']
 
+class PaperTypeChapterSentenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = ['chapter']
 
-class PaperDataSerializer(serializers.ModelSerializer):
+class PaperDataWordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = paper
+        fields = '__all__'
+
+class PaperDataSentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper
         fields = '__all__'

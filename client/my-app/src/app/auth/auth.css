@@ -274,3 +274,17 @@ Input {
     font-weight: 500;
     font-size: 2vh;
 }
+
+.IdAppear{
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.IdAppearbox{
+    border: solid black;
+    background-color: whitesmoke;
+    height: 200px;
+    border-radius: 20px;
+}
