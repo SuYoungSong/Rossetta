@@ -28,10 +28,11 @@ urlpatterns = [
     path('login/', UserLoginView.as_view()),
     path('logout/', UserLogoutView.as_view()),
     ## paper API
-    path('paper/p/<int:id>/', PaperOneDataView.as_view()),
-    path('paper/<str:type>/', PaperTypeSituationView.as_view()),
-    path('paper/<str:type>/<str:situation>/', PaperTypeSituationChapterView.as_view()),
-    path('paper/<str:type>/<str:situation>/<int:chapter>/', PaperManyDataView.as_view()),
+    path('paper/p/<int:id>/', PaperOneDataView.as_view()),  # paper record 조회
+    path('paper/word/<str:type>/', PaperTypeSituationView.as_view()), # 단어 유형 -> situation
+    path('paper/word/<str:type>/<str:situation>/', PaperTypeSituationChapterWordView.as_view()), # 단어 + 상황 -> chapter
+    path('paper/sentence/<str:type>/' , PaperTypeChapterSentenceView.as_view()),            # 문장 유형 -> chapter
+    path('paper/<str:type>/<str:situation>/<int:chapter>/', PaperManyDataWordView.as_view()),   # 단어 + 상황 + 챕터 -> 해당 챕터에 있는 문제 list
 
     ## PracticeNote API
     path('practice-note/', PracticeNoteView.as_view()),
