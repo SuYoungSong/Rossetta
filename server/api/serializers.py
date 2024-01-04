@@ -99,7 +99,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User  # 조회할 모델
-        fields = ['id', 'password', 'name', 'email']  # 사용자한테 보여줘야할 User 모델의 필드
+        fields = ['id', 'name', 'email']  # 사용자한테 보여줘야할 User 모델의 필드
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
