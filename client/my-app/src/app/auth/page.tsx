@@ -36,7 +36,7 @@ const Auth =()=>{
         setEmail(newEmail);
         }
     };
- 
+
     const [emailnum, setEmailnum] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -148,7 +148,7 @@ const Auth =()=>{
         console.log("res >>",res);
         const usernamee = res.data.name;
         const accessToken = res.data.token;
-        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('accessToken', `${accessToken}`);
         localStorage.setItem('username', usernamee);
         localStorage.setItem('id', username);
         // dispatch(loginUser({ name: res.data.name, token: accessToken }));
