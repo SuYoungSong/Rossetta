@@ -382,7 +382,8 @@ class PaperTypeSituationChapterView(APIView):
         try:
             qs = paper.objects.filter(type=type, situation=situation).distinct().values('chapter')
             serializer = PaperTypeSituationChapterSerializer(qs, many=True)
-            return Response(serializer.data)
+            max_chapter = max(serializer.data , key=lambda x:x['chapter'])['chapter']
+            return Response(data={"chapter":max_chapter} , status=status.HTTP_200_OK)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형과 '{situation}' 상황에 대한 데이터가 없습니다."},
                             status=status.HTTP_404_NOT_FOUND)
