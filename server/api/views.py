@@ -660,3 +660,24 @@ class SentenceQuestionView(APIView):
                     result['answer'] = dict()
                     result['answer']['word'] = answer_info.sign_answer
                     return Response(data={"문제": result}, status=status.HTTP_200_OK)
+
+
+class ScenarioView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+    def post(self,request):
+        situation = request.data.get('situation')
+        # role = request.data.get('role')
+        try:
+            sc = Scenario.objects.filter(situation=situation)
+            scenario = dict()
+            scenario[situation] = dict()
+            for i in range(len(sc)):
+                scenario[situation][f'{i + 1}'] = dict()
+                scenario[situation][f'{i + 1}']['take'] = sc[i].take
+                scenario[situation][f'{i + 1}']['role'] = sc[i].role
+                if not is_null(sc[i].video):
+                    scenario[situation][f'{i + 1}']['video'] = sc[i].video
+                scenario[situation][f'{i + 1}']['subtitle'] = sc[i].subtitle
+            return Response(data=scenario , status=status.HTTP_200_OK)
+        except Scenario.DoesNotExist:
+            return Response(data={"state":"해당 시나리오가 존재하지 않습니다"} , status=status.HTTP_404_NOT_FOUND)

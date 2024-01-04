@@ -53,4 +53,7 @@ urlpatterns = [
     ## token time renewal api
     path('renewaltokentime/',RenewalTokenTimeView.as_view()),
     path('autologout/',AutoLogoutView.as_view()),
+
+    ## Scenario api
+    path('scenario/',ScenarioView.as_view()),
 ]
