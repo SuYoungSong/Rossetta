@@ -13,3 +13,4 @@ officialrossetta@gmail.com
 ![model_loss_word](https://github.com/SuYoungSong/Rossetta/assets/98371516/22c1b3d4-2651-4019-a690-4f5c775601ed)|![model_acc_word](https://github.com/SuYoungSong/Rossetta/assets/98371516/9fef2deb-b347-442b-b334-5bec0db10ad1)
 ---|---|
 
+![word_lstm_confusion_metrix](https://github.com/SuYoungSong/Rossetta/assets/98371516/a6277988-788d-4893-8658-144e3d8f30cf)
