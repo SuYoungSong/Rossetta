@@ -1,7 +1,6 @@
 "use client"
 import React, { Children, useEffect, useState } from 'react';
 import '@/app/styles/sign_edu.css';
-import withAuth from "@/app/HOC/withAuth";
 import {useRouter} from "next/navigation";
 
 export default function WrongLayout({

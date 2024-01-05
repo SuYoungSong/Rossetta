@@ -168,7 +168,6 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
 
                             </>
                         )}
-
                     </div>
                         </td>
                     </tr>
