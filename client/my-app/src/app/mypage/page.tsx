@@ -1,8 +1,8 @@
 "use client"
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Info from '@/app/components/info';
 import axios from 'axios';
-
+import ConfirmationModalProps from './accountDeleteModal';
 
 
 const Mypage = () => {
@@ -32,9 +32,9 @@ const Mypage = () => {
   }, []); // 빈 배열은 컴포넌트가 마운트될 때 한 번만 실행됨
 
   return (
-    <>
-      <Info id={userid} email={useremail} name={username}/>
-    </>
+      <>
+          <Info id={userid} email={useremail} name={username} />
+      </>
   );
 };
 
