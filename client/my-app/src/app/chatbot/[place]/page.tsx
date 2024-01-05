@@ -8,7 +8,6 @@ import NextBtn from '../../../../public/right_direct.png';
 import axios from 'axios';
 
 const Chatbot = ({params}:{params: {place: string}}) => {
-    let buttonText = "다음";
     const type = (params.place)
     const dic: Record<string, string> = { "hospital": "병원", "taxi": "택시", "store": "마트" };
     const accessToken = localStorage.getItem('accessToken');
@@ -42,7 +41,7 @@ const Chatbot = ({params}:{params: {place: string}}) => {
             </div>
 
             <Link className="next_word" href=""><div className='nextBtn'>
-              <div className='next_txt'>{buttonText}</div>
+              <div className='next_txt'>종료</div>
               <Image src={NextBtn} alt="next-button" className='next_image'></Image>
           </div></Link>
         </>
