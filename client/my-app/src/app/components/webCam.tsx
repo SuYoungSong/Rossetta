@@ -20,18 +20,18 @@ const WebCam: React.FC<WebCamProps> = ({ answer }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const resultsRef = useRef<Results>();
     const [url, setUrl] = useState<string | null>(null);
-    const isAnswerCorrect = false
+    // const isAnswerCorrect = false
 
-    const getAnswer = () => {
-        if (isAnswerCorrect === null) {
-            return { text: '모르겠어요', color: '#FFE6B5', image: idkImage};
-            } else if (isAnswerCorrect) {
-            return { text: '정답', color: '#D0E8FF', image: CorrectImage};
-            } else {
-            return { text: '오답', color: '#FFC7C7', image: IncorrectImage};
-            }
-    };
-    const getAnswers = getAnswer();
+    // const getAnswer = () => {
+    //     if (isAnswerCorrect === null) {
+    //         return { text: '모르겠어요', color: '#FFE6B5', image: idkImage};
+    //         } else if (isAnswerCorrect) {
+    //         return { text: '정답', color: '#D0E8FF', image: CorrectImage};
+    //         } else {
+    //         return { text: '오답', color: '#FFC7C7', image: IncorrectImage};
+    //         }
+    // };
+    // const getAnswers = getAnswer();
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
 
@@ -106,17 +106,7 @@ const WebCam: React.FC<WebCamProps> = ({ answer }) => {
         position: absolute;
         top: 20px;
         left: 20px;
-      `,
-      button: css`
-        color: #fff;
-        background-color: #0082cf;
-        font-size: 1rem;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 10px;
-        cursor: pointer;
-          margin-top: 50vw;
-      `,
+      `
     };
 
 
@@ -132,7 +122,7 @@ const WebCam: React.FC<WebCamProps> = ({ answer }) => {
       {/*  </>*/}
       {/*)}*/}
       {/*{isCaptureEnable && (*/}
-        <><div className="whole_camera">
+        <>
             <div className="cameraFrame {styles.container}">
                 <Webcam
                     audio={false}
@@ -150,23 +140,17 @@ const WebCam: React.FC<WebCamProps> = ({ answer }) => {
                     width={640}
                     height={480}
                 />
-                {/* 좌표 출력 */}
-                <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={OutputData}>
-                        Output Data
-                    </button>
-                </div>
             </div>
-            <div className="answer_btn">
-                <div className="question">
-                    <div className="quest-text">{answer}</div>
-                </div>
-                <div className="check" style={{backgroundColor: getAnswers.color}}>
-                    <div className="answer_text">{getAnswers.text}</div>
-                    <Image className="answer_img" src={getAnswers.image} alt="answer_img"></Image>
-                </div>
-            </div>
-        </div>
+            {/*<div className="answer_btn">*/}
+            {/*    <div className="question">*/}
+            {/*        <div className="quest-text">{answer}</div>*/}
+            {/*    </div>*/}
+            {/*    <div className="check" style={{backgroundColor: getAnswers.color}}>*/}
+            {/*        <div className="answer_text">{getAnswers.text}</div>*/}
+            {/*        <Image className="answer_img" src={getAnswers.image} alt="answer_img"></Image>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+
         </>
     </>
   );
