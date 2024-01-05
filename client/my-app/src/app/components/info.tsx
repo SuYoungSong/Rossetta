@@ -6,6 +6,7 @@ import Image from 'next/image';
 import '@/app/styles/mypage.css'
 import Input from '@/app/components/input';
 import ConfirmationModalProps from "@/app/mypage/accountDeleteModal";
+import ChangePasswordModalProps from "@/app/mypage/changePasswordModal";
 import axios from "axios";
 
 interface MypageProps {
@@ -17,6 +18,17 @@ interface MypageProps {
 const InfoPage = ({ email, id, name }: MypageProps) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+
+    // 비밀번호 수정 버튼을 누르면 나오는 modal창이 뜨는 로직
+    const handleChangePasswordModalShow = () =>{
+        setIsChangePasswordModalOpen(true);
+    };
+
+    // 비밀번호 수정 버튼을 누르면 나오는 modal창이 사라지는 로직
+    const handleChangePasswordModalHide = () =>{
+        setIsChangePasswordModalOpen(false);
+    };
 
     // 회원탈퇴 버튼을 누르면 modal 창이 뜨는 로직
     const handleOpenModal = () => {
@@ -125,7 +137,8 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
                                   {(!isClickPassword) && (
                             <>
                                 <div className="td-value"><p>********</p></div>
-                                          <button onClick={ClickChangePass} type="button" className="td-value btn-edit">비밀번호 수정
+                                          {/*<button onClick={ClickChangePass} type="button" className="td-value btn-edit">비밀번호 수정*/}
+                                          <button onClick={handleChangePasswordModalShow} type="button" className="td-value btn-edit">비밀번호 수정
                                                 <svg className="svgIcon"
                                                         focusable="false" aria-hidden="true" viewBox="0 0 24 24"
                                                         data-testid="EditOutlinedIcon">
@@ -184,6 +197,7 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
                 </table>
                 <button className="exit-user" onClick={handleOpenModal}>회원탈퇴</button>
                 <ConfirmationModalProps isOpen={isModalOpen} onClose={handleCloseModal}  onConfirm={handleConfirm}/>
+                <ChangePasswordModalProps show={isChangePasswordModalOpen} onHide={handleChangePasswordModalHide}/>
             </div>
         </>
 
