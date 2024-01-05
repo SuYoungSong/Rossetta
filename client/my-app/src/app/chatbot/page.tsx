@@ -2,8 +2,8 @@ import Link from 'next/link'
 import '@/app/styles/selectBtn.css'
 import SelectionButton from '@/app/components/selectionButton';
 import Hospital from '../../../public/hospital.jpg'
-import Store from '../../../public/school.jpg';
-import Taxi from '../../../public/job.jpg';
+import Store from '../../../public/store.png';
+import Taxi from '../../../public/taxi.png';
 
 const imagePath = [Hospital, Store, Taxi];
 const site: Array<[string, string]> = [['병원', 'hospital'], ['마트', 'store'], ['택시', 'taxi']];
