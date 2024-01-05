@@ -7,11 +7,24 @@ import { Camera } from "@mediapipe/camera_utils";
 import {HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
 import {drawCanvas} from "@/app/utils/drawCanvas";
 
-const webCam = () => {
+const WebCam = () => {
     const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
     const webcamRef = useRef<Webcam>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const resultsRef = useRef<Results>();
+    const [url, setUrl] = useState<string | null>(null);
+    const isAnswerCorrect = false
+
+    const getAnswer = () => {
+        if (isAnswerCorrect === null) {
+            return { text: '모르겠어요', color: '#FFE6B5', image: idkImage};
+            } else if (isAnswerCorrect) {
+            return { text: '정답', color: '#D0E8FF', image: CorrectImage};
+            } else {
+            return { text: '오답', color: '#FFC7C7', image: IncorrectImage};
+            }
+    };
+    const getAnswers = getAnswer();
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
 
@@ -143,4 +156,4 @@ const webCam = () => {
   );
 };
 
-export default webCam;
+export default WebCam;

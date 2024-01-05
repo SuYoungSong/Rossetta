@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import '@/app/styles/mypage.css'
 
 interface ChangePasswordModalProps {
   show: boolean;
@@ -85,12 +86,11 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
       <div className="modal-content">
         <h2>비밀번호 변경하기</h2>
         {(newPasswordErrorState || basePasswordErrorState) && (
-          <div style={{ color: 'red', marginBottom: '10px' }}>
+          <div className='pwErrorMsg'>
             {passwordErrorMessage}
           </div>
         )}
         <form>
-          <div>
             <label htmlFor="currentPassword" className="pass-label">기존 비밀번호</label>
             <input
               type="password"
@@ -127,13 +127,12 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
             />
             <br />
 
-            <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>
-              변경하기
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
-              취소하기
-            </button>
-            </div>
+          <button className="pwUpdateBtn" onClick={handlePasswordChange}>
+            변경하기
+          </button>
+          <button className="pwCancelBtn" onClick={handleCloseModal}>
+            취소하기
+          </button>
         </form>
       </div>
     </div>

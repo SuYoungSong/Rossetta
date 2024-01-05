@@ -6,6 +6,7 @@ import LectureNum from '@/app/components/lecture';
 import Image, { StaticImageData } from 'next/image';
 import NextBtn from '../../../../../../../public/right_direct.png';
 import "@/app/styles/situation_num.css"
+import axios from "axios";
 
 export default function Lecture({params}:{params : {chapnum: number, wordnum: number}}) {
   const totalCnt = 5;
@@ -18,8 +19,9 @@ export default function Lecture({params}:{params : {chapnum: number, wordnum: nu
 
   if (nextWordNum === totalCnt) {
     buttonText = "암기 시작";
-    nextHref = "/sign-edu/select-type";
+    nextHref = "/sign-edu/select-type?type=단어&situation=병원&chapter="+params.chapnum;
   }
+
 
     return (
       <>

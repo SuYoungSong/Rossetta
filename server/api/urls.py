@@ -48,11 +48,14 @@ urlpatterns = [
     ## 문제 API
     path('wordquestion/',WordQuestionView.as_view()),
     path('sentencequestion/',SentenceQuestionView.as_view()),
-
+    # path('wrongwordquestion/',WrongWordQuestionView.as_view()),
     ## token time renewal api
     path('renewaltokentime/',RenewalTokenTimeView.as_view()),
     path('autologout/',AutoLogoutView.as_view()),
 
     ## Scenario api
     path('scenario/',ScenarioView.as_view()),
+
+    ## id + password cross check
+    path('tokenusercheck/',TokenPasswordUserCheckView.as_view()),
 ]

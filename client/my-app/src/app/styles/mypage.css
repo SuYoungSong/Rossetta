@@ -112,88 +112,124 @@ tr{
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 20px;
+  background-color: #f7f5f5;
   border-radius: 8px;
+  width: 420px;
+  height: 280px;
+  padding: 40px;
   text-align: center;
 }
 
-.modal-content Button {
-    background-color: #bde0c5;
-    padding: 0.3vh 1.5vw;
-    border-radius: 30px;
-    font-size: 1vw;
+.modal-content h2 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #4B4B4B;
+    margin-bottom: 20px;
 }
 
-/*비밀번호 입력창 전체 부분*/
-.pass-input {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    justify-content: left;
-}
-
-/*비밀번호 변경 창 전체*/
-.total_pass{
-    display: flex;
-    flex-direction: column;
+.modal-content label {
+    width: 130px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #4B4B4B;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    margin-right: 20px;
+    float: left;
+    text-align: right;
 }
 
 .label-pass{
     display: flex;
 }
 
-/*비밀번호 input 하나*/
-.only-one-input{
-    display: flex;
+.modal-content input {
+    float: right;
+    margin-top: 10px;
     border-radius: 10px;
-    width: 80%;
-    height: 5vh;
-    color: black;
-    background-color: white;
-    margin: 1vh auto;
+    width: 240px;
+    height: 25px;
+    font-size: 13px;
 }
 
-/*비밀번호 변경 버튼*/
-.pass-btn{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+.pwErrorMsg {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
-.pass-btn > Button {
-    background-color: #bde0c5;
-    padding: 0.3vh 1.5vw;
-    border-radius: 30px;
-    font-size: 1vw;
+.accDelBtn {
+    margin-top: 20px;
+    margin-left: 10px;
+    border-radius: 12px;
+    border: #8a8a8a solid 1.5px;
+    background-color: #f8f8f8;
+    width: 68px;
+    height: 26px;
+    color: rgb(104, 102, 102);
+    font-size: 14px;
 }
 
-.label-pass{
-    position: absolute;
-    font-size: 0.8rem;
-    color: rgb(110, 121, 135);
-    top: 0.4rem;
-    z-index: 10;
-    transform-origin: left;
-    left: 0.5rem;
-
+.accPtag {
+    margin-top: 80px;
+    text-align: center;
+    color: rgb(241, 33, 33);
+    font-weight: 500;
 }
-.semi-div {
-    box-sizing: border-box;
-    position: relative;
-    width: 100%;
-    margin-bottom: 1vh;
+.accDelBtn:hover {
+    font-weight: 600;
 }
 
- /*.only-one-input:not(:placeholder-shown) + .label-pass,*/
- /* .only-one-input:focus + .label-pass {*/
- /*   transition: 0.2s;*/
- /*   transform: scale(0.75) translateY(-0.75rem);*/
- /* }*/
+.pwUpdateBtn {
+    margin-top: 30px;
+    margin-left: 140px;
+    border-radius: 12px;
+    border: #8a8a8a solid 1.5px;
+    background-color: #f8f8f8;
+    width: 68px;
+    height: 26px;
+    color: rgb(104, 102, 102);
+    font-size: 14px;
+}
+.pwUpdateBtn:hover {
+    font-weight: 600;
+}
 
-/*회원 탈퇴 버튼*/
-.exit-user {
+.pwCancelBtn {
+    margin-top: 30px;
+    margin-left: 15px;
+    border-radius: 12px;
+    border: #8a8a8a solid 1.5px;
+    background-color: #f8f8f8;
+    width: 68px;
+    height: 26px;
+    color: rgb(104, 102, 102);
+    font-size: 14px;
+}
 
+.pwCancelBtn:hover {
+    font-weight: 600;
+}
+
+.btn-edit:hover {
+    box-shadow: 0px 0px 0px 1.2px #888888 inset;
+}
+
+.withdrawal-button {
+    border: #cbc8c8 solid 1.5px;
+    border-radius: 12px;
+    background-color: #F9F7F4;
+    width: 70px;
+    height: 25px;
+    font-size: 13px;
+    color: rgb(104, 102, 102);
+    margin: 10px 620px;
+}
+
+.withdrawal-button:hover {
+    box-shadow: 0px 0px 0px 1px #888888 inset;
 }
 
 .modal-content{

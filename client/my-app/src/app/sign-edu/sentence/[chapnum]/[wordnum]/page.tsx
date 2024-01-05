@@ -18,7 +18,7 @@ export default function Lecture({params}:{params : {chapnum: number, wordnum: nu
 
   if (nextWordNum == totalCnt) {
     buttonText = "암기 시작";
-    nextHref = "/sign-edu/select-type";
+    nextHref = "/sign-edu/select-type?type=문장&chapter="+params.chapnum;
   }
 
   return (
