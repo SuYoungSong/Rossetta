@@ -11,6 +11,8 @@ import axios from 'axios';
 import { Dropdown } from 'flowbite-react';
 import { HiCog, HiLogout} from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation'
+
 interface HeaderProps{
     username: string;
     status: boolean;
@@ -19,6 +21,9 @@ interface HeaderProps{
 
 const Header = ({username, status, token}: HeaderProps) => {
     const router = useRouter();
+
+
+
 
     const logout = () => {
     let accessToken = localStorage.getItem('accessToken');
@@ -74,11 +79,18 @@ const Header = ({username, status, token}: HeaderProps) => {
             });
     }
 
-    useEffect(() => {
-        // login 유효시간을 다시 갱신한다.
-        // 토근 생성 시간 갱신 API에 POST 보낸다.
-        loginTimeUpdate();
 
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  useEffect(() => {
+      // login 상태일 경우 페이지를 이동하면 로그인 유효시간을 갱신한다.
+      if (localStorage.getItem('accessToken')) {
+          loginTimeUpdate();
+      }
+  }, [pathname, searchParams])
+
+
+    useEffect(() => {
         // 1분마다 실행되는 setInterval 설정
         const autoLogoutIntervalId = setInterval(() => {
             // 로그인 시간이 유효한지 체크하는 POST request
@@ -97,11 +109,11 @@ const Header = ({username, status, token}: HeaderProps) => {
     return (
         <>
             <div className="nav_basic">
-                <Link onClick={loginTimeUpdate} href="/"><Image className="logo" src={RoLogo} alt='logo'/></Link>
-                <Link className='nav_btn' onClick={loginTimeUpdate} href='/sign-edu'>수어교육</Link>
-                <Link className='nav_btn' onClick={loginTimeUpdate} href='/'>수어실습</Link>
-                <Link className='nav_btn' onClick={loginTimeUpdate} href='/wrongnote'>오답노트</Link>
-                <Link className='nav_btn' onClick={loginTimeUpdate} href='/board'>1:1 문의</Link>
+                <Link  href="/"><Image className="logo" src={RoLogo} alt='logo'/></Link>
+                <Link className='nav_btn'  href='/sign-edu'>수어교육</Link>
+                <Link className='nav_btn'  href='/'>수어실습</Link>
+                <Link className='nav_btn'  href='/wrongnote'>오답노트</Link>
+                <Link className='nav_btn'  href='/board'>1:1 문의</Link>
             </div>
 
               {status ? (
@@ -113,7 +125,7 @@ const Header = ({username, status, token}: HeaderProps) => {
                       {/*</div>*/}
                       <div className='user_name'>
                           <Dropdown label={`${username}님`} inline className="dropdown-container">
-                              <Link href='/mypage' onClick={loginTimeUpdate}><Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item></Link>
+                              <Link href='/mypage' ><Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item></Link>
                               <Dropdown.Divider className="divider-drop"/>
                               <Dropdown.Item icon={HiLogout} onClick={logout}>로그아웃</Dropdown.Item>
                             </Dropdown>
