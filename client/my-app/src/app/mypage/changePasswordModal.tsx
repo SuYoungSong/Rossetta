@@ -91,7 +91,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
           </div>
         )}
         <form>
-          <div>
             <label htmlFor="currentPassword" className="pass-label">기존 비밀번호</label>
             <input
               type="password"
