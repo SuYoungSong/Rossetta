@@ -96,7 +96,7 @@ class paper(models.Model):
     type = models.CharField(max_length=10, choices=question_range)
     situation = models.CharField(max_length=8, null=True, blank=True)
     chapter = models.IntegerField(null=False, blank=False)
-    sign_video_url = models.URLField(null=False, blank=False)
+    sign_video_url = models.FileField(upload_to='video/',null=False, blank=False)
     sign_answer = models.CharField(max_length=8, null=False, blank=False)
 
 
@@ -110,6 +110,6 @@ class practice_note(models.Model):
 class Scenario(models.Model):
     situation = models.CharField(max_length=10, null=False, blank=True) # 상황
     role = models.CharField(max_length=10, null=False, blank=True)   # 역할
-    video = models.URLField(null=True, blank=True)                   # 비디오 영상 (아바타 만 있음)
+    video = models.FileField(upload_to='video/',null=True, blank=True)                   # 비디오 영상 (아바타 만 있음)
     take = models.IntegerField(null=False, blank=True)               # 시나리오 순서
     subtitle = models.CharField(max_length=40,null=False,blank=True) # 자막
