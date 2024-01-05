@@ -1,12 +1,11 @@
 "use client"
-// api 받아오기 수정중
+
 import React from 'react';
 import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
 // import { useRouter } from 'next/router';
 import "@/app/styles/condition.css"
 import { usePathname, useRouter } from 'next/navigation';
-
 import { useEffect, useState } from 'react';
 
 interface ChapterProps {
@@ -16,7 +15,7 @@ interface ChapterProps {
 }
 
 const ChapterList: React.FC<ChapterProps> = ({imagePath, selectType, selectName}) => {
-  const chapters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const [chapters, setChapters] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const currentPath = usePathname();
   const [data, setData] = useState<any>(null); // 데이터 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -24,9 +23,20 @@ const ChapterList: React.FC<ChapterProps> = ({imagePath, selectType, selectName}
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/paper/${selectType}/${selectName}/`);
+        var API_URL;
+        if (selectType =='단어'){
+          API_URL = `http://127.0.0.1:8000/api/paper/word/${selectType}/${selectName}/`
+
+          console.log('type',selectType)
+          console.log('name',selectName)
+        }else{
+          API_URL = `http://127.0.0.1:8000/api/paper/sentence/${selectName}/`
+        }
+        const response = await fetch(API_URL);
         const jsonData = await response.json();
-        console.log(jsonData)
+
+        const endChapter = jsonData.chapter
+        setChapters((prevChapters) => prevChapters.slice(0, endChapter)); // 이전 상태를 활용하여 chapters 갱신
 
         setData(jsonData); // 받아온 JSON 데이터를 상태에 저장
         setLoading(false); // 로딩 상태 변경
