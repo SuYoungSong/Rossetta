@@ -141,31 +141,40 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
                         )}
                         {(isClickPassword) && (
                             <>
-                                <Input
-                                    label="비밀번호"
-                                    onChange={(ev: any) => {
-                                        setchangePassword(ev.target.value)
-                                    }}
-                                    id='password'
-                                    type='password'
-                                    value={changePassword}
-                                    onKeyPress={handleOnKeyPress}
-                                />
-                                <Input
-                                    label="비밀번호확인"
-                                    onChange={(ev: any) => {
-                                        setChconfirmPassword(ev.target.value)
-                                    }}
-                                    id='passwordch'
-                                    type='password'
-                                    value={chconfirmPassword}
-                                    onKeyPress={handleOnKeyPress}
-                                />
-                                <div>
-                                    <button onClick={ClickChangePass}>취소</button>
-                                    <button>완료</button>
+                                <div className="total_pass">
+                                    <div className="pass-input">
+                                        <Input
+                                            label="비밀번호"
+                                            onChange={(ev: any) => {
+                                                setchangePassword(ev.target.value)
+                                            }}
+                                            id='password'
+                                            type='password'
+                                            value={changePassword}
+                                            className="only-one-input"
+                                            onKeyPress={handleOnKeyPress}
+                                            label_className="label-pass"
+                                            div_class="semi-div"
+                                        />
+                                        <Input
+                                            label="비밀번호확인"
+                                            onChange={(ev: any) => {
+                                                setChconfirmPassword(ev.target.value)
+                                            }}
+                                            id='passwordch'
+                                            type='password'
+                                            value={chconfirmPassword}
+                                            className="only-one-input"
+                                            onKeyPress={handleOnKeyPress}
+                                            label_className="label-pass"
+                                            div_class="semi-div"
+                                        />
+                                    </div>
+                                    <div className="pass-btn">
+                                        <button onClick={ClickChangePass}>취소</button>
+                                        <button>완료</button>
+                                    </div>
                                 </div>
-
                             </>
                         )}
                     </div>
@@ -173,7 +182,7 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
                     </tr>
                     </tbody>
                 </table>
-                <button onClick={handleOpenModal}>회원탈퇴</button>
+                <button className="exit-user" onClick={handleOpenModal}>회원탈퇴</button>
                 <ConfirmationModalProps isOpen={isModalOpen} onClose={handleCloseModal}  onConfirm={handleConfirm}/>
             </div>
         </>
