@@ -55,4 +55,7 @@ urlpatterns = [
 
     ## Scenario api
     path('scenario/',ScenarioView.as_view()),
+
+    ## id + password cross check
+    path('tokenusercheck/',TokenPasswordUserCheckView.as_view()),
 ]

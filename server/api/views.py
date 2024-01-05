@@ -112,6 +112,24 @@ class IDCheckDuplicationView(APIView):
             return Response(data={"state": "사용가능한 아이디 입니다."}, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# 토큰 유저 + 비밀번호 -> user 가 있는지
+class TokenPasswordUserCheckView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+    def post(self,request):
+        token_info = request.headers['Authorization']
+        password = request.data.get('password')     # 기존 비밀번호
+        user_token = token_info.split(' ')[-1]
+        if password is not None:
+            try:
+                user_info = Token.objects.get(key=user_token).user_id
+                if authenticate(username=user_info , password=password) is not None:
+                    return Response(data = {"state":"아이디 와 비밀번호 가 일치한 유저가 존재합니다."} , status=status.HTTP_200_OK)
+                else:
+                    return Response(data={"state":"아이디와 기존 비밀번호에 해당하는 유저가 존재하지 않습니다."} , status=status.HTTP_404_NOT_FOUND)
+            except Token.DoesNotExist:
+                return Response(data={"state":"토큰에 해당하는 유저가 존재 하지 않습니다"},status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={"state":"비밀번호를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
 
 # 로그인 API
 class UserLoginView(APIView):
