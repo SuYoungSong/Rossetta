@@ -104,9 +104,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'},
-                                     required=False,allow_blank=True)  # 사용자가 변경할 비밀번호 , 필수 x
+                                     required=False, allow_blank=True)  # 사용자가 변경할 비밀번호 , 필수 x
     password_check = serializers.CharField(write_only=True, style={'input_type': 'password'},
-                                           required=False,allow_blank=True)  # 비밀번호 확인  , 필수 x
+                                           required=False, allow_blank=True)  # 비밀번호 확인  , 필수 x
 
     class Meta:
         model = User  # 사용자 데이터
@@ -205,9 +205,10 @@ class UserPasswordSerializer(serializers.ModelSerializer):
 
 
 class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호 찾기로 변경할 비밀번호 조회
-    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True,allow_blank=True)  # 변경할 비밀번호
+    password = serializers.CharField(write_only=True, style={"input_type": "password"}, required=True,
+                                     allow_blank=True)  # 변경할 비밀번호
     password_check = serializers.CharField(write_only=True, style={"input_type": "password"},
-                                           required=True,allow_blank=True)  # 변경할 비밀번호 확인
+                                           required=True, allow_blank=True)  # 변경할 비밀번호 확인
 
     class Meta:
         model = User  # 변경할 DB model
@@ -217,7 +218,7 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호
         password = data.get('password')
         password_check = data.get('password_check')
 
-        if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):    # 비밀번호 입력
+        if is_blank_or_is_null(password) or is_blank_or_is_null(password_check):  # 비밀번호 입력
             raise serializers.ValidationError("비밀번호 , 비밀번호 확인을 입력해주세요")
         else:
             if not password_match(password) or not password_match(password_check):  # 비밀번호 형식에 맞지 않을떄
@@ -234,20 +235,17 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호
         return super().update(instance, validated_data)  # 사용자 데이터 업데이트
 
 
-class QuestionImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = question_board_images
-        fields = ['image_url']
+
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(required=True , allow_blank=True)  # 사용자가 관계자에게 질문할 게시글 제목
-    body = serializers.CharField(required=True,allow_blank=True)  # 사용자가 관계자에게 질문할 내용
-    images = QuestionImageSerializer(many=True, required=False)
+    title = serializers.CharField(required=True, allow_blank=True)  # 사용자가 관계자에게 질문할 게시글 제목
+    body = serializers.CharField(required=True, allow_blank=True)  # 사용자가 관계자에게 질문할 내용
+
 
     class Meta:
         model = question_board  # 데이터를 생성할 DB 모델
-        fields = ['user', 'title', 'body', 'images']  # 여기는 무조건 수정
+        fields = ['user', 'title', 'body']  # 여기는 무조건 수정
 
     def validate(self, data):
         title = data.get('title')
@@ -287,13 +285,13 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
 
 class QuestionUpdateSerializer(serializers.ModelSerializer):
-    title2 = serializers.CharField(required=False , allow_blank=True)  # 변경할 게시판 질문 제목 , 필수 x
-    body = serializers.CharField(required=False , allow_blank=True)  # 변경할 게시판 질문 내용 , 필수 x
-    images = QuestionImageSerializer(many=True, required=False)
+    title2 = serializers.CharField(required=False, allow_blank=True)  # 변경할 게시판 질문 제목 , 필수 x
+    body = serializers.CharField(required=False, allow_blank=True)  # 변경할 게시판 질문 내용 , 필수 x
+
 
     class Meta:
         model = question_board  # 데이터를 변경할 DB
-        fields = ['title2', 'body', 'images']  # 변경될 데이터 필드
+        fields = ['title2', 'body']  # 변경될 데이터 필드
 
     def validate(self, data):
         title2 = data.get('title2')
@@ -374,12 +372,12 @@ class education_report_Serailizer(serializers.ModelSerializer):
         fields = ['user', 'chapter']
 
 
-
 # paper Serializer
 class PaperDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper
         fields = '__all__'
+
 
 class PaperTypeSituationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -392,15 +390,18 @@ class PaperTypeSituationChapterWordSerializer(serializers.ModelSerializer):
         model = paper
         fields = ['chapter']
 
+
 class PaperTypeChapterSentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper
         fields = ['chapter']
 
+
 class PaperDataWordSerializer(serializers.ModelSerializer):
     class Meta:
         model = paper
         fields = '__all__'
+
 
 class PaperDataSentenceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -440,6 +441,4 @@ class PracticeNoteSerializer(serializers.ModelSerializer):
         user = validated_data.pop('user')
         instance.is_answer = is_answer
         return super().update(instance, validated_data)
-
-
 

@@ -1,7 +1,9 @@
+import json
 import random
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 from .email import email_data_set, email_data_get, key_data_get, email_send, email_return_json
 from rest_framework.authtoken.models import Token
@@ -18,13 +20,13 @@ from .permissions import *
 class RenewalTokenTimeView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
-    def post(self, request):                            # ex) 서버에서 새로고침이나 페이지 이동시
+    def post(self, request):  # ex) 서버에서 새로고침이나 페이지 이동시
         token_info = request.headers['Authorization']
         user_token = token_info.split(' ')[-1]
-        renewal_time = timezone.now()                   # ex) 서버에서 제공하는 현재 시간
+        renewal_time = timezone.now()  # ex) 서버에서 제공하는 현재 시간
         try:
-            user = Token.objects.get(key=user_token)    # 사용자가 작업중인 로그인 정보
-            user.created = renewal_time                 # 사용중인 토큰 시간 갱신
+            user = Token.objects.get(key=user_token)  # 사용자가 작업중인 로그인 정보
+            user.created = renewal_time  # 사용중인 토큰 시간 갱신
             user.save()
         except Token.DoesNotExist:
             return Response(data={"state": "로그인 한 유저의 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
@@ -152,12 +154,13 @@ class AutoLogoutView(APIView):
         user_token = token_info.split(' ')[-1]
         current_time = timezone.now()
         try:
-            user = Token.objects.get(key=user_token)        # 현재 로그인된 정보
-            login_time = user.created                       # 갱신된 시간 정보
-            diff_time = current_time - login_time           # 현재 시간에서 - 갱신 시간
-            diff_time = diff_time.seconds                   # 초로 변환
-            if diff_time > 3600:                            # 차이 시간 이 3600초 = 1시간 이면 False 값 Response
-                return Response(data={"state": "제한시간 1시간이 지나 자동 로그아웃 됩니다", "bool": False}, status=status.HTTP_404_NOT_FOUND)
+            user = Token.objects.get(key=user_token)  # 현재 로그인된 정보
+            login_time = user.created  # 갱신된 시간 정보
+            diff_time = current_time - login_time  # 현재 시간에서 - 갱신 시간
+            diff_time = diff_time.seconds  # 초로 변환
+            if diff_time > 3600:  # 차이 시간 이 3600초 = 1시간 이면 False 값 Response
+                return Response(data={"state": "제한시간 1시간이 지나 자동 로그아웃 됩니다", "bool": False},
+                                status=status.HTTP_404_NOT_FOUND)
             return Response(data={"state": "제한시간을 넘기지 않았습니다", "bool": True, "Time_Remain": f'{diff_time}초'},
                             status=status.HTTP_200_OK)
         except Token.DoesNotExist:
@@ -292,9 +295,18 @@ class QuestionView(APIView):
         # 질문에 관한 데이터만 가져온다
         try:
             question = question_board.objects.get(id=id)
-            # 질문에 대한 데이터 의 직렬화
-            question_serializer = QuestionDetailSerializer(question)
-            return Response(data=question_serializer.data, status=status.HTTP_200_OK)
+            data = dict()
+            data['user'] = question.user_id
+            data['title'] = question.title
+            data['body'] = question.body
+            data['created'] = question.created
+            if question_board_images.objects.filter(board_id=id).exists():
+                images_info = question_board_images.objects.filter(board_id=id)
+                images = []
+                for image in images_info:
+                    images.append(image.image_url.url)
+                data['images'] = images
+            return Response(data=data, status=status.HTTP_200_OK)
         except question_board.DoesNotExist:
             return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -382,15 +394,18 @@ class PaperTypeChapterSentenceView(APIView):
     '''
     GET : 타입 (문장) 이 들어오면 챕터 정보를 반환해준다.
     '''
-    def get(self , request , type):
+
+    def get(self, request, type):
         try:
             qs = paper.objects.filter(type=type).distinct().values('chapter')
-            serializers = PaperTypeChapterSentenceSerializer(qs , many=True)
-            max_chapter = max(serializers.data , key=lambda x:x['chapter'])['chapter']
-            return Response(data={"chapter":max_chapter},status=status.HTTP_200_OK)
+            serializers = PaperTypeChapterSentenceSerializer(qs, many=True)
+            max_chapter = max(serializers.data, key=lambda x: x['chapter'])['chapter']
+            return Response(data={"chapter": max_chapter}, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
             return Response({"error": f"'{type}' 유형에 대한 데이터가 없습니다."},
                             status=status.HTTP_404_NOT_FOUND)
+
+
 class PaperTypeSituationChapterWordView(APIView):
     '''
     GET: 타입(단어, 문장)과 상황 들어오면 챕터 정보를 반환해준다.
@@ -437,10 +452,12 @@ class PaperManyDataWordView(APIView):
         except ValueError:
             return Response({"error": "챕터는 정수값이어야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class PaperManyDataSentenceView(APIView):
     '''
     GET : 문장 + 챕터 -> 챕터에 있는 문제 리스트 조회
     '''
+
     def get(self, request, type, chapter):
         try:
             qs = paper.objects.filter(type=type, chapter=chapter)
@@ -582,7 +599,8 @@ class WordQuestionView(APIView):
             if error_code == "404":
                 return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
 
-        paper_ids = paper.objects.filter(type=type, situation=situation, chapter=chapter).values_list('id') # chapter list
+        paper_ids = paper.objects.filter(type=type, situation=situation, chapter=chapter).values_list(
+            'id')  # chapter list
         result = dict()  # response dict
         if is_deaf:  # 수어 영상이 나오면 4개중에 하나를 선택해서 한글 을 맞추는거
             for paper_id in paper_ids:
@@ -663,21 +681,23 @@ class SentenceQuestionView(APIView):
 
 
 class ScenarioView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
-    def post(self,request):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+
+    def post(self, request):
         situation = request.data.get('situation')
         # role = request.data.get('role')
         try:
             sc = Scenario.objects.filter(situation=situation)
             scenario = dict()
-            scenario[situation] = dict()
+            scenario[situation] = []
             for i in range(len(sc)):
-                scenario[situation][f'{i + 1}'] = dict()
-                scenario[situation][f'{i + 1}']['take'] = sc[i].take
-                scenario[situation][f'{i + 1}']['role'] = sc[i].role
+                scenario_communication = dict()
+                scenario_communication['take'] = sc[i].take
+                scenario_communication['role'] = sc[i].role
                 if not is_null(sc[i].video):
-                    scenario[situation][f'{i + 1}']['video'] = sc[i].video
-                scenario[situation][f'{i + 1}']['subtitle'] = sc[i].subtitle
-            return Response(data=scenario , status=status.HTTP_200_OK)
+                    scenario_communication['video'] = sc[i].video
+                scenario_communication['subtitle'] = sc[i].subtitle
+                scenario[situation].append(scenario_communication)
+            return Response(data=scenario, status=status.HTTP_200_OK)
         except Scenario.DoesNotExist:
-            return Response(data={"state":"해당 시나리오가 존재하지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"state": "해당 시나리오가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
