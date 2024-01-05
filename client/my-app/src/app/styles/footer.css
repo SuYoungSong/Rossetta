@@ -1,0 +1,13 @@
+.footer-container {
+    height: 100px;
+    display: flex;
+    padding: 28px 20px 30px;
+    background-color: rgb(240, 240, 240);
+}
+
+.input-area p {
+    text-align: left;
+    margin-left: 10px;
+    font-size: 14px;
+    color: rgb(135, 133, 133);
+}

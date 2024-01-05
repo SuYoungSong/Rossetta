@@ -8,6 +8,7 @@ import Header from '@/app/components/header';
 import {useEffect, useState} from 'react';
 import {Provider, useSelector} from 'react-redux'
 import store from "@/app/components/reducer/store"
+import Footer from './components/footer';
 
 const inter = Inter({ subsets: ['latin'] })
 // const {user, logout} = useAuth();
@@ -47,6 +48,7 @@ export default function RootLayout({
         {children} {/*아래 다른 페이지 폴더에서 layout.js 찾기*/}
       </body>
       </Provider>
+      <Footer />
     </html>
   )
 }
