@@ -186,7 +186,7 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
                     </tr>
                     </tbody>
                 </table>
-                <button onClick={handleOpenModal}>회원탈퇴</button>
+                <button onClick={handleOpenModal} className="withdrawal-button">회원탈퇴</button>
                 <ConfirmationModalProps isOpen={isModalOpen} onClose={handleCloseModal}  onConfirm={handleConfirm}/>
                 <ChangePasswordModalProps show={isChangePasswordModalOpen} onHide={handleChangePasswordModalHide}/>
             </div>

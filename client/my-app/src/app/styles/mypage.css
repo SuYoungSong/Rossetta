@@ -112,13 +112,111 @@ tr{
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 20px;
+  background-color: #f7f5f5;
   border-radius: 8px;
+  width: 420px;
+  height: 250px;
+  padding: 40px;
   text-align: center;
 }
 
-.modal-content Button {
-    margin: 5px;
-    border: 1px solid black;
+.modal-content h2 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #4B4B4B;
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    width: 130px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #4B4B4B;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    margin-right: 20px;
+    float: left;
+    text-align: right;
+}
+
+.modal-content input {
+    float: right;
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 240px;
+    height: 25px;
+    font-size: 13px;
+}
+
+.accDelBtn {
+    margin-top: 20px;
+    margin-left: 10px;
+    border-radius: 12px;
+    border: #8a8a8a solid 1.5px;
+    background-color: #f8f8f8;
+    width: 68px;
+    height: 26px;
+    color: rgb(104, 102, 102);
+    font-size: 14px;
+}
+
+.accPtag {
+    margin-top: 70px;
+    text-align: center;
+    color: rgb(241, 33, 33);
+    font-weight: 500;
+}
+.accDelBtn:hover {
+    font-weight: 600;
+}
+
+.pwUpdateBtn {
+    margin-top: 30px;
+    margin-left: 140px;
+    border-radius: 12px;
+    border: #8a8a8a solid 1.5px;
+    background-color: #f8f8f8;
+    width: 68px;
+    height: 26px;
+    color: rgb(104, 102, 102);
+    font-size: 14px;
+}
+.pwUpdateBtn:hover {
+    font-weight: 600;
+}
+
+.pwCancelBtn {
+    margin-top: 30px;
+    margin-left: 15px;
+    border-radius: 12px;
+    border: #8a8a8a solid 1.5px;
+    background-color: #f8f8f8;
+    width: 68px;
+    height: 26px;
+    color: rgb(104, 102, 102);
+    font-size: 14px;
+}
+
+.pwCancelBtn:hover {
+    font-weight: 600;
+}
+
+.btn-edit:hover {
+    box-shadow: 0px 0px 0px 1.2px #888888 inset;
+}
+
+.withdrawal-button {
+    border: #cbc8c8 solid 1.5px;
+    border-radius: 12px;
+    background-color: #F9F7F4;
+    width: 70px;
+    height: 25px;
+    font-size: 13px;
+    color: rgb(104, 102, 102);
+    margin: 10px 620px;
+}
+
+.withdrawal-button:hover {
+    box-shadow: 0px 0px 0px 1px #888888 inset;
 }
