@@ -8,16 +8,9 @@ import NextBtn from '../../../../../../public/right_direct.png';
 import "@/app/styles/situation_num.css"
 
 export default function Lecture({params}:{params : {chapnum: number, wordnum: number}}) {
-  const [wordCount, setWordCount] = useState(0);
   const currentPath = usePathname();
   const nextPath = currentPath.slice(0, -1);
   const totalCnt = 3;
-
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/paper/sentence/문장/${chapnum}/')
-      .then(response => response.json())
-      .then(data => setWordCount(data.length)); 
-  }, []);
 
   let buttonText = "다음";
   let nextWordNum = Number(params.wordnum) + 1;
@@ -37,4 +30,4 @@ export default function Lecture({params}:{params : {chapnum: number, wordnum: nu
         </div></Link>
     </>
   );
-  }
+}

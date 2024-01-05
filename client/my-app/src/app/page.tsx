@@ -209,7 +209,7 @@ export default function Home() {
               </h1>
             </div>
             <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`}>
-                <a className='a_button' href='/'>수어교육</a>
+                <a className='a_button' href='sign-edu'>수어교육</a>
             </div>
           </div>
           <div className="main_form">
@@ -243,7 +243,7 @@ export default function Home() {
               </h1>
             </div>
             <div ref={onebyRef} className={`${styles.oneby} ${onebyRefIsVisible ? styles.animateoneby : ''}`}>
-                <a className='a_button' href='/'>오답노트</a>
+                <a className='a_button' href='wrongnote'>오답노트</a>
             </div>
           </div>
           <section className="Img_wrap">
