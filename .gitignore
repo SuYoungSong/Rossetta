@@ -12,3 +12,7 @@ server/api/__pycache__/exception.cpython-311.pyc
 server/api/__pycache__/serializers.cpython-311.pyc
 server/api/__pycache__/views.cpython-311.pyc
 server/api/migrations
+server/api_paper.xlsx
+server/api_scenario.xlsx
+server/InsertDB.py
+server/api/migrations/0001_initial.py

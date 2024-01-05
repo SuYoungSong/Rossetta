@@ -112,6 +112,24 @@ class IDCheckDuplicationView(APIView):
             return Response(data={"state": "사용가능한 아이디 입니다."}, status=status.HTTP_200_OK)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# 토큰 유저 + 비밀번호 -> user 가 있는지
+class TokenPasswordUserCheckView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+    def post(self,request):
+        token_info = request.headers['Authorization']
+        password = request.data.get('password')     # 기존 비밀번호
+        user_token = token_info.split(' ')[-1]
+        if password is not None:
+            try:
+                user_info = Token.objects.get(key=user_token).user_id
+                if authenticate(username=user_info , password=password) is not None:
+                    return Response(data = {"state":"아이디 와 비밀번호 가 일치한 유저가 존재합니다."} , status=status.HTTP_200_OK)
+                else:
+                    return Response(data={"state":"아이디와 기존 비밀번호에 해당하는 유저가 존재하지 않습니다."} , status=status.HTTP_404_NOT_FOUND)
+            except Token.DoesNotExist:
+                return Response(data={"state":"토큰에 해당하는 유저가 존재 하지 않습니다"},status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={"state":"비밀번호를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
 
 # 로그인 API
 class UserLoginView(APIView):
@@ -595,6 +613,7 @@ class WordQuestionView(APIView):
         situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
         chapter = request.data.get('chapter')  # chapter
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
+        print("1")
         help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
         if help_text != "":
@@ -602,11 +621,13 @@ class WordQuestionView(APIView):
                 return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
             if error_code == "404":
                 return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
-
+        print("2")
         paper_ids = paper.objects.filter(type=type, situation=situation, chapter=chapter).values_list(
             'id')  # chapter list
         result = dict()  # response dict
+        print("3")
         if is_deaf:  # 수어 영상이 나오면 4개중에 하나를 선택해서 한글 을 맞추는거
+            print("4")
             for paper_id in paper_ids:
                 if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():  # 사용자가 처음 푼 기록 이라면
                     answer_info = paper.objects.get(id=paper_id[0])  # 해당 문제의 정보를 저장
@@ -624,9 +645,11 @@ class WordQuestionView(APIView):
                         result[f'{i + 2}']['word'] = wrong_info.sign_answer
                         result[f'{i + 2}']['isAnswer'] = False
                     result['video'] = dict()
-                    result['video']['url'] = answer_info.sign_video_url
+                    result['video']['url'] = answer_info.sign_video_url.url
+
                 return Response(data={"문제": result}, status=status.HTTP_200_OK)  # 정상 Response
         else:  # 한글 이 보이면 수어를 따라해서 정답 여부
+            print("5")
             for paper_id in paper_ids:
                 if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():  # 만약 사용자가 학습 기록이 없을때
                     answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
@@ -661,8 +684,7 @@ class SentenceQuestionView(APIView):
                     result['1'] = dict()
                     result['1']['word'] = answer_info.sign_answer
                     result['1']['isAnswer'] = True
-                    wrong_infos = paper.objects.exclude(id=answer_info.id).filter(
-                        type=answer_info.type)  # 오답 (유형) + 정답 문제 제외한
+                    wrong_infos = paper.objects.exclude(id=answer_info.id).filter(type=answer_info.type)  # 오답 (유형) + 정답 문제 제외한
                     wrong_infos_len = len(wrong_infos)  # 전체 오답 문제 들의 길이
                     random.seed(answer_info.id)  # seed 값 설정
                     random_numbers = random.sample(range(wrong_infos_len), 3)  # 3개의 문제 뽑기
@@ -672,7 +694,7 @@ class SentenceQuestionView(APIView):
                         result[f'{i + 2}']['word'] = wrong_info.sign_answer
                         result[f'{i + 2}']['isAnswer'] = False
                     result['video'] = dict()
-                    result['video']['url'] = answer_info.sign_video_url
+                    result['video']['url'] = answer_info.sign_video_url.url
                 return Response(data={"문제": result}, status=status.HTTP_200_OK)  # 정상 Response
 
         else:  # 한글 이 보이면 수어를 따라해서 정답 여부
@@ -683,7 +705,7 @@ class SentenceQuestionView(APIView):
                     result['answer']['word'] = answer_info.sign_answer
                     return Response(data={"문제": result}, status=status.HTTP_200_OK)
 
-
+### 시나리오 뷰
 class ScenarioView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
@@ -705,3 +727,16 @@ class ScenarioView(APIView):
             return Response(data=scenario, status=status.HTTP_200_OK)
         except Scenario.DoesNotExist:
             return Response(data={"state": "해당 시나리오가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
+
+
+### 농아인 단어 오답문제 출제
+
+class WrongWordQuestionView(APIView):
+    def post(self , request):
+        id = request.data.get('id')  # 사용자 id
+        type = request.data.get('type')  # 단어/문장
+        situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
+        chapter = request.data.get('chapter')  # chapter
+        is_deaf = request.data.get('is_deaf')  # 농아인 여부
+        help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
