@@ -44,6 +44,7 @@ h2 {
 }
 .myText h1{
   font-size: 4rem;
+  color: white;
 }
 .myText.show {
   opacity: 1;
@@ -132,12 +133,12 @@ h2 {
 }
 
 /* 설명 */
-h2{
+.main_form h2{
   font-size: 40px;
   color: #65a67f;
 }
 
-h1{
+.main_form h1{
   color: #676767;
 }
 
