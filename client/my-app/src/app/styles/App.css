@@ -1,5 +1,7 @@
 /* 섞이면서 이상해진거 */
-
+main{
+  width: 100vw;
+}
 h1 {
   display: block;
   font-weight: bold;
@@ -23,7 +25,8 @@ h2 {
 .main_img {
   width: 100%;
   filter: brightness(60%);
-  height: calc(100vh - 120px);
+  height: calc(100vh - 70px);
+  margin-top: -40px;
 }
 
 .myText {
@@ -372,8 +375,8 @@ h2{
   color: #b0b8c1;  
 }
 .content2{
-  margin-top: 300px;
   text-align: center;
+  margin-bottom: 200px;
 }
 .content2_item > img{
   max-width: 380px;

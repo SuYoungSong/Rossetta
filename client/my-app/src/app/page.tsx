@@ -170,15 +170,14 @@ export default function Home() {
               청각장애인의 약 90%가 수어를 모른다는것을 알고 계셨나요??<br/>
               후천적 청각장애인들은 한순간에 소통의 수단을 잃었습니다.
             </div>
-
-            <div className="content2" >
+          </div>
+          <div className="content2" >
                       <div className="content2_item" >
                         <p>2016년 한국수화언어법 제정 <br/>
                         &quot;국가와 지방 자치 단체는 농인등의 가족을 위한 한국수어 교육, 상담 및 관련 서비스등 지원체계를 마련하여야한다.&quot;<br/>
                         그러나 현재 국가에서 운영하는 수어교육원은 성인을 대상으로 전국에 단 네곳뿐입니다.
                         </p>
                       </div>
-          </div>
           </div>
           {/* <MainContentSecond /> */}
           
