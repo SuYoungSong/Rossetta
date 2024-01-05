@@ -40,7 +40,7 @@ const LecturePage: React.FC<LectureProps> = ({situation, chapnum, wordnum=0}) =>
 
     for(var i = 0; i < videoData.length ; i++ ){
         var beforePath = videoData[i].sign_video_url
-        videoData[i].sign_video_url = 'http://localhost:8000/media/' + beforePath
+        videoData[i].sign_video_url = 'http://localhost:8000/' + beforePath
     }
 
     const urls = videoData.map(video => video.sign_video_url);
