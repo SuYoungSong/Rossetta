@@ -104,16 +104,6 @@ const Header = ({username, status, token}: HeaderProps) => {
         return () => clearInterval(autoLogoutIntervalId);
     }, []);
 
-    const handleLinkClick = () => {
-        const isLogin = localStorage.getItem('your_token_key'); // 여기서 'your_token_key'는 실제로 사용하는 토큰 키로 바꿔야 합니다.
-
-        if (!isLogin) {
-            alert("로그인이 필요합니다.");
-            router.push("/auth")
-            window.location.replace('/auth');
-        }
-    }
-
     return (
         <>
             <div className="nav_basic">

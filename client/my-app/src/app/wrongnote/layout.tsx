@@ -9,6 +9,17 @@ export default function WrongLayout({
     children: React.ReactNode
 }) {
     const router = useRouter();
+    useEffect(() => {
+            const isLogin = localStorage.getItem('accessToken');
+            if (!isLogin) {
+                alert("로그인이 필요합니다.");
+                router.push("/auth")
+                window.location.replace('/auth');
+            }
+            else{
+                return;
+            }
+        }, []);
     return (
         <>
             <div className="page_margin"></div>
