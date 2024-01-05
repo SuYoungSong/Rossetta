@@ -30,7 +30,7 @@ const FindId =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
     const handleSendEmailClick = () => {
         if(emailisValid && email != ""){
-            axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
+            axios.post("http://localhost:8000/api/useridemailsend/", { "email": email })
             .then((res) => {
                 console.log("res >> ", res);
                 setUniqueNum(res.data.unique_number);
