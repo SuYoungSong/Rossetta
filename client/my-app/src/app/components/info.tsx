@@ -39,9 +39,8 @@ const InfoPage = ({ email, id, name }: MypageProps) => {
 
   const accountDeletion = () => {
       const accessToken = localStorage.getItem('accessToken');
-
       axios.delete(
-        "http://localhost:8000/api/user/asdf",
+        "http://localhost:8000/api/user/",
       {
                 headers: { 'Authorization':`Token ${accessToken}`}
         })
