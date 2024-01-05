@@ -26,9 +26,6 @@ const ChapterList: React.FC<ChapterProps> = ({imagePath, selectType, selectName}
         var API_URL;
         if (selectType =='단어'){
           API_URL = `http://127.0.0.1:8000/api/paper/word/${selectType}/${selectName}/`
-
-          console.log('type',selectType)
-          console.log('name',selectName)
         }else{
           API_URL = `http://127.0.0.1:8000/api/paper/sentence/${selectName}/`
         }
