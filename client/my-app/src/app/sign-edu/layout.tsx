@@ -3,7 +3,7 @@ import React from 'react';
 import '@/app/styles/sign_edu.css';
 import withAuth from "@/app/HOC/withAuth";
 
-function EduLayout({
+export default function EduLayout({
     children,
 }: {
     children: React.ReactNode
@@ -15,5 +15,3 @@ function EduLayout({
         </>
     )
 }
-
-export default withAuth(EduLayout);

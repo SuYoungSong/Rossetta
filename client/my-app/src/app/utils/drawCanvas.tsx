@@ -12,23 +12,6 @@ export const drawCanvas = (ctx: CanvasRenderingContext2D, results: Results) => {
   ctx.translate(-width, 0);
   // capture image 그리기
   ctx.drawImage(results.image, 0, 0, width, height);
-  // 손의 묘사
-  if (results.leftHandLandmarks) {
-    // 골격 묘사
-    for (const landmarks of results.leftHandLandmarks) {
-      drawConnectors(ctx, results.poseLandmarks, POSE_CONNECTIONS,
-                 {color: '#00FF00', lineWidth: 4});
-      drawLandmarks(ctx, results.poseLandmarks,
-                {color: '#FF0000', lineWidth: 2});
-      drawConnectors(ctx, results.leftHandLandmarks, HAND_CONNECTIONS,
-                 {color: '#CC0000', lineWidth: 5});
-      drawLandmarks(ctx, results.leftHandLandmarks,
-                    {color: '#00FF00', lineWidth: 2});
-      drawConnectors(ctx, results.rightHandLandmarks, HAND_CONNECTIONS,
-                     {color: '#00CC00', lineWidth: 5});
-      drawLandmarks(ctx, results.rightHandLandmarks,
-                    {color: '#FF0000', lineWidth: 2});
-        }
-  }
+
   ctx.restore();
 };

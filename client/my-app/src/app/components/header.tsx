@@ -104,17 +104,27 @@ const Header = ({username, status, token}: HeaderProps) => {
         return () => clearInterval(autoLogoutIntervalId);
     }, []);
 
+    const handleLinkClick = () => {
+        const isLogin = localStorage.getItem('your_token_key'); // 여기서 'your_token_key'는 실제로 사용하는 토큰 키로 바꿔야 합니다.
 
+        if (!isLogin) {
+            alert("로그인이 필요합니다.");
+            router.push("/auth")
+            window.location.replace('/auth');
+        }
+    }
 
     return (
         <>
             <div className="nav_basic">
                 <Link  href="/"><Image className="logo" src={RoLogo} alt='logo'/></Link>
-                <Link className='nav_btn'  href='/sign-edu'>수어교육</Link>
-                <Link className='nav_btn'  href='/'>수어실습</Link>
-                <Link className='nav_btn'  href='/wrongnote'>오답노트</Link>
-                <Link className='nav_btn'  href='/board'>1:1 문의</Link>
+                <Link  onClick={handleLinkClick} className='nav_btn'  href='/sign-edu'>수어교육</Link>
+                <Link onClick={handleLinkClick} className='nav_btn'  href='/'>수어실습</Link>
+                <Link onClick={handleLinkClick} className='nav_btn'  href='/wrongnote'>오답노트</Link>
+                <Link onClick={handleLinkClick} className='nav_btn'  href='/board'>1:1 문의</Link>
             </div>
+
+
 
               {status ? (
                 <>
