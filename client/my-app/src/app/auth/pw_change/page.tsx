@@ -36,6 +36,10 @@ const ChangePw =()=>{
         })
         .catch((err) => {
             console.log("err >> ", err);
+            if (err.response && err.response.data && err.response.status === 400) {
+                const errorMessage = err.request.response;
+                const real_errorMessage = errorMessage.split("\"")[3]
+                setpassIsSignAvailable(real_errorMessage);}
         });
     }
     return(

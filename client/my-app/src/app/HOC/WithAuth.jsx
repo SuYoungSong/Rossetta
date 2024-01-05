@@ -9,28 +9,24 @@ const withAuth = (WrappedComponent) => {
 
     useEffect(() => {
       const checkAuth = async () => {
-        if (typeof window !== "undefined") {
-          const accessToken = localStorage.getItem("accessToken");
-          // If there is no access token, redirect to "/" page.
-          if (!accessToken) {
-            alert("로그인이 필요한 서비스입니다.");
-            Router.replace("/auth");
-          }
+        const accessToken = localStorage.getItem("accessToken");
+        if (!accessToken) {
+          alert("로그인이 필요한 서비스입니다.");
+          Router.replace("/auth");
         }
       };
 
-      checkAuth();
+      if (typeof window !== "undefined") {
+        checkAuth();
+      }
     }, [Router]);
 
+
     // If we are on the server, return null
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined" || !localStorage.getItem("accessToken")) {
       return null;
     }
 
-    // If there's no access token, return null
-    if (!localStorage.getItem("accessToken")) {
-      return null;
-    }
 
     // If this is an accessToken, render the wrapped component with its props
     return <WrappedComponent {...props} />;
