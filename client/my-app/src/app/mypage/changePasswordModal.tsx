@@ -14,67 +14,59 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
   const [basePasswordErrorState, setBasePasswordErrorState] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
-  // ================================
-  // ================================
-  // ================================
-  // 필요한 API 제작 요청 하였음. 2024.01.05 13:15
-  // ================================
-  // ================================
-  // ================================
   const handlePasswordChange = () => {
-    // 새로운 비밀번호와 새로운 비밀번호 확인이 서로 다른 경우 에러 메시지 표시
-    if (newPassword === '' || newPassword === null || newPassword === undefined || newPassword !== confirmNewPassword) {
-      setNewPasswordErrorState(true);
-      setPasswordErrorMessage('새로운 비밀번호와 확인용 비밀번호가 일치하지 않거나 값이 없습니다.')
-      return;
-    }
-    // const accessToken = localStorage.getItem('accessToken');
-    // // 기존 비밀번호가 맞는지 check
-    // axios.post(
-    //     "http://localhost:8000/api/",
-    //   {
-    //     headers: { 'Authorization':`Token ${accessToken}`},
-    //     parameter : {
-    //       password: currentPassword,
-    //     }
-    //     })
-    //   .then((res) => {
-    //     // 기존 비밀번호 통과한경우 pass
-    //     setBasePasswordErrorState(false)
-    //   })
-    //   .catch((err) => {
-    //     setBasePasswordErrorState(true);
-    //     setNewPasswordErrorState(false);
-    //     setPasswordErrorMessage(err.response.data.state)
-    //       // 요청에 실패한 경우
-    //     console.log("err >> ", err);
-    //   return null;
-    //   });
+      // 새로운 비밀번호와 새로운 비밀번호 확인이 서로 다른 경우 에러 메시지 표시
+      if (newPassword === '' || newPassword === null || newPassword === undefined || newPassword !== confirmNewPassword) {
+          setNewPasswordErrorState(true);
+          setPasswordErrorMessage('새로운 비밀번호와 확인용 비밀번호가 일치하지 않거나 값이 없습니다.')
+          return;
+      }
+      const accessToken = localStorage.getItem('accessToken');
+      // 기존 비밀번호가 맞는지 check
+      axios.post(
+          "http://localhost:8000/api/tokenusercheck/",
+          {password: currentPassword,},
+          {headers: {'Authorization': `Token ${accessToken}`}})
+          .then((res) => {
+              // 기존 비밀번호 통과한경우 pass
+              setBasePasswordErrorState(false)
+              // 비밀번호 변경 로직 수행
+              passwordChange();
 
-    // 비밀번호 변경 로직 수행
-    const userId = localStorage.getItem('id');
-    axios.put(
-        "http://localhost:8000/api/userchangepassword/",
-      {
-          id: userId,
-          password: newPassword,
-          password_check: confirmNewPassword
+          })
+          .catch((err) => {
+              setBasePasswordErrorState(true);
+              setNewPasswordErrorState(false);
+              setPasswordErrorMessage(err.response.data.state)
+              // 요청에 실패한 경우
+              console.log("err >> ", err);
 
-        })
-      .then((res) => {
-        // 비밀번호 변경 완료시 모달 닫기
-        handleCloseModal();
-      })
-      .catch((err) => {
-        setBasePasswordErrorState(false);
-        setNewPasswordErrorState(true);
-        setPasswordErrorMessage(err.response.data.non_field_errors[0])
-          // 요청에 실패한 경우
-        console.log("err >> ", err);
-      return null;
-      });
+          });
 
-  };
+      const passwordChange = () => {
+          const userId = localStorage.getItem('id');
+          axios.put(
+              "http://localhost:8000/api/userchangepassword/",
+              {
+                  id: userId,
+                  password: newPassword,
+                  password_check: confirmNewPassword
+
+              })
+              .then((res) => {
+                  // 비밀번호 변경 완료시 모달 닫기
+                  handleCloseModal();
+              })
+              .catch((err) => {
+                  setBasePasswordErrorState(false);
+                  setNewPasswordErrorState(true);
+                  setPasswordErrorMessage(err.response.data.non_field_errors[0])
+                  // 요청에 실패한 경우
+                  console.log("err >> ", err);
+                  return null;
+              });
+      };
+  }
 
   // onHide가 호출될 때 에러 메시지도 없애기
   const handleCloseModal = () => {
