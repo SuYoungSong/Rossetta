@@ -113,6 +113,7 @@ tr{
 
 .modal-content {
   background-color: #f7f5f5;
+  max-width: 420px;
   border-radius: 8px;
   width: 420px;
   height: 280px;
