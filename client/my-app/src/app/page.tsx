@@ -20,7 +20,6 @@ export default function Home() {
   const mvbxRef = useRef(null);
 
   useEffect(() => {
-    console.log('로딩완료');
 
     const tpg = tpgRef.current;
     const spg = spgRef.current;
