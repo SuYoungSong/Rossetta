@@ -1,13 +1,20 @@
-import {useRef, useState, useCallback, useEffect} from "react";
+import React, {useRef, useState, useCallback, useEffect} from "react";
 import Webcam from "react-webcam";
+import Image, { StaticImageData } from 'next/image';
 import CameraImage from "../../../public/camera_3d.png"
 import "@/app/styles/camera_setting.css"
+import CorrectImage from "../../../public/correct_image.png"
+import IncorrectImage from "../../../public/incorrect_image.png"
+import idkImage from "../../../public/idknow.png"
 import { css } from "@emotion/css";
 import { Camera } from "@mediapipe/camera_utils";
 import {HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
 import {drawCanvas} from "@/app/utils/drawCanvas";
 
-const WebCam = () => {
+interface WebCamProps{
+    answer: string;
+}
+const WebCam: React.FC<WebCamProps> = ({ answer }) => {
     const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
     const webcamRef = useRef<Webcam>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -148,6 +155,15 @@ const WebCam = () => {
                     <button className={styles.button} onClick={OutputData}>
                         Output Data
                     </button>
+                </div>
+            </div>
+            <div className="answer_btn">
+                <div className="question">
+                    <div className="quest-text">{answer}</div>
+                </div>
+                <div className="check" style={{backgroundColor: getAnswers.color}}>
+                    <div className="answer_text">{getAnswers.text}</div>
+                    <Image className="answer_img" src={getAnswers.image} alt="answer_img"></Image>
                 </div>
             </div>
         </div>

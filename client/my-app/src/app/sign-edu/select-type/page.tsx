@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import SignLearning from '../../../../public/sign_learn.png';
 import TextLearning from '../../../../public/text_learn.png';
 import "@/app/styles/TypeSelect.css";
+import axios from "axios";
 
 export default function SelectType() {
     const currentPath = usePathname();
