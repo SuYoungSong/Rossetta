@@ -46,9 +46,9 @@ export default function RootLayout({
           </div>
         </div>
         {children} {/*아래 다른 페이지 폴더에서 layout.js 찾기*/}
+      <Footer />
       </body>
       </Provider>
-      <Footer />
     </html>
   )
 }

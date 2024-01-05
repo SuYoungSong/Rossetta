@@ -79,7 +79,7 @@
     flex-direction: row;
     height: 6vh;
     float: right;
-    margin: auto 15vw;
+    margin: 0 15vw 2.5vh 15vw;
 }
 
 .next_txt{
