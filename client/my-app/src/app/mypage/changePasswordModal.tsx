@@ -98,45 +98,50 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
           </div>
         )}
         <form>
-          <label htmlFor="currentPassword">기존 비밀번호:</label>
-          <input
-            type="password"
-            id="currentPassword"
-            placeholder="기존 비밀번호를 입력하세요."
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            style={{ border: basePasswordErrorState ? '1px solid red' : '1px solid #ccc' }}
-            required
-          />
-          <br />
+          <div>
+            <label htmlFor="currentPassword" className="pass-label">기존 비밀번호</label>
+            <input
+              type="password"
+              id="currentPassword"
+              className="only-one-input"
+              placeholder="기존 비밀번호를 입력하세요."
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              style={{ border: basePasswordErrorState ? '1px solid red' : '1px solid #ccc' }}
+              required
+            />
+            <br />
 
-          <label htmlFor="newPassword">새로운 비밀번호:</label>
-          <input
-            type="password"
-            id="newPassword"
-            placeholder="변경할 비밀번호를 입력하세요."
-            onChange={(e) => setNewPassword(e.target.value)}
-            style={{ border: newPasswordErrorState ? '1px solid red' : '1px solid #ccc' }}
-            required
-          />
-          <br />
+            <label htmlFor="newPassword" className="pass-label">새로운 비밀번호</label>
+            <input
+              type="password"
+              id="newPassword"
+              className="only-one-input"
+              placeholder="변경할 비밀번호를 입력하세요."
+              onChange={(e) => setNewPassword(e.target.value)}
+              style={{ border: newPasswordErrorState ? '1px solid red' : '1px solid #ccc' }}
+              required
+            />
+            <br />
 
-          <label htmlFor="confirmNewPassword">새로운 비밀번호 확인:</label>
-          <input
-            type="password"
-            id="confirmNewPassword"
-            placeholder="변경할 비밀번호와 동일하게 입력하세요."
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-            style={{ border: newPasswordErrorState ? '1px solid red' : '1px solid #ccc' }}
-            required
-          />
-          <br />
+            <label htmlFor="confirmNewPassword" className="pass-label">새로운 비밀번호 확인</label>
+            <input
+              type="password"
+              id="confirmNewPassword"
+              className="only-one-input"
+              placeholder="변경할 비밀번호와 동일하게 입력하세요."
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              style={{ border: newPasswordErrorState ? '1px solid red' : '1px solid #ccc' }}
+              required
+            />
+            <br />
 
-          <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>
-            변경하기
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
-            취소하기
-          </button>
+            <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>
+              변경하기
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+              취소하기
+            </button>
+            </div>
         </form>
       </div>
     </div>
