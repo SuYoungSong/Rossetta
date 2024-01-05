@@ -86,14 +86,18 @@ class UserView(APIView):
     # 회원 정보 delete
     @action(detail=True, methods=['delete'],
             permission_classes=[IsAuthenticated, IsTokenOwner])  # get 함수를 사용할때 적용하는 권한 설정
-    def delete(self, request, id):
-        if id != request.user.id:  # url 에서 받아온 id 와 request 요청으로 들어온 아이디가 다를시에도 탈퇴 불가
+    def delete(self, request):
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+        print(auth_token_user , request.user.id)
+        if auth_token_user != request.user.id:  # url 에서 받아온 id 와 request 요청으로 들어온 아이디가 다를시에도 탈퇴 불가
             return Response(data={"state": "다른 사용자의 아이디 입니다. 계정 탈퇴할수 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = User.objects.get(id=id)  # 삭제하고 싶은 사용자 정보 조회
+            user = User.objects.get(id=auth_token_user)  # 삭제하고 싶은 사용자 정보 조회
             user.delete()  # 사용자 정보 삭제
             return Response(data={"state": "정상 탈퇴 되었습니다."}, status=status.HTTP_204_NO_CONTENT)  # 정상 응답
-        except user.DoesNotExist:
+        except User.DoesNotExist:
             return Response(data={"state": "사용자가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
