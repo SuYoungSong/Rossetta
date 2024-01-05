@@ -86,7 +86,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
       <div className="modal-content">
         <h2>비밀번호 변경하기</h2>
         {(newPasswordErrorState || basePasswordErrorState) && (
-          <div style={{ color: 'red', marginBottom: '10px' }}>
+          <div className='pwErrorMsg'>
             {passwordErrorMessage}
           </div>
         )}

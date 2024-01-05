@@ -115,7 +115,7 @@ tr{
   background-color: #f7f5f5;
   border-radius: 8px;
   width: 420px;
-  height: 250px;
+  height: 280px;
   padding: 40px;
   text-align: center;
 }
@@ -149,6 +149,13 @@ tr{
     font-size: 13px;
 }
 
+.pwErrorMsg {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
 .accDelBtn {
     margin-top: 20px;
     margin-left: 10px;
@@ -162,7 +169,7 @@ tr{
 }
 
 .accPtag {
-    margin-top: 70px;
+    margin-top: 80px;
     text-align: center;
     color: rgb(241, 33, 33);
     font-weight: 500;
