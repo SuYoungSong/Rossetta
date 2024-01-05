@@ -48,7 +48,7 @@ urlpatterns = [
     ## 문제 API
     path('wordquestion/',WordQuestionView.as_view()),
     path('sentencequestion/',SentenceQuestionView.as_view()),
-
+    # path('wrongwordquestion/',WrongWordQuestionView.as_view()),
     ## token time renewal api
     path('renewaltokentime/',RenewalTokenTimeView.as_view()),
     path('autologout/',AutoLogoutView.as_view()),

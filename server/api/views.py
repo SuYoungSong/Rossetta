@@ -696,7 +696,6 @@ class SentenceQuestionView(APIView):
                     result['video'] = dict()
                     result['video']['url'] = answer_info.sign_video_url.url
                 return Response(data={"문제": result}, status=status.HTTP_200_OK)  # 정상 Response
-
         else:  # 한글 이 보이면 수어를 따라해서 정답 여부
             for paper_id in paper_ids:
                 if not practice_note.objects.filter(paper_id=paper_id, user_id=id).exists():  # 만약 사용자가 학습 기록이 없을때
@@ -720,8 +719,8 @@ class ScenarioView(APIView):
                 scenario_communication = dict()
                 scenario_communication['take'] = sc[i].take
                 scenario_communication['role'] = sc[i].role
-                if not is_null(sc[i].video):
-                    scenario_communication['video'] = sc[i].video
+                if sc[i].video:
+                    scenario_communication['video'] = sc[i].video.url
                 scenario_communication['subtitle'] = sc[i].subtitle
                 scenario[situation].append(scenario_communication)
             return Response(data=scenario, status=status.HTTP_200_OK)
@@ -731,12 +730,33 @@ class ScenarioView(APIView):
 
 ### 농아인 단어 오답문제 출제
 
-class WrongWordQuestionView(APIView):
-    def post(self , request):
-        id = request.data.get('id')  # 사용자 id
-        type = request.data.get('type')  # 단어/문장
-        situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
-        chapter = request.data.get('chapter')  # chapter
-        is_deaf = request.data.get('is_deaf')  # 농아인 여부
-        help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
-        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+# class WrongWordQuestionView(APIView):
+#     def post(self , request):
+#         id = request.data.get('id')  # 사용자 id
+#         type = request.data.get('type')  # 단어/문장
+#         situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
+#         chapter = request.data.get('chapter')  # chapter
+#         is_deaf = request.data.get('is_deaf')  # 농아인 여부
+#         help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
+#         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+#
+#         if help_text != "":  # 예외 처리가 존재 한다면
+#             if error_code == "400":
+#                 return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+#             if error_code == "404":
+#                 return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+#
+#
+#         if is_deaf:
+#             practice_notes = practice_note.objects.select_related('paper').filter(
+#                 paper__type=type,
+#                 paper__situation=situation,
+#                 paper__chapter=chapter,
+#                 user=id,
+#                 is_answer=False
+#             )
+#             for practice in practice_notes:
+#                 paper_info = practice.paper
+#
+#             return Response(data={"statet":"죽고싶어요..."})
+#         # else:
