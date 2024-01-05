@@ -1,11 +1,7 @@
 import {useRef, useState, useCallback, useEffect} from "react";
 import Webcam from "react-webcam";
-import Image, { StaticImageData } from 'next/image';
 import CameraImage from "../../../public/camera_3d.png"
 import "@/app/styles/camera_setting.css"
-import CorrectImage from "../../../public/correct_image.png"
-import IncorrectImage from "../../../public/incorrect_image.png"
-import idkImage from "../../../public/idknow.png"
 import { css } from "@emotion/css";
 import { Camera } from "@mediapipe/camera_utils";
 import {HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
@@ -16,18 +12,6 @@ const webCam = () => {
     const webcamRef = useRef<Webcam>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const resultsRef = useRef<Results>();
-    const [url, setUrl] = useState<string | null>(null);
-    const isAnswerCorrect = false
-    const getAnswer = () => {
-        if (isAnswerCorrect === null) {
-            return { text: '모르겠어요', color: '#FFE6B5', image: idkImage};
-            } else if (isAnswerCorrect) {
-            return { text: '정답', color: '#D0E8FF', image: CorrectImage};
-            } else {
-            return { text: '오답', color: '#FFC7C7', image: IncorrectImage};
-            }
-    };
-    const getAnswers = getAnswer();
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
 
@@ -151,15 +135,6 @@ const webCam = () => {
                     <button className={styles.button} onClick={OutputData}>
                         Output Data
                     </button>
-                </div>
-            </div>
-            <div className="answer_btn">
-                <div className="question">
-                    <div className="quest-text">단어</div>
-                </div>
-                <div className="check" style={{backgroundColor: getAnswers.color}}>
-                    <div className="answer_text">{getAnswers.text}</div>
-                    <Image className="answer_img" src={getAnswers.image} alt="answer_img"></Image>
                 </div>
             </div>
         </div>
