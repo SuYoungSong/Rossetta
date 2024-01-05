@@ -1,7 +1,7 @@
 /.idea/
 
 server/.env
-server/video
+server/media/video
 db.sqlite3
 server/migrations
 server/api/__pycache__
