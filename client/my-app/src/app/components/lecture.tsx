@@ -38,8 +38,14 @@ const LecturePage: React.FC<LectureProps> = ({situation, chapnum, wordnum=0}) =>
             .then(data => setVideoData(data));
     }, [situation, chapnum]);
 
-    const urls = videoData.filter(video => video.situation === situation && video.chapter === chapnum)
-        .map(video => video.sign_video_url);
+
+    // 영상 url 수정
+    for(var i = 0; i < videoData.length ; i++ ){
+        var beforePath = videoData[i].sign_video_url
+        videoData[i].sign_video_url = 'http://localhost:8000/media/' + beforePath
+    }
+
+    const urls = videoData.map(video => video.sign_video_url);
 
     return (
         <>
