@@ -327,7 +327,6 @@ const Auth =()=>{
                                     {variant == 'login' ? '회원가입' : '로그인'}
                                 </span>
                             </div>
-                            <span className="middle-bar">|</span>
 
                             <div className="forgot">
                                 <div className="auth-forget"> 잊어버리셨나요?</div>

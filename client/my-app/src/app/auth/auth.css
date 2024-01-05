@@ -5,7 +5,8 @@ Input {
 
 .auth-container{
     width: 100%;
-    margin-top: 10vh;
+    margin-top: 15vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -145,8 +146,11 @@ Input {
 .detail-btn{
     display: flex;
     justify-content: center;
-    flex-direction: row;
-    margin-top: 5vh;
+    flex-direction: column;
+    padding: 5vh;
+    margin: auto;
+    text-align: center;
+    width: 30vw;
 }
 
 .middle-bar{
@@ -178,14 +182,15 @@ Input {
     color: whitesmoke;
 }
 .auth-forget{
-    margin-right: 10px;
     font-size: 1vw;
+    margin-left: 20px;
+    width: 8vw;
     
 }
 .forgot{
     display: flex;
-    justify-content: center;
     flex-direction: row;
+    margin-bottom: 5px;
 }
 .forgot-link{
     font-weight: bold;
@@ -194,6 +199,7 @@ Input {
     text-underline-offset: 0.5vh;
     color: #4B4B4B;
     font-size: 1vw;
+    margin-left: 10px;
 }
 
 .forgot-link:hover {
@@ -204,6 +210,9 @@ Input {
     font-size: 0.9vw;
     color: red;
     margin: -2vh auto 0 3.5vw;
+    width: 25vw;
+    word-wrap: break-word;
+    word-break: keep-all;
 }
 
 #info_id {
