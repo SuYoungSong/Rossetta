@@ -8,7 +8,7 @@ import IncorrectImage from "../../../public/incorrect_image.png"
 import idkImage from "../../../public/idknow.png"
 import { css } from "@emotion/css";
 import { Camera } from "@mediapipe/camera_utils";
-import {HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
+import {HAND_CONNECTIONS, Holistic, NormalizedLandmarkList, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
 import {drawCanvas} from "@/app/utils/drawCanvas";
 
 interface CamProps {
@@ -22,6 +22,9 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const resultsRef = useRef<Results>();
     const [url, setUrl] = useState<string | null>(null);
+    const counterRef = useRef<number>(0);
+
+    const [landmarks, setAddLandmarks] = useState<Record<string, NormalizedLandmarkList>>({});
 
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
@@ -64,22 +67,29 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
           camera.start();
         }
         const intervalId = setInterval(() => {
-          const result = resultsRef.current;
+             const landmark = OutputData();
 
-          if (result && result.poseLandmarks && (result.leftHandLandmarks || result.rightHandLandmarks)) {
-            OutputData();
-          }
-        }, 100); // 1초에 10번 불러옴
+             setAddLandmarks((prevLandmarks) => ({ ...prevLandmarks, [counterRef.current++]: landmark }));
+        }, Math.floor(1000 / 30)); // 1초에 30번 불러옴
 
-        return () => {
-          clearInterval(intervalId);
-        };
+        return () => clearInterval(intervalId);
   }, [onResults]);
+
+
+    useEffect(() => {
+        console.log(landmarks)
+    },[landmarks]);
 
   /*  랜드마크들의 좌표를 콘솔에 출력 */
   const OutputData = () => {
-    const results = resultsRef.current!;
-    console.log({"poseLandmarks":results.poseLandmarks, "leftHandLandmarks":results.leftHandLandmarks, "rightHandLandmarks":results.rightHandLandmarks});
+    const landmark = resultsRef.current!;
+
+    const data = {
+        "pose_landmarks": landmark?.poseLandmarks,
+        "left_hand_landmarks": landmark?.leftHandLandmarks,
+        "right_hand_landmarks": landmark?.rightHandLandmarks
+      };
+    return data
   };
 
     const styles = {

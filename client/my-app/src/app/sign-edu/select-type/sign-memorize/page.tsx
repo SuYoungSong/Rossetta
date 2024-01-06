@@ -19,7 +19,7 @@ export default function SignMemory() {
     const chapter = Number(searchParams.get('chapter'))
     const [answer, setAnswer] = useState("");
 
-    const userId = localStorage.getItem('id');
+    const userId = typeof window !== 'undefined' ? localStorage.getItem('id') : null;
     let param = {};
     let API_URL = '';
 
