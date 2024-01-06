@@ -69,3 +69,7 @@
     float: right;
     margin: 1vh 0 3vh 15vw;
 }
+
+.next_image{
+    margin: 5px auto 0 5px;
+}

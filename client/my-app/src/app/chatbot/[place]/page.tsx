@@ -4,7 +4,7 @@ import '@/app/styles/training.css';
 import '@/app/components/VideoPlayer';
 import Link from 'next/link'
 import Image,{ StaticImageData } from 'next/image';
-import NextBtn from '../../../../public/right_direct.png';
+import ExitBtn from '../../../../public/exit.png';
 import WebCam from '@/app/components/webCam';
 import axios from 'axios';
 
@@ -18,13 +18,32 @@ const Chatbot = ({params}:{params: {place: string}}) => {
     useEffect(() => {
         axios.post("http://localhost:8000/api/scenario/", {"situation": dic[type]}, {headers: {'Authorization': `Token ${accessToken}`}})
             .then((res) => {
-                console.log(res.data)
                 setScript(res.data[dic[type]])
             })
             .catch((err) => {
                 console.log(err.response)
             });
     }, [type]);
+
+    // take를 기준으로 정렬하는 함수
+function sortByTake(array: { role: string; subtitle: string; take: number; video?: string }[]) {
+  return array.sort((a, b) => a.take - b.take);
+}
+
+// 정렬된 결과를 나열하는 함수
+function listByTake(array: { role: string; subtitle: string; take: number; video?: string }[]) {
+  return array.map((item) => (
+    <div key={item.take}>
+      <p>{item.role}</p>
+      <p>{item.subtitle}</p>
+      {item.video && <p>{item.video}</p>}
+    </div>
+  ));
+}
+//
+// // 결과 출력
+// const sortedResponses = sortByTake(responses);
+// const finalList = listByTake(sortedResponses);
 
     return(
         <>
@@ -52,7 +71,7 @@ const Chatbot = ({params}:{params: {place: string}}) => {
             <Link className="next_word" href="">
                 <div className='nextBtn'>
                     <div className='next_txt'>종료</div>
-                    <Image src={NextBtn} alt="next-button" className='next_image'></Image>
+                    <Image src={ExitBtn} alt="next-button" className='next_image'></Image>
                 </div>
             </Link>
         </>
