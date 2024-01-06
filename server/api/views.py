@@ -404,10 +404,12 @@ class QuestionCommentCreateView(APIView):
             return Response(data={"state": "게시글 , 댓글 정보를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
         board_id = int(board)
         # count = question_board.objects.all().count()
+
         if not question_board.objects.filter(id=board_id).exists():
             return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
-        if question_board.objects.get(board_id=board_id).state:
-            return Response(data={"state":"해결된 문의 입니다"} , status=status.HTTP_400_BAD_REQUEST)
+        board_info = question_board.objects.get(id=board_id)
+        if board_info.state:
+            return Response(data={"state": "해결된 문의 입니다"}, status=status.HTTP_400_BAD_REQUEST)
         serializers = QuestionCommentCreateSerializer(data=request.data, context={'request': request})
         if serializers.is_valid():
             serializers.create(serializers.validated_data)

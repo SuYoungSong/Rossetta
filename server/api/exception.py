@@ -60,7 +60,8 @@ def word_data_check(id, type, situation, chapter, is_deaf):
         return [help_text, error_code]
     chapters = paper.objects.filter(type=type, situation=situation).values_list('chapter').distinct()
     chapter_min, chapter_max = min(chapters)[0], max(chapters)[0]
-    if not (chapter_min <= chapter < chapter_max):
+    print(chapter_min , chapter , chapter_max)
+    if not (chapter_min <= chapter <= chapter_max):
         help_text = "해당 챕터가 조회되지 않습니다"
         error_code = "404"
         return [help_text, error_code]
