@@ -117,10 +117,10 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     <div className='boardList' onClick={handleItemClick}>
       <div className='boardNum'>{boardNum}</div>
       <div className='boardMain'>
-        <h4 className='boardTitle'>제목: {title}</h4>
-        <p className='boardContent'>작성일자: {formattedCreatedAt || 'N/A'}
+        <h4 className='boardTitle'>[문의] {title}</h4>
+        <p className='boardContent'>{formattedCreatedAt || 'N/A'}
             {''}
-            &ensp;작성자: {username}</p>
+            &ensp;&ensp;{username}</p>
       </div>
       <div className='waitBtn'>{state ? '답변완료' : '답변대기'}</div>
 
@@ -144,7 +144,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
                   onChange={e => setNewTitle(e.target.value)}
                 />
               ) : (
-                <div>{modalContent.title}</div>
+                <div className='titleInputContent'>{modalContent.title}</div>
               )}
             </div>
             <div className='modalMainContent'>내용</div>
@@ -155,13 +155,13 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
                   onChange={e => setNewBody(e.target.value)} // newBody를 변경
                 />
               ) : (
-                <div>{modalContent.body}</div>
+                <div className='queryContent'>{modalContent.body}</div>
               )}
             </div>
             <div className='modalMainContent'>작성일자</div>
-            <div>{formattedCreatedAt}</div>
+            <div className='queryDate'>{formattedCreatedAt}</div>
             <div className='modalMainContent'>첨부 이미지</div>
-            <div>
+            <div className='queryImageContent'>
               {modalContent?.images ? (
                 modalContent.images.map((image, index) => (
                   <img key={index} src={image} alt={`Image ${index}`} />

@@ -235,7 +235,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 2px;
   border-bottom: #726d6d 1px solid;
 }
 
@@ -251,10 +251,12 @@
 .boardMain {
   padding-right: 10px;
   text-align: left;
-  flex: 1;
-
+  flex: 1px;
 }
 
+.boardMain:hover {
+  cursor: pointer;
+}
 
 .boardTitle {
   margin: auto;
@@ -263,7 +265,7 @@
 }
 
 .boardContent {
- margin-top: 4vh;
+ margin-top: 1vh;
 }
 
 /* 답변완료,대기 버튼 */
@@ -296,7 +298,7 @@
   .modalContent {
     background-color: #fff;
     padding: 2vw;
-    width: 80vw;
+    width: 35vw;
     max-width: 1200px;
     max-height: 80vh;
     height: auto;
@@ -307,8 +309,6 @@
     bottom: 0;
     margin: auto;
     overflow: auto;
-
-
   }
 
   .modalTop {
@@ -330,7 +330,6 @@
   }
 
   .modalClose {
-
     font-size: 1.5vw;
     font-weight: bold;
     cursor: pointer;
@@ -338,10 +337,10 @@
   }
 
 
+  /* 게시판 클릭시 */
+
   .modalMain {
-
-
-
+    text-align: left;
   }
 
   .modalMainTitle {
@@ -349,7 +348,22 @@
     font-weight: bold;
     margin-top: 5vh;
     margin-bottom: 1vh;
+  }
 
+  .titleInputContent {
+    margin-bottom: 20px;
+  }
+
+  .queryContent {
+    margin-bottom: 20px;
+  }
+
+  .queryDate {
+    margin-bottom: 20px;
+  }
+
+  .queryImageContent {
+    margin-bottom: 30px;
   }
 
   input[type="text"],
@@ -364,15 +378,6 @@
     height: 4vh;
 
   }
-
-
-  .inputTitle {
-
-
-
-  }
-
-
 
   .inputContent {
     height: 25vh;
@@ -433,8 +438,6 @@
     text-align: center;
     bottom: 1vh;
     width: 90%;
-
-
   }
 
   .modalSubmit {
@@ -536,13 +539,18 @@
 
 /* 게시판 조회, 수정 css */
 .modal-btn{
-  background-color: #0a0a0a;
+  background-color: #6e6e6d;
   color: white;
-  width: 80px;
-  height: 50px;
-  margin: 20px;
-  border-radius: 10px;
+  width: 85px;
+  height: 45px;
+  margin: 10px;
+  border-radius: 20px;
 }
+
+.modal-btn:hover {
+  box-shadow: 0px 0px 3px rgb(121, 118, 118);
+}
+
 .btn-box{
   display: flex;
   justify-content: center;
