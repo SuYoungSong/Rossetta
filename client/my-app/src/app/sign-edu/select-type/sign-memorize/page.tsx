@@ -90,7 +90,7 @@ export default function SignMemory() {
                     'Authorization':`Token ${accessToken}`
                 }})
                 .then((res) => {
-                    checkAnswer(res.data.answer);
+                    checkAnswer(res.data.predict);
                 })
                 .catch((err) => {
                     console.log(err)
