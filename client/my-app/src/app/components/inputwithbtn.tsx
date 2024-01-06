@@ -12,6 +12,8 @@ interface InputPropsWB{
     speclassName?:any;
     spetextclassName?:any;
     spelabelclassName?:any;
+    speinputclassname?: any;
+    disabled? : any;
 }
 
 const InputWB: React.FC<InputPropsWB> = ({
@@ -25,6 +27,7 @@ const InputWB: React.FC<InputPropsWB> = ({
     btntext,
     spetextclassName,
     spelabelclassName,
+    disabled
 }) => {
     return (
         <>
@@ -35,8 +38,9 @@ const InputWB: React.FC<InputPropsWB> = ({
                         type={type}
                         value={value}
                         id={id}
-                        className="wb-input-style"
+                        className={"wb-input-style"}
                         placeholder=""
+                        disabled={disabled? disabled : false}
                     />
                     <label
                         className={spelabelclassName? spelabelclassName:"label-style"}

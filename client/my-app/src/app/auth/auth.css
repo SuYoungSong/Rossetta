@@ -83,6 +83,22 @@ Input {
     position: relative;
     height: 8vh;
 }
+
+.grayinput {
+    display: flex;
+    border-radius: 3px;
+    padding-left: 1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 0.25rem;
+    font-size: 1rem;
+    color: #4B4B4B;
+    background-color: #848484;
+    width: 100%;
+    border: 1px solid #D9D9D9;
+    left: -2.5px;
+    position: relative;
+    height: 8vh;
+}
  
   .label-style {
     position: absolute;
@@ -243,7 +259,7 @@ Input {
     color: #2C858D;
     font-weight: 500;
     display: flex;
-    width: calc(20% - 5px);
+    width: calc(30% - 5px);
     padding: 0.3rem;
     border-radius: 3px;
     border: 1px solid #2F787F;
@@ -270,7 +286,7 @@ Input {
 .graybtn {
     background-color: #AFB3B4;
     display: flex;
-    width: calc(20% - 5px);
+    width: calc(30% - 5px);
     padding: 0.3rem;
     border-radius: 3px;
     border: 1px solid #838383;

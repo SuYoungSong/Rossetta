@@ -261,6 +261,7 @@ const Auth =()=>{
                                         speclassName={isEmailVerified ? "graybtn" : null}
                                         spetextclassName={isEmailVerified ? "graytext" : null}
                                         spelabelclassName={"wb-label-style"}
+                                        disabled={isEmailVerified? true: null}
                                         onclick={isEmailVerified ? null : () => {
                                             handleSendEmailClick();
                                             handleInputFocus();
@@ -285,6 +286,7 @@ const Auth =()=>{
                                             spelabelclassName={"wb-label-style"}
                                             speclassName={isEmailVerified ? "graybtn" : "whitebtn"}
                                             spetextclassName={isEmailVerified ? "graytext" : "greentext"}
+                                            disabled={isEmailVerified? true : null}
                                             btntext={isEmailVerified ? "인증 완료" : "인증번호 확인"}
                                         />
                                     )}
