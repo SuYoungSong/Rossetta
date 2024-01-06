@@ -380,18 +380,17 @@ class QuestionListView(APIView):
         if id != request.user.id:
             return Response(data={"state": "로그인된 아이디와 요청하신 아이디 정보가 다릅니다 접근할수 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         queryset = question_board.objects.filter(user=id)
-        serializer = QuestionListSerializer(queryset, many=True)
-        return Response(data={'게시글': serializer.data, "게시글 수": len(queryset)}, status=status.HTTP_200_OK)
+        serializers = QuestionListSerializer(queryset, many=True)
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
 
 class AdminQuestionListView(APIView):
     permission_classes = [IsAuthenticated , IsTokenOwner, IsStaffOwner]
     def get(self , request):
         if not request.user.is_staff:
             return Response(data={"state":"관리자 만 사용할수 있습니다"} , status=status.HTTP_400_BAD_REQUEST)
-
         queryset = question_board.objects.all()
-        serializer = QuestionListSerializer(queryset, many=True)
-        return Response(data={'게시글': serializer.data, "게시글 수": len(queryset)}, status=status.HTTP_200_OK)
+        serializers = QuestionListSerializer(queryset, many=True)
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
 
 
 class QuestionCommentCreateView(APIView):
