@@ -7,10 +7,10 @@ interface BoardListItemProps {
   title: string;
   state: boolean;
   created: string;
-  id:number;
+  boardid:number;
 }
 
-const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, state, created ,id}) => {
+const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, state, created ,boardid}) => {
   // 작성일자를 Date 객체로 파싱
   const createdAt = new Date(created);
 
@@ -33,7 +33,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     // const storedUsername = localStorage.getItem('username');
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/question/${id}/`,
+        `http://localhost:8000/api/question/${boardid}/`,
         {
           params: { id: user_id },
           headers: { 'Authorization': `Token ${accessToken}` },
@@ -71,7 +71,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     const user_id = localStorage.getItem('id');
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/question/${id}/`,
+        `http://localhost:8000/api/question/${boardid}/`,
         {
           "title2": newTitle,
           "body": newBody
@@ -96,7 +96,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     const user_id = localStorage.getItem('id');
     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/question/${id}/`,
+        `http://localhost:8000/api/question/${boardid}/`,
         {
           params: { id: user_id },
           headers: { 'Authorization': `Token ${accessToken}` },

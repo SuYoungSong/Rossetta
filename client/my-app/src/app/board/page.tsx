@@ -9,8 +9,9 @@ import axios from "axios";
 const Board: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boardData, setBoardData] = useState([]);
-  const [userid, setUserid] = useState("");
+  // const [boardid, setBoardid] = useState("");
   const [username, setUsername] = useState(""); // 추가된 부분
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -28,11 +29,9 @@ const Board: React.FC = () => {
             const response = await axios.get(`http://localhost:8000/api/questionlist/${user_id}`, {
                 headers: { 'Authorization': `Token ${accessToken}` },
                 params: { id: user_id}
-
             });
-
-
-            setUserid(response.data.id);
+            console.log(response.data)
+            // setBoardid(response.data.id);
           setBoardData(response.data);
 
       } catch (error) {
@@ -59,6 +58,7 @@ const Board: React.FC = () => {
           {boardData.map((boardItem, index) => (
             <BoardList key={index}
                        boardNum={index+1}
+                       boardid={boardItem.id}
                        username={username}
                         boardData={boardData}
                        {...boardItem} />
