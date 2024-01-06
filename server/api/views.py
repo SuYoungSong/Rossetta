@@ -146,7 +146,7 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request, user)  # user 데이터가 존재하면 로그인
                 token, created = Token.objects.get_or_create(user=user)  # 해당 유저 데이터를 기준으로 토큰값을 생성
-                return Response(data={"token": token.key, "name": user.name},
+                return Response(data={"token": token.key, "name": user.name , 'is_staff':user.is_staff},
                                 status=status.HTTP_200_OK)  # 해당 유저의 토큰값을 반환
             else:
                 return Response(data={"error": "아이디나 비밀번호가 틀렸습니다."}, status=status.HTTP_400_BAD_REQUEST)  # user = None
