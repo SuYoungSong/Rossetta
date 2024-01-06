@@ -10,7 +10,7 @@ officialrossetta@gmail.com
 |이수빈|전우진|설형호|천영성|
 |:-:|:-:|:-:|:-:|
 |Frontend|Frontend|Backend|Backend|
-|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/b5104fb9-a9fc-4d46-9d62-812d4da5e6c0)' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/3e0ee121-cb67-4629-a600-d4db1d3a1728' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/34f40b68-59cf-4a38-9b20-95e8a6767583' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/8b5ea0b4-bc12-4b3b-b4ef-2bc4539ea081' width=120 />|
+|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/c5a89c57-2561-4103-90c2-d25e4be7dda9' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/351dd7f1-e0db-4b37-8fad-e4289ac3c133' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/34f40b68-59cf-4a38-9b20-95e8a6767583' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/8b5ea0b4-bc12-4b3b-b4ef-2bc4539ea081' width=120 />|
 |[@subin1028](https://github.com/subin1028)|[@wwojin](https://github.com/jsm9194)|[@hh8262](https://github.com/hh8262)|[@hokoro](https://github.com/hokoro)|
 
 
