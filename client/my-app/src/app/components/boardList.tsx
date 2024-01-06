@@ -20,9 +20,8 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       <div className='boardNum'>{boardNum}</div>
       <div className='boardMain'>
         <h4 className='boardTitle'>제목: {title}</h4>
-        <p className='boardContent'>작성일자: {formattedCreatedAt || 'N/A'}
-            {''}
-            작성자:{username}</p>
+        <p className='boardContent'>{formattedCreatedAt || 'N/A'}
+            {''} | 작성자: {username}</p>
       </div>
       <div className='waitBtn'>{state ? '답변완료' : '답변대기'}</div>
     </div>
