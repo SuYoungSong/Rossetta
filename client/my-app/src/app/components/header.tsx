@@ -33,6 +33,7 @@ const Header = ({username, status, token}: HeaderProps) => {
           localStorage.removeItem('accessToken');
           localStorage.removeItem('username');
           localStorage.removeItem('id');
+          localStorage.removeItem("real_script")
           router.push('/');
           window.location.replace('/');
       })
@@ -40,6 +41,13 @@ const Header = ({username, status, token}: HeaderProps) => {
         console.log("err >> ", err);
       });
     };
+
+    const goHome = () =>{
+        window.location.replace("/");
+    }
+    const Chatreload = () => {
+        window.location.replace("/chatbot");
+    }
 
     // 로그인 유효 시간을 갱신하는 POST
     const loginTimeUpdate = () => {
@@ -107,9 +115,9 @@ const Header = ({username, status, token}: HeaderProps) => {
     return (
         <>
             <div className="nav_basic">
-                <Link  href="/"><Image className="logo" src={RoLogo} alt='logo'/></Link>
+                <Link href="/" onClick={goHome}><Image className="logo" src={RoLogo} alt='logo'/></Link>
                 <Link className='nav_btn'  href='/sign-edu'>수어교육</Link>
-                <Link className='nav_btn'  href='/chatbot'>수어실습</Link>
+                <Link className='nav_btn' href='/chatbot' onClick={Chatreload}>수어실습</Link>
                 <Link className='nav_btn'  href='/wrongnote'>오답노트</Link>
                 <Link className='nav_btn'  href='/board'>1:1 문의</Link>
             </div>
