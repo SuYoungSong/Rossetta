@@ -591,7 +591,7 @@ class PracticeNoteView(APIView):
             if practice_note.objects.filter(paper_id=paper_id, user_id=user,is_deaf=is_deaf).exists():
                 note = practice_note.objects.get(paper_id=paper_id, user_id=user,is_deaf=is_deaf)
                 serializer.update(note, validated_data=serializer.validated_data)
-                return Response(data={"state": "게시글이 정상적으로 수정되었습니다"}, status=status.HTTP_200_OK)
+                return Response(data={"state": "문제 의 정답 여부를 수정하였습니다."}, status=status.HTTP_200_OK)
             else:
                 serializer.create(validated_data=serializer.validated_data)
                 return Response(data={"state": "문제를 처음 풀었습니다"}, status=status.HTTP_201_CREATED)
@@ -683,6 +683,7 @@ class WordQuestionView(APIView):
                     if not practice_note.objects.filter(paper_id=paper_id, user_id=id , is_deaf=is_deaf).exists():  # 사용자가 처음 푼 기록 이라면
                         answer_info = paper.objects.get(id=paper_id[0])  # 해당 문제의 정보를 저장
                         result['1'] = dict()  # 정답 dict 생성
+                        result['1']['id'] = answer_info.id
                         result['1']['word'] = answer_info.sign_answer  # 정답에 관련된 내용
                         result['1']['isAnswer'] = True  # 정답에 관련된 비디오
                         wrong_infos = paper.objects.exclude(id=answer_info.id).filter(type=answer_info.type,
@@ -693,6 +694,7 @@ class WordQuestionView(APIView):
                         for i in range(len(random_numbers)):
                             wrong_info = wrong_infos[random_numbers[i]]  # 랜덤한 오답 정보 저장
                             result[f'{i + 2}'] = dict()
+                            result[f'{i + 2}']['id'] = wrong_info.id
                             result[f'{i + 2}']['word'] = wrong_info.sign_answer
                             result[f'{i + 2}']['isAnswer'] = False
                         result['video'] = dict()
@@ -702,12 +704,14 @@ class WordQuestionView(APIView):
                     if not practice_note.objects.filter(paper_id=paper_id, user_id=id , is_deaf=is_deaf).exists():  # 만약 사용자가 학습 기록이 없을때
                         answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
                         result['answer'] = dict()
+                        result['answer']['id'] = answer_info.id
                         result['answer']['word'] = answer_info.sign_answer
             return Response(data={"문제": result}, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
             return Response(data={"state": "조회 가능한 문제가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
 class SentenceQuestionView(APIView):
+
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
@@ -732,6 +736,7 @@ class SentenceQuestionView(APIView):
                     if not practice_note.objects.filter(paper_id=paper_id, user_id=id,is_deaf=is_deaf).exists():
                         answer_info = paper.objects.get(id=paper_id[0])
                         result['1'] = dict()
+                        result['1']['id'] = answer_info.id
                         result['1']['word'] = answer_info.sign_answer
                         result['1']['isAnswer'] = True
                         wrong_infos = paper.objects.exclude(id=answer_info.id).filter(
@@ -742,6 +747,7 @@ class SentenceQuestionView(APIView):
                         for i in range(len(random_numbers)):
                             wrong_info = wrong_infos[random_numbers[i]]  # 랜덤한 오답 정보 저장
                             result[f'{i + 2}'] = dict()
+                            result[f'{i + 2}']['id'] = wrong_info.id
                             result[f'{i + 2}']['word'] = wrong_info.sign_answer
                             result[f'{i + 2}']['isAnswer'] = False
                         result['video'] = dict()
@@ -751,6 +757,7 @@ class SentenceQuestionView(APIView):
                     if not practice_note.objects.filter(paper_id=paper_id, user_id=id,is_deaf=is_deaf).exists():  # 만약 사용자가 학습 기록이 없을때
                         answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
                         result['answer'] = dict()
+                        result['answer']['id'] = answer_info.id
                         result['answer']['word'] = answer_info.sign_answer
             return Response(data={"문제": result}, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
@@ -815,6 +822,7 @@ class WrongWordQuestionView(APIView):
                 for practice in practice_notes:
                     paper_info = practice.paper  # 틀린 문제 정보
                     result["1"] = dict()
+                    result["1"]["id"] = paper_info.id
                     result["1"]["word"] = paper_info.sign_answer
                     result["1"]["isAnswer"] = True
                     wrong_infos = paper.objects.exclude(id=paper_info.id).filter(type=paper_info.type,
@@ -825,6 +833,7 @@ class WrongWordQuestionView(APIView):
                     for i in range(len(random_numbers)):
                         wrong_info = wrong_infos[random_numbers[i]]
                         result[f'{i + 2}'] = dict()
+                        result[f'{i + 2}']['id'] = wrong_info.id
                         result[f'{i + 2}']['word'] = wrong_info.sign_answer
                         result[f'{i + 2}']['isAnswer'] = False
                     result['video'] = dict()
@@ -872,6 +881,7 @@ class WrongSentenceQuestionView(APIView):
                 for practice in practice_notes:
                     paper_info = practice.paper  # 틀린 문제 정보
                     result["1"] = dict()
+                    result["1"]["id"] = paper_info.id
                     result["1"]["word"] = paper_info.sign_answer
                     result["1"]["isAnswer"] = True
                     wrong_infos = paper.objects.exclude(id=paper_info.id).filter(type=paper_info.type,
@@ -882,6 +892,7 @@ class WrongSentenceQuestionView(APIView):
                     for i in range(len(random_numbers)):
                         wrong_info = wrong_infos[random_numbers[i]]
                         result[f'{i + 2}'] = dict()
+                        result[f'{i + 2}']['id'] = wrong_info.id
                         result[f'{i + 2}']['word'] = wrong_info.sign_answer
                         result[f'{i + 2}']['isAnswer'] = False
                     result['video'] = dict()
@@ -890,6 +901,7 @@ class WrongSentenceQuestionView(APIView):
                 for practice in practice_notes:
                     paper_info = practice.paper  # 틀린 문제 정보
                     result['answer'] = dict()
+                    result['answer']['id'] = paper_info.id
                     result['answer']['word'] = paper_info.sign_answer
             return Response(data={"문제": result}, status=status.HTTP_200_OK)
 
