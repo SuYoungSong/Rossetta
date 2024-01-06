@@ -65,6 +65,11 @@ body {
   color: #2C858D;
 }
 
+.nav_btn.active {
+  font-weight: bolder;
+  color: #2C858D;
+}
+
 .nav_customer{
   display: flex;
   flex-direction: row;

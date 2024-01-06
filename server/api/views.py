@@ -987,22 +987,22 @@ class SentenceModelView(APIView):
         pose_landmarks = [0] * (33 * 4)  # 33개의 pose landmarks * 4 (x, y, z, visibility)
         left_hand_landmarks = [0] * (21 * 3)  # 21개의 hand landmarks * 3 (x, y, z)
         right_hand_landmarks = [0] * (21 * 3)  # 21개의 hand landmarks * 3 (x, y, z)
-
+        print(results)
         if 'pose_landmarks' in results:
-            pose_landmarks = [landmark.x for landmark in results.pose_landmarks.landmark] + \
-                             [landmark.y for landmark in results.pose_landmarks.landmark] + \
-                             [landmark.z for landmark in results.pose_landmarks.landmark] + \
-                             [landmark.visibility for landmark in results.pose_landmarks.landmark]
+            pose_landmarks = [landmark["x"] for landmark in results['pose_landmarks']] + \
+                             [landmark["y"] for landmark in results['pose_landmarks']] + \
+                             [landmark["z"] for landmark in results['pose_landmarks']] + \
+                             [landmark["visibility"] for landmark in results['pose_landmarks']]
 
         if 'left_hand_landmarks' in results:
-            left_hand_landmarks = [landmark.x for landmark in results.left_hand_landmarks.landmark] + \
-                                  [landmark.y for landmark in results.left_hand_landmarks.landmark] + \
-                                  [landmark.z for landmark in results.left_hand_landmarks.landmark]
+            left_hand_landmarks = [landmark["x"] for landmark in results['left_hand_landmarks']] + \
+                                  [landmark["y"] for landmark in results['left_hand_landmarks']] + \
+                                  [landmark["z"] for landmark in results['left_hand_landmarks']]
 
         if 'right_hand_landmarks' in results:
-            right_hand_landmarks = [landmark.x for landmark in results.right_hand_landmarks.landmark] + \
-                                   [landmark.y for landmark in results.right_hand_landmarks.landmark] + \
-                                   [landmark.z for landmark in results.right_hand_landmarks.landmark]
+            right_hand_landmarks = [landmark["x"] for landmark in results['right_hand_landmarks']] + \
+                                   [landmark["y"] for landmark in results['right_hand_landmarks']] + \
+                                   [landmark["z"] for landmark in results['right_hand_landmarks']]
 
         landmark = pose_landmarks + left_hand_landmarks + right_hand_landmarks
 

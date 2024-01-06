@@ -1,7 +1,7 @@
 "use client"
 
 import { Inter } from 'next/font/google';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import '@/app/styles/globals.css'
@@ -21,9 +21,7 @@ interface HeaderProps{
 
 const Header = ({username, status, token}: HeaderProps) => {
     const router = useRouter();
-
-
-
+    const [activeNavBtn, setActiveNavBtn] = useState<string | null>(null);
 
     const logout = () => {
     let accessToken = localStorage.getItem('accessToken');
@@ -115,11 +113,11 @@ const Header = ({username, status, token}: HeaderProps) => {
     return (
         <>
             <div className="nav_basic">
-                <Link href="/" onClick={goHome}><Image className="logo" src={RoLogo} alt='logo'/></Link>
-                <Link className='nav_btn'  href='/sign-edu'>수어교육</Link>
-                <Link className='nav_btn' href='/chatbot' onClick={Chatreload}>수어실습</Link>
-                <Link className='nav_btn'  href='/wrongnote'>오답노트</Link>
-                <Link className='nav_btn'  href='/board'>1:1 문의</Link>
+                <Link  href="/" onClick={() => setActiveNavBtn(null)}><Image className="logo" src={RoLogo} alt='logo'/></Link>
+                <Link className={`nav_btn ${activeNavBtn === 'sign-edu' ? 'active' : ''}`} href='/sign-edu' onClick={() => setActiveNavBtn('sign-edu')}>수어교육</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'chatbot' ? 'active' : ''}`} href='/chatbot' onClick={() => setActiveNavBtn('chatbot')}>수어실습</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'wrongnote' ? 'active' : ''}`} href='/wrongnote' onClick={() => setActiveNavBtn('wrongnote')}>오답노트</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'board' ? 'active' : ''}`} href='/board' onClick={() => setActiveNavBtn('board')}>1:1 문의</Link>
             </div>
 
 
@@ -132,11 +130,11 @@ const Header = ({username, status, token}: HeaderProps) => {
                       {/*  <div className='login'>로그아웃</div>*/}
                       {/*</div>*/}
                       <div className='user_name'>
-                          <Dropdown label={`${username}님`} inline className="dropdown-container">
-                              <Link href='/mypage' ><Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item></Link>
-                              <Dropdown.Divider className="divider-drop"/>
-                              <Dropdown.Item icon={HiLogout} onClick={logout}>로그아웃</Dropdown.Item>
-                            </Dropdown>
+                        <Dropdown label={`${username}님`} inline className="dropdown-container">
+                          <Link href='/mypage' ><Dropdown.Item icon={HiCog} onClick={() => setActiveNavBtn(null)}>내 정보</Dropdown.Item></Link>
+                          <Dropdown.Divider className="divider-drop"/>
+                          <Dropdown.Item icon={HiLogout} onClick={() => {logout(); setActiveNavBtn(null);}}>로그아웃</Dropdown.Item>
+                        </Dropdown>
                       </div>
                   </div>
                 </>
