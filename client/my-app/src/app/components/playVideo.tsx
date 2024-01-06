@@ -69,18 +69,22 @@ const VideoPlayer: React.FC<VideoProps> = ({take, role, video, subtitle,total_le
           <div className='section-lecture'>
               <div className='trainContainer'>
                   <div className='box avatarBox'>
-                      <div className="pre-text">
-                          {prescript && (
-                              <>
+                      {prescript && (
+                          <>
+                              <div className="pre-text">
                                   <div className="whole_avatar">
                                       <div className="avatar">아바타의 이전 표현</div>
                                       <div className='avatar_said'>{prescript}</div>
-
                                   </div>
+                              </div>
+                              <video controls className="video" src={preVideo}></video>
+                          </>
+                      )}
+                      {prescript == undefined && (
+                              <>
+                                  <div className="cam_text">수어 인식을 기다리고 있어요</div>
                               </>
                           )}
-                      </div>
-                      <video controls className="video" src={preVideo}></video>
                   </div>
                   <div className="user_txt">
                       <div className='customer'>표현해야 할 내용</div>

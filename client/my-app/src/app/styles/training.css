@@ -36,15 +36,10 @@
     
 }
 
-/*지워도됌*/
 .avatarBox{
-    background-color: gray;
+    background-color: #9ca3af;
 }
 
-.webcamBox{
-    background-color: bisque;
-
-}
 
 .box{
     height: 55vh;
