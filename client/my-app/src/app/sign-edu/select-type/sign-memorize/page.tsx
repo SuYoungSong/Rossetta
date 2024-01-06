@@ -5,14 +5,13 @@ import getAnswer from "@/app/components/getAnswer";
 import React from "react";
 import { useSearchParams } from 'next/navigation';
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import idkImage from "../../../../../public/idknow.png";
-import CorrectImage from "../../../../../public/correct_image.png";
-import IncorrectImage from "../../../../../public/incorrect_image.png";
+import AnswerModalProps from '../answerModal';
 import WebCamMemorize from "@/app/components/webCamMemorize";
 export default function SignMemory() {
-    const isAnswerCorrect = false
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const searchParams = useSearchParams()
 
     const type = searchParams.get('type')
@@ -21,6 +20,12 @@ export default function SignMemory() {
     const [answer, setAnswer] = useState("");
 
     const userId = typeof window !== 'undefined' ? localStorage.getItem('id') : null;
+
+
+    const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+
+
+
     let param = {};
     let API_URL = '';
 
@@ -46,18 +51,20 @@ export default function SignMemory() {
                     console.log(err)
                 });
         };
-        getQuestion();
-        const getAnswers = () => {
-            if (isAnswerCorrect === null) {
-              return { text: '모르겠어요', color: '#FFE6B5', image: idkImage };
-            } else if (isAnswerCorrect) {
-              return { text: '정답', color: '#D0E8FF', image: CorrectImage };
-            } else {
-              return { text: '오답', color: '#FFC7C7', image: IncorrectImage };
-            }
+
+
+        useEffect(() => {
+            getQuestion();
+            // handleOpenModal();
+         }, []);
+
+
+
+        // 정답 결과를 제공하는 modal을 open하는 로직
+        const handleOpenModal = () => {
+            setIsModalOpen(true);
           };
 
-        const getAnswer = getAnswers();
 
         return (
             <>
@@ -67,12 +74,12 @@ export default function SignMemory() {
                         <div className="question">
                             <div className="quest-text">{answer}</div>
                         </div>
-                        <div className="check" style={{backgroundColor: getAnswer.color}}>
-                            <div className="answer_text">{getAnswer.text}</div>
-                            <Image className="answer_img" src={getAnswer.image} alt="answer_img"/>
+                        <div className="check">
+                            <button className='startQuiz'>문제 풀기</button>
                         </div>
                     </div>
                 </div>
+                <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
             </>
         );
 }

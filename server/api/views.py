@@ -400,19 +400,31 @@ class QuestionCommentCreateView(APIView):
     def post(self, request):
         board = request.data.get('board')
         comment = request.data.get('comment')
-        if is_blank_or_is_null(board) or is_blank_or_is_null(comment):
+        if is_null(board) or is_null(comment):
             return Response(data={"state": "게시글 , 댓글 정보를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
         board_id = int(board)
         # count = question_board.objects.all().count()
         if not question_board.objects.filter(id=board_id).exists():
             return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
+        if question_board.objects.get(board_id=board_id).state:
+            return Response(data={"state":"해결된 문의 입니다"} , status=status.HTTP_400_BAD_REQUEST)
         serializers = QuestionCommentCreateSerializer(data=request.data, context={'request': request})
         if serializers.is_valid():
             serializers.create(serializers.validated_data)
             return Response(data={"state": "댓글 작성이 완료되었습니다"}, status=status.HTTP_201_CREATED)
         return Response(data=serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+class QuestionCommentDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+    def post(self , request):
+        board_id = request.data.get('board')
+        if board_id is None:
+            return Response(data={"state":"게시글 정보를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
+        try:
+            comment = question_board_comments.objects.get(id=board_id)
+            return Response(data={"comment":comment.comment} , status=status.HTTP_200_OK)
+        except question_board_comments.DoesNotExist:
+            return Response(data={"state":"댓글 정보가 존재하지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
 ##########################################################################
 ################################ Paper ###################################
 ##########################################################################
@@ -590,13 +602,13 @@ class PracticeNoteView(APIView):
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
-        paper_id = request.data.get('paper', None)
-        user = request.data.get('user', None)
-        is_deaf = request.data.get('is_deaf', None)
-        count = paper.objects.all().count()
+        paper_id = request.data.get('paper', None)  # 정수
+        user = request.data.get('user', None)   # 문자
+        is_deaf = request.data.get('is_deaf', None) # bool
+        count = paper.objects.all().count() # 정수
         if is_deaf != True and is_deaf != False:
             return Response(data={"state": "문제 유형을 찾을수 없습니다"}, status=status.HTTP_404_NOT_FOUND)
-        if is_blank_or_is_null(user) or is_blank_or_is_null(paper_id):
+        if is_null(user) or is_null(paper_id):
             return Response(data={"state": "문제지 혹은 사용자 정보가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
         if not (0 < int(paper_id) <= count):
             return Response(data={"state": "문제지 정보가 조회되지 않습니다."}, status=status.HTTP_404_NOT_FOUND)

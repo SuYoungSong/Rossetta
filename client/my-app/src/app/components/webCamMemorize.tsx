@@ -88,7 +88,6 @@ const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
                 });
             setAddLandmarks({});
         }
-        console.log(landmarks)
     },[landmarks]);
 
 
