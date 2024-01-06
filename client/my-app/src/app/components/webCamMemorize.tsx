@@ -11,13 +11,16 @@ import { Camera } from "@mediapipe/camera_utils";
 import {HAND_CONNECTIONS, Holistic, NormalizedLandmarkList, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
 import {drawCanvas} from "@/app/utils/drawCanvas";
 import axios from "axios";
+import {Console} from "inspector";
 
 interface CamProps {
-  frame_className?: string;
+    onLandmarksChange: (landmarks: Record<string, NormalizedLandmarkList>) => void;
+    frameNumber:number
+    isStart: boolean;
 }
 
 
-const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
+const WebCamMemorize: React.FC<CamProps> = ({onLandmarksChange, frameNumber, isStart}) => {
     const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
     const webcamRef = useRef<Webcam>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,12 +29,14 @@ const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
     const counterRef = useRef<number>(0);
 
     const [landmarks, setAddLandmarks] = useState<Record<string, NormalizedLandmarkList>>({});
+    const isInitialRender = useRef(true);
+
+
 
     const onResults = useCallback((results: Results) => {
-    resultsRef.current = results;
-
-    const canvasCtx = canvasRef.current!.getContext("2d")!;
-    drawCanvas(canvasCtx, results);
+        resultsRef.current = results;
+        const canvasCtx = canvasRef.current!.getContext("2d")!;
+        drawCanvas(canvasCtx, results);
   }, []);
 
     useEffect(() => {
@@ -67,28 +72,31 @@ const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
           });
           camera.start();
         }
-        const intervalId = setInterval(() => {
-             const landmark = OutputData();
 
+  }, [onResults]);
+
+    useEffect(() => {
+        onLandmarksChange(landmarks);
+    },[landmarks]);
+
+    useEffect(() => {
+        // 초기 렌더링일 경우 실행하지 않음
+        if (isInitialRender.current) {
+          isInitialRender.current = false;
+          return;
+        }
+
+        const intervalId = setInterval(() => {
+            const landmark = OutputData();
              setAddLandmarks((prevLandmarks) => ({ ...prevLandmarks, [counterRef.current++]: landmark }));
+             if(counterRef.current == frameNumber){
+                 clearInterval(intervalId)
+            }
+
         }, Math.floor(1000 / 30)); // 1초에 30번 불러옴
 
         return () => clearInterval(intervalId);
-  }, [onResults]);
-
-
-    useEffect(() => {
-        if (Object.keys(landmarks).length == 30){
-            axios.post("http://localhost:8000/api/sentencemodel/", {landmarks})
-                .then((res) => {
-                    console.log(res)
-                })
-                .catch((err) => {
-                    console.log(err)
-                });
-            setAddLandmarks({});
-        }
-    },[landmarks]);
+    }, [isStart]);
 
 
 
@@ -130,7 +138,7 @@ const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
   return (
     <>
         <>
-            <div className={`${styles.container} ${frame_className || 'cameraFrame'}`}>
+            <div className={`${styles.container} ${'cameraFrame'}`}>
                 <Webcam
                     audio={false}
                     width={640}
