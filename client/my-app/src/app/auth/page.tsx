@@ -52,6 +52,7 @@ const Auth =()=>{
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [isnameSignAvailable, setnameIsSignAvailable] = useState("");
     const [ispassSignAvailable, setpassIsSignAvailable] = useState("");
+    const [isemailAvailable, setemailAvailable] = useState(null);
 
 
 
@@ -73,11 +74,17 @@ const Auth =()=>{
             axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
             .then((res) => {
                 console.log("res >> ", res);
+                setemailAvailable(null);
                 setUniqueNum(res.data.unique_number);
                 setemailBtntext("재전송");
+                setShowEmailVerification(true)
             })
             .catch((err) => {
                 console.log("err >> ", err);
+                setShowEmailVerification(false)
+                if (err.response && err.response.data && err.response.status === 400) {
+                    const errorMessage = err.response.data.state;
+                    setemailAvailable(errorMessage);}
             });
         }
     
@@ -101,7 +108,7 @@ const Auth =()=>{
         console.log("err >> ", err.response.data);
         if (err.response && err.response.data && err.response.status === 400) {
             const errorMessage = err.response.data.state;
-            setIsemailcheck(errorMessage);}
+            setemailAvailable(errorMessage);}
       });
   }
 
@@ -196,6 +203,7 @@ const Auth =()=>{
     }
 };
 
+
     return(
         <div>
             <div className='auth-container'>
@@ -265,13 +273,13 @@ const Auth =()=>{
                                         onclick={isEmailVerified ? null : () => {
                                             handleSendEmailClick();
                                             handleInputFocus();
-                                            emailisValid && email != "" ? setShowEmailVerification(true) : setShowEmailVerification(false);
                                         }}
                                         btntext={isEmailVerified ? "인증 완료" : emailbtntext}
                                     />
 
                                     {(!emailisValid || email == "") && (getFocus) &&
                                         <p className="error-message">유효한 이메일을 입력해주세요.</p>}
+                                    {<div className="error-message">{isemailAvailable}</div>}
 
                                     {emailisValid && showEmailVerification && (
                                         <WBInput
