@@ -11,10 +11,12 @@ import { Camera } from "@mediapipe/camera_utils";
 import {HAND_CONNECTIONS, Holistic, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
 import {drawCanvas} from "@/app/utils/drawCanvas";
 
-interface WebCamProps{
-    answer: string;
+interface CamProps {
+  frame_className?: string;
 }
-const WebCam: React.FC<WebCamProps> = ({ answer }) => {
+
+
+const WebCam: React.FC<CamProps> = ({frame_className}) => {
     const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
     const webcamRef = useRef<Webcam>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,16 +92,16 @@ const WebCam: React.FC<WebCamProps> = ({ answer }) => {
     const styles = {
       container: css`
         position: relative;
-        width: 100vw;
-        height: 100vh;
+        //width: 100vw;
+        //height: 100vh;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
       `,
       canvas: css`
-        width: auto;
-        height: 55vh;
+        //width: auto;
+        //height: 55vh;
         background-color: #fff;
       `,
       buttonContainer: css`
@@ -123,7 +125,7 @@ const WebCam: React.FC<WebCamProps> = ({ answer }) => {
       {/*)}*/}
       {/*{isCaptureEnable && (*/}
         <>
-            <div className="cameraFrame {styles.container}">
+            <div className={`${styles.container} ${frame_className || 'cameraFrame'}`}>
                 <Webcam
                     audio={false}
                     width={640}

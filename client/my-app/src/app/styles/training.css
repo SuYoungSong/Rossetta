@@ -32,7 +32,7 @@
     display: flex;
     justify-content: center;
     width: 100vw;
-    margin: auto;
+    margin: 2vh auto;
     gap: 10px;
     padding: 0 15vw;
     
@@ -49,10 +49,11 @@
 }
 
 .box{
-    height: 65vh;
-    width: 35vw;
-    border-radius: 20px;
+    height: 55vh;
+    width: 33vw;
+    border-radius: 30px;
     overflow: hidden;
+    display: flex;
 }
 
 .section-leture{
@@ -62,4 +63,9 @@
     text-align: center;
     height: 60vh;
     margin: 2vh auto;
+}
+
+.next_word {
+    float: right;
+    margin: 1vh 0 3vh 15vw;
 }

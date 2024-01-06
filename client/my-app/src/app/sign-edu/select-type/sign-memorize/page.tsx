@@ -61,7 +61,7 @@ export default function SignMemory() {
         return (
             <>
                 <div className="whole_camera">
-                    <WebCam answer={answer}/>
+                    <WebCam/>
                     <div className="answer_btn">
                         <div className="question">
                             <div className="quest-text">단어</div>

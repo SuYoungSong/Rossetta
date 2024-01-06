@@ -44,9 +44,9 @@
     height: 55vh;
     display: flex;
     justify-content: center;
-    margin: auto 2vw;
+    margin: auto auto;
     overflow: hidden;
-    border-radius: 40px;
+    border-radius: 30px;
 }
 
 .answer_btn {
