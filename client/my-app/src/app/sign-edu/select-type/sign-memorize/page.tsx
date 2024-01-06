@@ -10,6 +10,7 @@ import Image from "next/image";
 import idkImage from "../../../../../public/idknow.png";
 import CorrectImage from "../../../../../public/correct_image.png";
 import IncorrectImage from "../../../../../public/incorrect_image.png";
+import WebCamMemorize from "@/app/components/webCamMemorize";
 export default function SignMemory() {
     const isAnswerCorrect = false
     const searchParams = useSearchParams()
@@ -61,7 +62,7 @@ export default function SignMemory() {
         return (
             <>
                 <div className="whole_camera">
-                    <WebCam/>
+                    <WebCamMemorize/>
                     <div className="answer_btn">
                         <div className="question">
                             <div className="quest-text">{answer}</div>

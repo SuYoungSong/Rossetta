@@ -16,11 +16,15 @@ interface CamProps {
 }
 
 
-const WebCam: React.FC<CamProps> = ({frame_className}) => {
+const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
     const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
     const webcamRef = useRef<Webcam>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const resultsRef = useRef<Results>();
+    const [url, setUrl] = useState<string | null>(null);
+    const counterRef = useRef<number>(0);
+
+    const [landmarks, setAddLandmarks] = useState<Record<string, NormalizedLandmarkList>>({});
 
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
@@ -62,9 +66,31 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
           });
           camera.start();
         }
+        const intervalId = setInterval(() => {
+             const landmark = OutputData();
 
+             setAddLandmarks((prevLandmarks) => ({ ...prevLandmarks, [counterRef.current++]: landmark }));
+        }, Math.floor(1000 / 30)); // 1초에 30번 불러옴
+
+        return () => clearInterval(intervalId);
   }, [onResults]);
 
+
+    useEffect(() => {
+        console.log(landmarks)
+    },[landmarks]);
+
+  /*  랜드마크들의 좌표를 콘솔에 출력 */
+  const OutputData = () => {
+    const landmark = resultsRef.current!;
+
+    const data = {
+        "pose_landmarks": landmark?.poseLandmarks,
+        "left_hand_landmarks": landmark?.leftHandLandmarks,
+        "right_hand_landmarks": landmark?.rightHandLandmarks
+      };
+    return data
+  };
 
     const styles = {
       container: css`
@@ -115,4 +141,4 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
   );
 };
 
-export default WebCam;
+export default WebCamMemorize;
