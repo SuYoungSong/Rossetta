@@ -533,3 +533,17 @@
   margin: 0 1vw;
 
 }
+
+/* 게시판 조회, 수정 css */
+.modal-btn{
+  background-color: #0a0a0a;
+  color: white;
+  width: 80px;
+  height: 50px;
+  margin: 20px;
+  border-radius: 10px;
+}
+.btn-box{
+  display: flex;
+  justify-content: center;
+}

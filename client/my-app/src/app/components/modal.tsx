@@ -54,6 +54,7 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
           },
         });
       console.log(response.data)
+      window.location.reload();
         // 성공 시 처리
       } catch (error) {
         // 에러 처리
