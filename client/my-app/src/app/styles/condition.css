@@ -299,8 +299,6 @@
     background-color: #fff;
     padding: 2vw;
     width: 35vw;
-    max-width: 1200px;
-    max-height: 80vh;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -368,22 +366,19 @@
 
   input[type="text"],
   textarea {
-    width: 90%;
+    width: 95%;
     padding: 0.5vw;
     margin-bottom: 2vh;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 0.8vw;
     resize: none;
-    height: 4vh;
-
+    height: 5vh;
   }
 
   .inputContent {
     height: 25vh;
-    width: 90%;
-
-
+    width: 95%;
   }
 
   .modalMainContent {
@@ -391,9 +386,6 @@
     font-weight: bold;
     margin-top: 1vh;
     margin-bottom: 1vh;
-
-
-
   }
 
   .attachBtn {
@@ -421,15 +413,15 @@
 
 
   .fileName {
-    height: 4vh;
+    height: 5vh;
     padding: 0 1vw;
     vertical-align: middle;
     border: 1px solid #dddddd;
     border-radius: 10px;
-    width: 91%;
+    width: 83%;
     color: #999999;
     overflow: hidden;
-    margin-left: 1vw;
+    margin-left: 10px;
     background-color: #eaeaea;
 
   }
@@ -441,19 +433,15 @@
   }
 
   .modalSubmit {
-
-
       background-color: #2C858D;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 15px;
       cursor: pointer;
       width: 5vw;
-      height: 5vh;
+      height: 6vh;
       font-size: 1vw;
       margin: 1vw 1vh;
-
-
   }
 
 
