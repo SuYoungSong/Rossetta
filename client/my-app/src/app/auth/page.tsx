@@ -119,15 +119,15 @@ const Auth =()=>{
             if (err.response.data.non_field_errors){
                     const errorMessage = err.response.data.non_field_errors[0];
                     console.log(errorMessage)
-                    if (name != ""){setnameIsSignAvailable("")}
-                    else if (errorMessage.slice(0,2) === "이름"){
-                        setnameIsSignAvailable(errorMessage);
-                    }
                     if (errorMessage.slice(0,4) === "비밀번호"){
                         setpassIsSignAvailable(errorMessage);
                     }
                     else if(errorMessage.slice(0,4) != "비밀번호"){
                         setpassIsSignAvailable("");
+                    }
+                    if (name != ""){setnameIsSignAvailable("")}
+                    else if (errorMessage.slice(0,2) === "이름"){
+                        setnameIsSignAvailable(errorMessage);
                     }
                     if (errorMessage.slice(0,6) === "이메일 인증"){
                         setIsemailcheck(errorMessage);
@@ -208,14 +208,6 @@ const Auth =()=>{
                             {/* 회원가입 창에서만 뜸 */}
                             {variant === 'register' && (
                                 <>
-                                    <Input
-                                        label="이름"
-                                        onChange={(ev: any) => setName(ev.target.value)}
-                                        id='name'
-                                        value={name}
-                                        onKeyPress={handleOnKeyPress}
-                                    />
-                                    {<div className="error-message">{isnameSignAvailable}</div>}
                                     <WBInput
                                         label="아이디"
                                         onChange={(ev: any) => setRegisterID(ev.target.value)}
@@ -247,6 +239,15 @@ const Auth =()=>{
                                         value={confirmPassword}
                                         onKeyPress={handleOnKeyPress}
                                     />{<div className="error-message">{ispassSignAvailable}</div>}
+
+                                    <Input
+                                        label="이름"
+                                        onChange={(ev: any) => setName(ev.target.value)}
+                                        id='name'
+                                        value={name}
+                                        onKeyPress={handleOnKeyPress}
+                                    />
+                                    {<div className="error-message">{isnameSignAvailable}</div>}
 
                                     <WBInput
                                         label="이메일"

@@ -50,7 +50,7 @@ Input {
 .wb-input-div{
     box-sizing: border-box;
     position: relative;
-    width: calc(100% - 1.5rem - 6px);
+    width: calc(70% - 1.5rem - 6px - 5px);
 }
 
 .input-style {
@@ -221,7 +221,7 @@ Input {
     flex-direction: row;
     margin: auto auto 1vh auto;
     justify-content: center;
-    width: calc((100% - 1.5rem - 6px)*0.85);
+    width: 88.5%;
 }
 
 .check_username {

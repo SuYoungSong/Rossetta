@@ -54,9 +54,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         email = data.get('email')
         is_auth = data.get('is_auth')
 
-        if is_blank_or_is_null(name):
-            raise serializers.ValidationError("이름을 입력해주세요")
-
         if is_blank_or_is_null(id):
             raise serializers.ValidationError("아이디를 입력해주세요")
         else:
@@ -71,6 +68,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
             else:
                 if not password_match(password):
                     raise serializers.ValidationError("비밀번호 는 대문자 소문자 숫자 특수문자가 1개이상 포함된 8자리 이상으로 만들어주세요")
+
+        if is_blank_or_is_null(name):
+            raise serializers.ValidationError("이름을 입력해주세요")
 
         if is_blank_or_is_null(email):
             raise serializers.ValidationError("이메일을 작성해 주세요")
