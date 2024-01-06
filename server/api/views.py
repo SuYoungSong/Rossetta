@@ -420,11 +420,11 @@ class QuestionCommentDetailView(APIView):
         board_id = request.data.get('board')
         if board_id is None:
             return Response(data={"state":"게시글 정보를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
-        if not question_board_comments.objects.filter(board_id=board_id).exists():
-            return Response(data={"state":"댓글 정보가 조회되지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
-        comment = question_board_comments.objects.get(id=board_id)
-        return Response(data={"comment":comment.comment} , status=status.HTTP_200_OK)
-
+        try:
+            comment = question_board_comments.objects.get(id=board_id)
+            return Response(data={"comment":comment.comment} , status=status.HTTP_200_OK)
+        except question_board_comments.DoesNotExist:
+            return Response(data={"state":"댓글 정보가 존재하지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
 ##########################################################################
 ################################ Paper ###################################
 ##########################################################################
