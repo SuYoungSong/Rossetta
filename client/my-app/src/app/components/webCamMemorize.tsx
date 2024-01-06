@@ -75,10 +75,10 @@ const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
         return () => clearInterval(intervalId);
   }, [onResults]);
 
-
-    useEffect(() => {
-        console.log(landmarks)
-    },[landmarks]);
+    //
+    // useEffect(() => {
+    //     console.log(landmarks)
+    // },[landmarks]);
 
   /*  랜드마크들의 좌표를 콘솔에 출력 */
   const OutputData = () => {

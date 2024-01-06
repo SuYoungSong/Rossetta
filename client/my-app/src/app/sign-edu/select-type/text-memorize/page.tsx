@@ -3,6 +3,7 @@ import VideoPlayer from "@/app/components/VideoPlayer";
 import React, {useState, useEffect } from "react";
 import {useSearchParams} from "next/navigation";
 import axios from "axios";
+import AnswerModalProps from "@/app/sign-edu/select-type/answerModal";
 
 
 export default function TextMemory() {
@@ -22,6 +23,12 @@ export default function TextMemory() {
 
     const userId = typeof window !== 'undefined' ? localStorage.getItem('id') : null;
 
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+    const [questionNumber, setQuestionNumber] = useState(0);
+
+
     let param = {};
     let API_URL = '';
 
@@ -37,11 +44,16 @@ export default function TextMemory() {
         }
     }
 
+      const handleBack = () => {
+        window.location.href = '/sign-edu';
+      };
+
     // 문제를 가져오는 POST API
     const getQuestion = () => {
         const accessToken = localStorage.getItem('accessToken');
         axios.post(API_URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
             .then((res) => {
+                console.log(res)
                 // 문제 정보 및 정답 설정
                 setAnswer(res.data['문제'][1]['word'])
                 const questionArray = [
@@ -50,6 +62,7 @@ export default function TextMemory() {
                     res.data['문제'][3]['word'],
                     res.data['문제'][4]['word']
                 ];
+                setQuestionNumber(res.data['문제'][1]['id'])
                 setResultLabel('');
                 setQuestions(shuffleArray(questionArray));
                 setVideoPath('http://localhost:8000' + res.data['문제']['video']['url'])
@@ -60,7 +73,33 @@ export default function TextMemory() {
         };
 
 
+    // 이용자가 문제를 푼 경우 상태를 서버에 전달
+      const questionState = (is_answer: boolean) => {
+          let accessToken = localStorage.getItem('accessToken');
+          let userId = localStorage.getItem('id');
 
+          const param = {
+              is_answer: is_answer,
+              paper: Number(questionNumber),
+              user: userId,
+              is_deaf: true
+          }
+
+          axios.post("http://localhost:8000/api/practice-note/", param, {
+              headers: {
+                  'Authorization': `Token ${accessToken}`
+              }
+          })
+
+              .then((res) => {
+                  // 요청에 성공한 경우
+                  // 처리할 내용 없음
+              })
+              .catch((err) => {
+                  // 요청에 실패한 경우
+                  console.log("err >> ", err);
+              });
+      };
 
     useEffect(() => {
         getQuestion();
@@ -83,18 +122,30 @@ export default function TextMemory() {
 
           // 정답 여부에 따라 표시되는 문구 설정
         if (selectedAnswer === questionAnswer) {
-          setResultLabel('정답입니다.');
+          setIsAnswerCorrect(true);
+          questionState(true);
         } else {
-          setResultLabel('오답입니다.');
+          setIsAnswerCorrect(false);
+          questionState(false);
         }
-
+        handleOpenModal();
     };
-  
+
+
+
+    // 정답 결과를 제공하는 modal을 open하는 로직
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+      };
+
+
     return (
       <>
         <div>문자 암기 페이지</div>
           <div className='question-content'>
-
+             {questions.length > 0 ? (
+                 // 해당 챕터에 남은 문제가 있는 경우
+                 <>
               <div className='question-video-zone'>
                   <video controls className="video" src={videoPath} style={{width: '700px'}}></video>
               </div>
@@ -105,7 +156,15 @@ export default function TextMemory() {
                     ))}
                   <div>{resultLabel}</div>
               </div>
+                 </>
+             ):(// 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
+                 <>
+                     <p>모든 문제를 풀었습니다.</p>
+                     <button onClick={handleBack}>돌아가기</button>
+                 </>
+             )}
           </div>
+          <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
 
 
       </>
