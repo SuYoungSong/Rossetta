@@ -104,6 +104,7 @@ class practice_note(models.Model):
     paper = models.ForeignKey(paper, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_answer = models.BooleanField()
+    is_deaf = models.BooleanField()
 
 
 ### 말벗 시나리오 DB
