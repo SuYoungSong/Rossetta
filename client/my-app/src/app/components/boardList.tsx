@@ -7,9 +7,10 @@ interface BoardListItemProps {
   title: string;
   state: boolean;
   created: string;
+  id:number;
 }
 
-const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, state, created }) => {
+const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, state, created ,id}) => {
   // 작성일자를 Date 객체로 파싱
   const createdAt = new Date(created);
 
@@ -32,7 +33,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     // const storedUsername = localStorage.getItem('username');
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/question/${boardNum}/`,
+        `http://localhost:8000/api/question/${id}/`,
         {
           params: { id: user_id },
           headers: { 'Authorization': `Token ${accessToken}` },
@@ -70,7 +71,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     const user_id = localStorage.getItem('id');
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/question/${boardNum}/`,
+        `http://localhost:8000/api/question/${id}/`,
         {
           "title2": newTitle,
           "body": newBody
@@ -95,7 +96,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     const user_id = localStorage.getItem('id');
     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/question/${boardNum}/`,
+        `http://localhost:8000/api/question/${id}/`,
         {
           params: { id: user_id },
           headers: { 'Authorization': `Token ${accessToken}` },
@@ -138,24 +139,24 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
             <div className='modalMainTitle'>제목</div>
             <div>
               {modalStatus === 'edit' ? (
-                <input
-                  type="text"
-                  value={newTitle} // newTitle을 출력
-                  onChange={e => setNewTitle(e.target.value)}
-                />
+                  <input
+                      type="text"
+                      value={newTitle} // newTitle을 출력
+                      onChange={e => setNewTitle(e.target.value)}
+                  />
               ) : (
-                <div className='titleInputContent'>{modalContent.title}</div>
+                  <div className='titleInputContent'>{modalContent.title}</div>
               )}
             </div>
             <div className='modalMainContent'>내용</div>
             <div>
               {modalStatus === 'edit' ? (
-                <textarea
-                  value={newBody} // newBody를 출력
-                  onChange={e => setNewBody(e.target.value)} // newBody를 변경
-                />
+                  <textarea
+                      value={newBody} // newBody를 출력
+                      onChange={e => setNewBody(e.target.value)} // newBody를 변경
+                  />
               ) : (
-                <div className='queryContent'>{modalContent.body}</div>
+                  <div className='queryContent'>{modalContent.body}</div>
               )}
             </div>
             <div className='modalMainContent'>작성일자</div>
@@ -163,20 +164,23 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
             <div className='modalMainContent'>첨부 이미지</div>
             <div className='queryImageContent'>
               {modalContent?.images ? (
-                modalContent.images.map((image, index) => (
-                  <img key={index} src={image} alt={`Image ${index}`} />
-                ))
+                  modalContent.images.map((image, index) => {
+                    // 이미지 URL 수정
+                    const correctImageUrl = `http://localhost:8000${image}`;
+                    return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>
+                  })
               ) : (
-                <span>No images</span>
+                  <span>No images</span>
               )}
             </div>
+
           </div>
 
           <div className='btn-box'>
             {modalStatus === 'edit' ? (
-              <button className='modal-btn' onClick={handleSaveClick}>저장</button>
+                <button className='modal-btn' onClick={handleSaveClick}>저장</button>
             ) : (
-              <button className='modal-btn' onClick={handleModify}>수정</button>
+                <button className='modal-btn' onClick={handleModify}>수정</button>
             )}
             <button className='modal-btn' onClick={handleDeleteClick}>삭제</button>
           </div>
