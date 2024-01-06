@@ -10,6 +10,7 @@ import { css } from "@emotion/css";
 import { Camera } from "@mediapipe/camera_utils";
 import {HAND_CONNECTIONS, Holistic, NormalizedLandmarkList, POSE_CONNECTIONS, Results} from "@mediapipe/holistic";
 import {drawCanvas} from "@/app/utils/drawCanvas";
+import axios from "axios";
 
 interface CamProps {
   frame_className?: string;
@@ -77,8 +78,20 @@ const WebCamMemorize: React.FC<CamProps> = ({frame_className}) => {
 
 
     useEffect(() => {
+        if (Object.keys(landmarks).length == 30){
+            axios.post("http://localhost:8000/api/sentencemodel/", {landmarks})
+                .then((res) => {
+                    console.log(res)
+                })
+                .catch((err) => {
+                    console.log(err)
+                });
+            setAddLandmarks({});
+        }
         console.log(landmarks)
     },[landmarks]);
+
+
 
   /*  랜드마크들의 좌표를 콘솔에 출력 */
   const OutputData = () => {
