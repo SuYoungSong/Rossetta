@@ -23,10 +23,6 @@ const Header = ({username, status, token}: HeaderProps) => {
     const router = useRouter();
     const [activeNavBtn, setActiveNavBtn] = useState<string | null>(null);
 
-
-
-
-
     const logout = () => {
     let accessToken = localStorage.getItem('accessToken');
     axios.post("http://localhost:8000/api/logout/", null,{ headers: {'Authorization':`Token ${accessToken}`}})
@@ -109,7 +105,7 @@ const Header = ({username, status, token}: HeaderProps) => {
     return (
         <>
             <div className="nav_basic">
-                <Link  href="/"><Image className="logo" src={RoLogo} alt='logo'/></Link>
+                <Link  href="/" onClick={() => setActiveNavBtn(null)}><Image className="logo" src={RoLogo} alt='logo'/></Link>
                 <Link className={`nav_btn ${activeNavBtn === 'sign-edu' ? 'active' : ''}`} href='/sign-edu' onClick={() => setActiveNavBtn('sign-edu')}>수어교육</Link>
                 <Link className={`nav_btn ${activeNavBtn === 'chatbot' ? 'active' : ''}`} href='/chatbot' onClick={() => setActiveNavBtn('chatbot')}>수어실습</Link>
                 <Link className={`nav_btn ${activeNavBtn === 'wrongnote' ? 'active' : ''}`} href='/wrongnote' onClick={() => setActiveNavBtn('wrongnote')}>오답노트</Link>
@@ -126,11 +122,11 @@ const Header = ({username, status, token}: HeaderProps) => {
                       {/*  <div className='login'>로그아웃</div>*/}
                       {/*</div>*/}
                       <div className='user_name'>
-                          <Dropdown label={`${username}님`} inline className="dropdown-container">
-                              <Link href='/mypage' ><Dropdown.Item icon={HiCog}>내 정보</Dropdown.Item></Link>
-                              <Dropdown.Divider className="divider-drop"/>
-                              <Dropdown.Item icon={HiLogout} onClick={logout}>로그아웃</Dropdown.Item>
-                            </Dropdown>
+                        <Dropdown label={`${username}님`} inline className="dropdown-container">
+                          <Link href='/mypage' ><Dropdown.Item icon={HiCog} onClick={() => setActiveNavBtn(null)}>내 정보</Dropdown.Item></Link>
+                          <Dropdown.Divider className="divider-drop"/>
+                          <Dropdown.Item icon={HiLogout} onClick={() => {logout(); setActiveNavBtn(null);}}>로그아웃</Dropdown.Item>
+                        </Dropdown>
                       </div>
                   </div>
                 </>
