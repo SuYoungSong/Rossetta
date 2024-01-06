@@ -16,7 +16,7 @@ officialrossetta@gmail.com
 
 |이자영|한혜주|송수영|
 |:-:|:-:|:-:|
-|AI|AI|Infra|
+|AI|AI|AI|
 |<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/eb18b171-6e13-4a3c-8ab4-96d3e3af5c35' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/c2a4bbbf-e95d-4748-b24d-1e851f1dd838' width=120 />|<img src='https://github.com/SuYoungSong/Rossetta/assets/98371516/5fb92c4b-e2f8-4d3c-8726-0082e034e356' width=120 />|
 |[@Ieejayoung](https://github.com/Ieejayoung) |[@hy2jv](https://github.com/hy2jv)|[@SuYoungSong](https://github.com/SuYoungSong)|
 
