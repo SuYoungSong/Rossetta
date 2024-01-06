@@ -35,7 +35,7 @@ urlpatterns = [
     path('paper/sentence/<str:type>/<int:chapter>/',PaperManyDataSentenceView.as_view()), # 문장 + 챕터 -> 챕터 안에 있는 문제 list
     ## PracticeNote API
     path('practice-note/', PracticeNoteView.as_view()),
-    path('practice-note/<int:paper_id>/<str:user_id>', PracticeNoteView.as_view()),
+    path('practice-note/<int:paper_id>/<str:user_id>/', PracticeNoteView.as_view()),
 
     ## Posting API
     path('question/', QuestionView.as_view()),

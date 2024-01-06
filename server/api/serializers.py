@@ -412,12 +412,13 @@ class PaperDataSentenceSerializer(serializers.ModelSerializer):
 class PracticeNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = practice_note
-        fields = ['is_answer', 'paper', 'user']
+        fields = ['is_answer', 'paper', 'user','is_deaf']
 
     def validate(self, data):
         is_answer = data.get('is_answer')
         paper = data.get('paper')
         user = data.get('user')
+
         paper_id = paper.id
         user_id = user.id
         if is_blank_or_is_null(user_id):
@@ -432,7 +433,8 @@ class PracticeNoteSerializer(serializers.ModelSerializer):
         is_answer = validated_data.pop('is_answer')
         paper = validated_data.pop('paper')
         user = validated_data.pop('user')
-        practice_note.objects.create(is_answer=is_answer, paper=paper, user_id=user)
+        is_deaf = validated_data.pop('is_deaf')
+        practice_note.objects.create(is_answer=is_answer, paper=paper, user_id=user,is_deaf=is_deaf)
         return validated_data
 
     def update(self, instance, validated_data):
