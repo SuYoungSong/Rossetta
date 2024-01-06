@@ -163,23 +163,55 @@ export default function Home() {
               </div>
             </div>
           </section>
-          {/* <MainContentFirst /> */}
+
           <div id="section1">
-            <div className="div-text">
-              청각장애인의 약 90%가 수어를 모른다는것을 알고 계셨나요??<br/>
-              후천적 청각장애인들은 한순간에 소통의 수단을 잃었습니다.
+
+          </div>
+
+          {/* 기능설명 */}
+          <div className="main_form">
+            <div className="form_img"></div>
+            <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`} >
+              <h2>수어교육</h2>
+              <h1>
+                단어와 문장을 학습할 수 있어요
+              </h1>
+            </div>
+            <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`}>
             </div>
           </div>
-          <div className="content2" >
-                      <div className="content2_item" >
-                        <p>2016년 한국수화언어법 제정 <br/>
-                        &quot;국가와 지방 자치 단체는 농인등의 가족을 위한 한국수어 교육, 상담 및 관련 서비스등 지원체계를 마련하여야한다.&quot;<br/>
-                        그러나 현재 국가에서 운영하는 수어교육원은 성인을 대상으로 전국에 단 네곳뿐입니다.
-                        </p>
-                      </div>
+          <div className="main_form">
+            <div className="form_img"></div>
+            <div ref={realRef} className={`${styles.real} ${realRefIsVisible ? styles.animatereal : ''}`} >
+              <h2>수어실습</h2>
+              <h1>
+                상황을 설정하여
+                <br />
+                AI 챗봇과 수어로 이야기하며
+                <br />
+                수어실력을 향상시킬수 있어요
+              </h1>
+            </div>
+            <div ref={realRef} className={`${styles.real} ${realRefIsVisible ? styles.animatereal : ''}`}>
+            </div>
           </div>
-          {/* <MainContentSecond /> */}
-          
+          {/* <MainContentForth /> */}
+          <div className="main_form">
+            <div className="form_img"></div>
+            <div ref={onebyRef} className={`${styles.oneby} ${onebyRefIsVisible ? styles.animateoneby : ''}`} >
+              <h2>오답노트</h2>
+              <h1>
+                수어 교육 단계에서
+                <br />
+                학습하며 놓쳤던 문제들을
+                <br />
+                다시 풀어볼수 있어요
+              </h1>
+            </div>
+            <div ref={onebyRef} className={`${styles.oneby} ${onebyRefIsVisible ? styles.animateoneby : ''}`}>
+            </div>
+          </div>
+
           {/* 현장방문 사진 */}
           <div className="section">
             <div className="Homecontainer">
@@ -197,96 +229,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          {/* 기능설명 */}
-          <div className="main_form">
-            <div className="form_img"></div>
-            <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`} >
-              <h2>수어교육</h2>
-              <h1>
-                단어와 문장을 학습할 수 있어요
-              </h1>
-            </div>
-            <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`}>
-                <a className='a_button' href='sign-edu'>수어교육</a>
-            </div>
-          </div>
-          <div className="main_form">
-            <div className="form_img"></div>
-            <div ref={realRef} className={`${styles.real} ${realRefIsVisible ? styles.animatereal : ''}`} >
-              <h2>수어실습</h2>
-              <h1>
-                상황을 설정하여
-                <br />
-                AI 챗봇과 수어로 이야기하며
-                <br />
-                수어실력을 향상시킬수 있어요
-              </h1>
-            </div>
-            <div ref={realRef} className={`${styles.real} ${realRefIsVisible ? styles.animatereal : ''}`}>
-                <a className='a_button' href='/'>
-                  수어실습</a>
-            </div>
-          </div>
-          {/* <MainContentForth /> */}
-          <div className="main_form">
-            <div className="form_img"></div>
-            <div ref={onebyRef} className={`${styles.oneby} ${onebyRefIsVisible ? styles.animateoneby : ''}`} >
-              <h2>오답노트</h2>
-              <h1>
-                수어 교육 단계에서
-                <br />
-                학습하며 놓쳤던 문제들을
-                <br />
-                다시 풀어볼수 있어요
-              </h1>
-            </div>
-            <div ref={onebyRef} className={`${styles.oneby} ${onebyRefIsVisible ? styles.animateoneby : ''}`}>
-                <a className='a_button' href='wrongnote'>오답노트</a>
-            </div>
-          </div>
-          <section className="Img_wrap">
-            <div className="Img_container">
-                <div className="Img_wallpaper" ref={ImgWall}>
-                    <h1>소리가 없어도<br/> 마음을 전할수 있어요</h1>
-                    <div className="Img_wallpaper_wall">
-                        <div className="Img_wall" ref={wall1}></div>
-                        <div className="Img_wall" ref={wall2}></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <div className='main_form'>
-        <div className="container_inner">
-                    <div className="content1">
-                      <h1>수어로<br/>세상을 열다.</h1></div>
-                      <Image src={child} alt="girl" className='con_img'></Image>
-                      <div className="content1_textwrap" >
-                          <h2>KODA <span>우리의 미래, 아이들을 위해</span></h2>
-                          <p >청각장애인 부모를둔 비장애인 아이들을 KODA라고 해요.
-                            <br/>현재 KODA를 위한 수어 공식 교육기관은 단 한곳도 없어요.
-                          </p>
-                    </div>
-                    
-                   
-                    <div className="textwrap">
-                        <h2 >수어<br/>
-                        <span>학습부터 소통까지<br/>
-                        벽을 허무는 여정</span></h2>
-                      <div className='imgbox'><Image src={fam} alt='' className='fam'></Image></div>
-                      
-                    </div>
-
-                    <div className="content3">
-                        <div className="textwrap2">
-                            <h2>마음을 전하는 수어<br/> <span>꾸준히 배우고 연습해보세요</span></h2>
-                            <p>말이 없어도, 소리가 없어도 마음은 전해집니다.<br/>
-                                수어 학습부터, 소통까지, 수어를 통해 새로운 세상으로<br/>
-                                손의 말로 청각장애인과의 소통의 벽을 허무는 여정에 함께하세요. </p>
-                        </div>
-                    </div>
-                </div>
-              </div>
+          
           {/* <MainContentCard /> */}
           <div className="tpg" ref={tpgRef}>
             <div className="slidePg" ref={spgRef}>

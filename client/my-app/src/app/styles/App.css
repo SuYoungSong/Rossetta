@@ -74,11 +74,6 @@ h2 {
   animation: moveUpDown 2s infinite;
   cursor: pointer;
 }
-/* section1 */
-#section1 {
-  padding: 300px 0;
-  height: 100vh;
-}
 
 .div-text {
   font-size: 2.5vw;
@@ -136,16 +131,18 @@ h2 {
 .main_form h2{
   font-size: 40px;
   color: #65a67f;
+  margin-left: 30px;
 }
 
 .main_form h1{
   color: #676767;
+  margin-left: 30px;
 }
 
 .main_form{
   position: relative;
   padding: 250px 0 165px 0;
-  height: 1272px;
+  height: 750px;
   /* border: solid 1px; */
   margin: auto;
   max-width: 1140px;
@@ -161,7 +158,7 @@ h2 {
   border: solid 2px;
   border-radius: 20px;
   width: 40%;
-  height:20%;
+  height:40%;
   right: 10%;
 }
 
@@ -173,7 +170,7 @@ h2 {
   /* outline: 2px dashed blue; */
   background-color: #A3C6C2;
   background: linear-gradient(180deg, rgb(182, 207, 204) 46%, rgba(33, 157, 81, 0.365) 100%);
-  margin-top: 2000px;
+  margin-top: 10px;
   width: 100%;
   /* overflow: hidden; */
 }
