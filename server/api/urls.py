@@ -64,4 +64,7 @@ urlpatterns = [
 
     ## id + password cross check
     path('tokenusercheck/', TokenPasswordUserCheckView.as_view()),
+
+    ## AI model api
+    path('sentencemdodel/',SentenceModelView.as_view()),
 ]

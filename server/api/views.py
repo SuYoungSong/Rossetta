@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import *
 from .permissions import *
 from .models import practice_note
-
+# from .preprocessing import *
 
 # 로그인 서버 시간 갱신 API
 class RenewalTokenTimeView(APIView):
@@ -146,7 +146,7 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request, user)  # user 데이터가 존재하면 로그인
                 token, created = Token.objects.get_or_create(user=user)  # 해당 유저 데이터를 기준으로 토큰값을 생성
-                return Response(data={"token": token.key, "name": user.name , 'is_staff':user.is_staff},
+                return Response(data={"token": token.key, "name": user.name, 'is_staff': user.is_staff},
                                 status=status.HTTP_200_OK)  # 해당 유저의 토큰값을 반환
             else:
                 return Response(data={"error": "아이디나 비밀번호가 틀렸습니다."}, status=status.HTTP_400_BAD_REQUEST)  # user = None
@@ -234,7 +234,7 @@ class SignUpSendView(APIView):
         email = request.data.get('email')  # post 요청으로 사용자가 입력한 이메일
         if email:
             if User.objects.filter(email=email).exists():
-                return Response(data={"state":"이미 존재하는 이메일이라 인증 번호를 전송 할수 없습니다."} , status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={"state": "이미 존재하는 이메일이라 인증 번호를 전송 할수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
             unique_number, six_digital_random = email_data_set(type="sign_up", time=300)
             email_send(type="sign_up", context_data=six_digital_random, email=email)
             data = email_return_json(unique_number=unique_number)
@@ -383,11 +383,13 @@ class QuestionListView(APIView):
         serializers = QuestionListSerializer(queryset, many=True)
         return Response(data=serializers.data, status=status.HTTP_200_OK)
 
+
 class AdminQuestionListView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner, IsStaffOwner]
-    def get(self , request):
+    permission_classes = [IsAuthenticated, IsTokenOwner, IsStaffOwner]
+
+    def get(self, request):
         if not request.user.is_staff:
-            return Response(data={"state":"관리자 만 사용할수 있습니다"} , status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"state": "관리자 만 사용할수 있습니다"}, status=status.HTTP_400_BAD_REQUEST)
         queryset = question_board.objects.all()
         serializers = QuestionListSerializer(queryset, many=True)
         return Response(data=serializers.data, status=status.HTTP_200_OK)
@@ -401,8 +403,8 @@ class QuestionCommentCreateView(APIView):
         if is_blank_or_is_null(board) or is_blank_or_is_null(comment):
             return Response(data={"state": "게시글 , 댓글 정보를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
         board_id = int(board)
-        count = question_board.objects.all().count()
-        if not (0 < board_id <= count):
+        # count = question_board.objects.all().count()
+        if not question_board.objects.filter(id=board_id).exists():
             return Response(data={"state": "게시글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         serializers = QuestionCommentCreateSerializer(data=request.data, context={'request': request})
         if serializers.is_valid():
@@ -512,7 +514,7 @@ class PaperManyDataSentenceView(APIView):
 ############################ PracticeNote ################################
 ##########################################################################
 class WordPlacticeNoteView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def get(self, request):
         type = request.GET.get('type')
@@ -534,8 +536,10 @@ class WordPlacticeNoteView(APIView):
         except practice_note.DoesNotExist:
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
+
 class SentencePlacticeNoteView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
+
     def get(self, request):
         type = request.GET.get('type')
         chapter = request.GET.get('chapter')
@@ -554,6 +558,7 @@ class SentencePlacticeNoteView(APIView):
         except practice_note.DoesNotExist:
             return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
+
 class PracticeNoteView(APIView):
     '''
     GET: 특정 유저 + 특장 싱황 + 특정 챕터별 틀린문제를 return
@@ -562,7 +567,7 @@ class PracticeNoteView(APIView):
 
     PUT: 기존 오답 이였던 문제를 정답으로 바꾼다.
     '''
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def get(self, request):
         type = request.GET.get('type')
@@ -587,10 +592,10 @@ class PracticeNoteView(APIView):
     def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
         paper_id = request.data.get('paper', None)
         user = request.data.get('user', None)
-        is_deaf = request.data.get('is_deaf',None)
+        is_deaf = request.data.get('is_deaf', None)
         count = paper.objects.all().count()
         if is_deaf != True and is_deaf != False:
-            return Response(data={"state":"문제 유형을 찾을수 없습니다"} , status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"state": "문제 유형을 찾을수 없습니다"}, status=status.HTTP_404_NOT_FOUND)
         if is_blank_or_is_null(user) or is_blank_or_is_null(paper_id):
             return Response(data={"state": "문제지 혹은 사용자 정보가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
         if not (0 < int(paper_id) <= count):
@@ -599,8 +604,8 @@ class PracticeNoteView(APIView):
             return Response(data={"state": "유저 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PracticeNoteSerializer(data=request.data)
         if serializer.is_valid():
-            if practice_note.objects.filter(paper_id=paper_id, user_id=user,is_deaf=is_deaf).exists():
-                note = practice_note.objects.get(paper_id=paper_id, user_id=user,is_deaf=is_deaf)
+            if practice_note.objects.filter(paper_id=paper_id, user_id=user, is_deaf=is_deaf).exists():
+                note = practice_note.objects.get(paper_id=paper_id, user_id=user, is_deaf=is_deaf)
                 serializer.update(note, validated_data=serializer.validated_data)
                 return Response(data={"state": "문제 의 정답 여부를 수정하였습니다."}, status=status.HTTP_200_OK)
             else:
@@ -612,7 +617,7 @@ class PracticeNoteView(APIView):
     def put(self, request, paper_id, user_id):
         is_deaf = request.data.get('is_deaf')
         try:
-            practice_note_instance = practice_note.objects.get(paper=paper_id, user=user_id , is_deaf=is_deaf)
+            practice_note_instance = practice_note.objects.get(paper=paper_id, user=user_id, is_deaf=is_deaf)
         except practice_note.DoesNotExist:
             return Response({"error": f"문제 풀이 기록이 존재하지 않습니다."},
                             status=status.HTTP_404_NOT_FOUND)
@@ -632,7 +637,8 @@ class PaperStatesView(APIView):
     문제 개수와 정답 문제 개수가 같은 경우 틀린문제가 없으며 해당 챕터를 완강표시 합니다.
     문제 개수와 정답 문제 개수가 다른 경우 풀지 않은 문제가 있거나 오답인 문제가 존재합니다.
     '''
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+
     def get(self, request):
         type = request.GET.get('type')
         situation = request.GET.get('situation')
@@ -645,7 +651,7 @@ class PaperStatesView(APIView):
                 paper__situation=situation,
                 paper__chapter=chapter,
                 user=user_id,
-                is_deaf= is_deaf,
+                is_deaf=is_deaf,
                 is_answer=True
             )
             serializer = PracticeNoteSerializer(practice_notes, many=True)
@@ -691,7 +697,8 @@ class WordQuestionView(APIView):
             result = dict()  # response dict
             if is_deaf:  # 수어 영상이 나오면 4개중에 하나를 선택해서 한글 을 맞추는거
                 for paper_id in paper_ids:
-                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id , is_deaf=is_deaf).exists():  # 사용자가 처음 푼 기록 이라면
+                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id,
+                                                        is_deaf=is_deaf).exists():  # 사용자가 처음 푼 기록 이라면
                         answer_info = paper.objects.get(id=paper_id[0])  # 해당 문제의 정보를 저장
                         result['1'] = dict()  # 정답 dict 생성
                         result['1']['id'] = answer_info.id
@@ -712,7 +719,8 @@ class WordQuestionView(APIView):
                         result['video']['url'] = answer_info.sign_video_url.url
             else:  # 한글 이 보이면 수어를 따라해서 정답 여부
                 for paper_id in paper_ids:
-                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id , is_deaf=is_deaf).exists():  # 만약 사용자가 학습 기록이 없을때
+                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id,
+                                                        is_deaf=is_deaf).exists():  # 만약 사용자가 학습 기록이 없을때
                         answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
                         result['answer'] = dict()
                         result['answer']['id'] = answer_info.id
@@ -721,8 +729,8 @@ class WordQuestionView(APIView):
         except paper.DoesNotExist:
             return Response(data={"state": "조회 가능한 문제가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
-class SentenceQuestionView(APIView):
 
+class SentenceQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
@@ -744,7 +752,7 @@ class SentenceQuestionView(APIView):
             result = dict()
             if is_deaf:
                 for paper_id in paper_ids:
-                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id,is_deaf=is_deaf).exists():
+                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id, is_deaf=is_deaf).exists():
                         answer_info = paper.objects.get(id=paper_id[0])
                         result['1'] = dict()
                         result['1']['id'] = answer_info.id
@@ -765,7 +773,8 @@ class SentenceQuestionView(APIView):
                         result['video']['url'] = answer_info.sign_video_url.url
             else:  # 한글 이 보이면 수어를 따라해서 정답 여부
                 for paper_id in paper_ids:
-                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id,is_deaf=is_deaf).exists():  # 만약 사용자가 학습 기록이 없을때
+                    if not practice_note.objects.filter(paper_id=paper_id, user_id=id,
+                                                        is_deaf=is_deaf).exists():  # 만약 사용자가 학습 기록이 없을때
                         answer_info = paper.objects.get(id=paper_id[0])  # 문제 정보 저장
                         result['answer'] = dict()
                         result['answer']['id'] = answer_info.id
@@ -826,7 +835,7 @@ class WrongWordQuestionView(APIView):
                 paper__situation=situation,
                 paper__chapter=chapter,
                 user=id,
-                is_deaf= is_deaf,
+                is_deaf=is_deaf,
                 is_answer=False
             )
             if is_deaf:  # 농아인 문제
@@ -918,3 +927,9 @@ class WrongSentenceQuestionView(APIView):
 
         except practice_note.DoesNotExist:
             return Response(data={"state": "틀린 문제가 없습니다"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class SentenceModelView(APIView):
+    def post(self , request):
+        print(request.data)
+        return Response(data={"state":"테스트 중입니다"} , status=status.HTTP_200_OK)
