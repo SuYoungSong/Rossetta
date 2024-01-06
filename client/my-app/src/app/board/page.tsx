@@ -30,6 +30,8 @@ const Board: React.FC = () => {
                 params: { id: user_id}
 
             });
+
+
             setUserid(response.data.id);
           setBoardData(response.data);
 
