@@ -233,6 +233,8 @@ class SignUpSendView(APIView):
     def post(self, request):
         email = request.data.get('email')  # post 요청으로 사용자가 입력한 이메일
         if email:
+            if User.objects.filter(email=email).exists():
+                return Response(data={"state":"이미 존재하는 이메일이라 인증 번호를 전송 할수 없습니다."} , status=status.HTTP_400_BAD_REQUEST)
             unique_number, six_digital_random = email_data_set(type="sign_up", time=300)
             email_send(type="sign_up", context_data=six_digital_random, email=email)
             data = email_return_json(unique_number=unique_number)
