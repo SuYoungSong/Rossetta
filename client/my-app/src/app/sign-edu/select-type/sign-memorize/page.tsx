@@ -83,8 +83,6 @@ export default function SignMemory() {
             }
 
             if(Object.keys(landmarks).length == second*30){
-                console.log(landmarks)
-
                 const accessToken = localStorage.getItem('accessToken');
 
                 axios.post(MODEL_API_URL, landmarks,{
@@ -92,8 +90,7 @@ export default function SignMemory() {
                     'Authorization':`Token ${accessToken}`
                 }})
                 .then((res) => {
-                    console.log(res)
-                    checkAnswer(res.data);
+                    checkAnswer(res.data.answer);
                 })
                 .catch((err) => {
                     console.log(err)
