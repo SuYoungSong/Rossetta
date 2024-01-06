@@ -10,30 +10,24 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
   const [fileName, setFileName] = useState<string>('첨부파일');
   const [title, setTitle] = useState<string>('');
   const [body, setBody] = useState<string>('');
-  const [file, setFile] = useState();
+  const [file, setFile] = useState<File[]>([]);
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState('');
   const formData = new FormData();
 
-      // 필요한 데이터 추가
-      formData.append('title', title);
-      formData.append('body', body);
-      formData.append('user',userId);
-      // 파일이 선택되었다면 FormData에 추가
-      if (file) {
-        formData.append('images', file);
-      }
+
+// 다중 파일을 처리할 수 있도록 handleFileChange 함수를 수정합니다.
 const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
   const fileInput = event.target;
 
   if (fileInput.files && fileInput.files.length > 0) {
-    // 파일이 선택되었을 때
-    const uploadedFile = fileInput.files[0];
-    setFile(uploadedFile);
-    setFileName(uploadedFile.name);
+    // 다중 파일이 선택되었을 때
+    const uploadedFiles = Array.from(fileInput.files); // FileList를 배열로 변환
+    setFile(uploadedFiles);
+    setFileName(uploadedFiles.map(file => file.name).join(', ')); // 파일 이름들을 합쳐서 하나의 문자열로 만듭니다.
   } else {
     // 파일이 선택되지 않았을 때
-    setFile(null);
+    setFile([]);
     setFileName('첨부파일');
   }
 };
@@ -41,8 +35,19 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 
 
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+// handleSubmit 함수에서 FormData에 파일을 추가할 때, 각 파일을 별도의 키로 추가합니다.
+const handleSubmit = async (event: React.FormEvent) => {
+  event.preventDefault();
+
+  // 필요한 데이터 추가
+  formData.append('title', title);
+  formData.append('body', body);
+  formData.append('user', userId);
+
+  // 파일이 선택되었다면 각각 FormData에 추가
+  file.forEach((file) => {
+    formData.append(`images`, file);
+  });
 
 
       try {
@@ -109,7 +114,7 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         </div>
 
         <div className='attachBtn'>
-          <input id="file" type="file" onChange={handleFileChange} />
+          <input id="file" type="file" onChange={handleFileChange} multiple/>
           <label htmlFor="file">첨부하기</label>
           <input className="fileName" value={fileName} placeholder="첨부파일" readOnly />
         </div>
