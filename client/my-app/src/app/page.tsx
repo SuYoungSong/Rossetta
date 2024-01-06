@@ -8,6 +8,7 @@ import {useInView} from 'react-intersection-observer';
 import profile from '../../public/profile2.svg';
 import child from '../../public/child.png'
 import { useRef, useEffect, useState } from "react";
+import word_lecture from '../../public/word_lecture.png';
 import fam from '../../public/fam.jpg';
 
 
@@ -170,7 +171,9 @@ export default function Home() {
 
           {/* 기능설명 */}
           <div className="main_form">
-            <div className="form_img"></div>
+            <div className="form_img">
+              <Image alt="" src={word_lecture}></Image>
+            </div>
             <div ref={contentRef} className={`${styles.content} ${contentRefIsVisible ? styles.animatecontent : ''}`} >
               <h2>수어교육</h2>
               <h1>
