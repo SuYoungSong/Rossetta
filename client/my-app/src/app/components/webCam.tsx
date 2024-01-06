@@ -22,18 +22,7 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const resultsRef = useRef<Results>();
     const [url, setUrl] = useState<string | null>(null);
-    // const isAnswerCorrect = false
 
-    // const getAnswer = () => {
-    //     if (isAnswerCorrect === null) {
-    //         return { text: '모르겠어요', color: '#FFE6B5', image: idkImage};
-    //         } else if (isAnswerCorrect) {
-    //         return { text: '정답', color: '#D0E8FF', image: CorrectImage};
-    //         } else {
-    //         return { text: '오답', color: '#FFC7C7', image: IncorrectImage};
-    //         }
-    // };
-    // const getAnswers = getAnswer();
     const onResults = useCallback((results: Results) => {
     resultsRef.current = results;
 
@@ -114,16 +103,6 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
 
   return (
     <>
-      {/*{isCaptureEnable || (*/}
-      {/*  <>*/}
-      {/*      <p className="camera_plz">수어 인식을 위한 카메라가 필요해요 📷🙏</p>*/}
-      {/*      <div className="camera_right" onClick={() => setCaptureEnable(true)}>*/}
-      {/*          <Image className="camera_image" src={CameraImage} alt="camera_img"></Image>*/}
-      {/*          <div className="camera_text">카메라 허용하러 가기</div>*/}
-      {/*      </div>*/}
-      {/*  </>*/}
-      {/*)}*/}
-      {/*{isCaptureEnable && (*/}
         <>
             <div className={`${styles.container} ${frame_className || 'cameraFrame'}`}>
                 <Webcam
@@ -143,16 +122,6 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
                     height={480}
                 />
             </div>
-            {/*<div className="answer_btn">*/}
-            {/*    <div className="question">*/}
-            {/*        <div className="quest-text">{answer}</div>*/}
-            {/*    </div>*/}
-            {/*    <div className="check" style={{backgroundColor: getAnswers.color}}>*/}
-            {/*        <div className="answer_text">{getAnswers.text}</div>*/}
-            {/*        <Image className="answer_img" src={getAnswers.image} alt="answer_img"></Image>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
         </>
     </>
   );
