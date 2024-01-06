@@ -15,18 +15,28 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
   const [basePasswordErrorState, setBasePasswordErrorState] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = (e: React.FormEvent) => {
+      e.preventDefault();
       // 새로운 비밀번호와 새로운 비밀번호 확인이 서로 다른 경우 에러 메시지 표시
-      if (newPassword === '' || newPassword === null || newPassword === undefined || newPassword !== confirmNewPassword) {
+      if (currentPassword === '' || currentPassword === null || currentPassword === undefined){
+          setBasePasswordErrorState(true);
+          setNewPasswordErrorState(false);
+          setPasswordErrorMessage('기존 비밀번호를 입력해주세요.')
+          return;
+      }
+
+      if (newPassword === '' || newPassword === null || newPassword === undefined || newPassword != confirmNewPassword) {
           setNewPasswordErrorState(true);
+          setBasePasswordErrorState(false);
           setPasswordErrorMessage('새로운 비밀번호와 확인용 비밀번호가 일치하지 않거나 값이 없습니다.')
           return;
       }
+
       const accessToken = localStorage.getItem('accessToken');
       // 기존 비밀번호가 맞는지 check
       axios.post(
           "http://localhost:8000/api/tokenusercheck/",
-          {password: currentPassword,},
+          {password: currentPassword},
           {headers: {'Authorization': `Token ${accessToken}`}})
           .then((res) => {
               // 기존 비밀번호 통과한경우 pass
@@ -41,7 +51,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
               setPasswordErrorMessage(err.response.data.state)
               // 요청에 실패한 경우
               console.log("err >> ", err);
-
           });
 
       const passwordChange = () => {
@@ -64,7 +73,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
                   setPasswordErrorMessage(err.response.data.non_field_errors[0])
                   // 요청에 실패한 경우
                   console.log("err >> ", err);
-                  return null;
               });
       };
   }
@@ -90,7 +98,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
             {passwordErrorMessage}
           </div>
         )}
-        <form>
+        <form onSubmit={handlePasswordChange}>
             <label htmlFor="currentPassword" className="pass-label">기존 비밀번호</label>
             <input
               type="password"
@@ -127,7 +135,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
             />
             <br />
 
-          <button className="pwUpdateBtn" onClick={handlePasswordChange}>
+          <button type="submit" className="pwUpdateBtn">
             변경하기
           </button>
           <button className="pwCancelBtn" onClick={handleCloseModal}>
