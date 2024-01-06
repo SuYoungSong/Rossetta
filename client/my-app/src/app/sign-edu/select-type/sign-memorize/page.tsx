@@ -64,7 +64,7 @@ export default function SignMemory() {
                     <WebCam/>
                     <div className="answer_btn">
                         <div className="question">
-                            <div className="quest-text">단어</div>
+                            <div className="quest-text">{answer}</div>
                         </div>
                         <div className="check" style={{backgroundColor: getAnswer.color}}>
                             <div className="answer_text">{getAnswer.text}</div>
