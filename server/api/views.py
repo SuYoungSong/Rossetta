@@ -500,6 +500,49 @@ class PaperManyDataSentenceView(APIView):
 ##########################################################################
 ############################ PracticeNote ################################
 ##########################################################################
+class WordPlacticeNoteView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+
+    def get(self, request):
+        type = request.GET.get('type')
+        situation = request.GET.get('situation')
+        chapter = request.GET.get('chapter')
+        user_id = request.GET.get('user_id')
+        is_deaf = request.GET.get('is_deaf')
+        try:
+            practice_notes = practice_note.objects.select_related('paper').filter(
+                paper__type=type,
+                paper__situation=situation,
+                paper__chapter=chapter,
+                user=user_id,
+                is_deaf=is_deaf,
+                is_answer=False
+            )
+            serializer = PracticeNoteSerializer(practice_notes, many=True)
+            return Response(serializer.data)
+        except practice_note.DoesNotExist:
+            return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+class SentencePlacticeNoteView(APIView):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+    def get(self, request):
+        type = request.GET.get('type')
+        chapter = request.GET.get('chapter')
+        user_id = request.GET.get('user_id')
+        is_deaf = request.GET.get('is_deaf')
+        try:
+            practice_notes = practice_note.objects.select_related('paper').filter(
+                paper__type=type,
+                paper__chapter=chapter,
+                user=user_id,
+                is_deaf=is_deaf,
+                is_answer=False
+            )
+            serializer = PracticeNoteSerializer(practice_notes, many=True)
+            return Response(serializer.data)
+        except practice_note.DoesNotExist:
+            return Response({"error": "해당하는 데이터가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
 class PracticeNoteView(APIView):
     '''
     GET: 특정 유저 + 특장 싱황 + 특정 챕터별 틀린문제를 return
