@@ -52,7 +52,11 @@ const WebCam: React.FC<CamProps> = ({frame_className}) => {
         ) {
           const camera = new Camera(webcamRef.current.video!, {
             onFrame: async () => {
-              await holistic.send({ image: webcamRef.current!.video! });
+                if (webcamRef.current && webcamRef.current.video) {
+                  await holistic.send({ image: webcamRef.current.video! });
+                } else {
+                    console.log('error: not connect camera')
+                }
             },
             width: 640,
             height: 480,
