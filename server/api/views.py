@@ -383,6 +383,18 @@ class QuestionListView(APIView):
         serializer = QuestionListSerializer(queryset, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+class AdminQuestionListView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner, IsStaffOwner]
+    def get(self , request):
+        print(request.user.is_staff)
+        if not request.user.is_staff:
+            return Response(data={"state":"관리자 만 사용할수 있습니다"} , status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = question_board.objects.all()
+        print(queryset)
+        serializers = QuestionListSerializer(queryset, many=True)
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
+
 
 class QuestionCommentCreateView(APIView):
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsTokenOwner, IsStaffOwner])

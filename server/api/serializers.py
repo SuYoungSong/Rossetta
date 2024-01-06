@@ -337,7 +337,7 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
 class QuestionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = question_board  # 사용자의 모든 질문을 조회할 DB
-        fields = ['user', 'title', 'state', 'created']  # 조회할 필드
+        fields = ['id','user', 'title', 'state', 'created']  # 조회할 필드
 
 
 class QuestionCommentCreateSerializer(serializers.ModelSerializer):

@@ -45,6 +45,7 @@ urlpatterns = [
     path('question/', QuestionView.as_view()),
     path('question/<int:id>/', QuestionView.as_view()),  # 게시글 상세 조회
     path('questionlist/<str:id>/', QuestionListView.as_view()),  # 사용자가 작성한 게시글 리스트 조회
+    path('question/staff/',AdminQuestionListView.as_view()),
 
     ## Comment API
     path('comment/', QuestionCommentCreateView.as_view()),
