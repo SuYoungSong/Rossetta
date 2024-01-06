@@ -3,11 +3,12 @@ import React, {useEffect, useRef, useState} from 'react';
 import '@/app/styles/training.css';
 import Link from 'next/link';
 import Image,{ StaticImageData } from 'next/image';
-import ExitBtn from '../../../../../public/exit.png';
-import WebCam from '@/app/components/webCam';
+import "@/app/styles/situation_num.css"
 import axios from 'axios';
 import {usePathname, useRouter} from "next/navigation";
 import Video from "@/app/components/playVideo";
+import ExitBtn from "../../../../../public/exit.png";
+import NextBtn from "../../../../../public/right_direct.png";
 
 const Chatbot = ({params}:{params: {place: string, num: number}}) => {
     const type = (params.place)
@@ -15,7 +16,6 @@ const Chatbot = ({params}:{params: {place: string, num: number}}) => {
     const accessToken = localStorage.getItem('accessToken');
     const [totalLength, setTotalLength] = useState<number>(0);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
     const [scripts, setScripts] = useState<string[]>([]);
 
   useEffect(() => {
@@ -24,49 +24,18 @@ const Chatbot = ({params}:{params: {place: string, num: number}}) => {
               const script = res.data[dic[type]];
               if (script != undefined) {
                   setScripts(script)
-                  console.log(script)
+                  console.log(scripts)
               }
           })
           .catch((err) => {
               console.log(err)
           });
-  });
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.post("http://localhost:8000/api/scenario/", {"situation": dic[type]}, {headers: {'Authorization': `Token ${accessToken}`}});
-  //       const script = response.data[dic[type]];
-  //       console.log(script)
-  //       if(script != undefined){
-  //           setScripts(script)
-  //           console.log(script)
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  console.log(scripts[0]);
-
-      const totalCnt = scripts.length;
+  }, []);
       const currentPath = usePathname();
       const nextPath = currentPath.slice(0, -1);
 
-      let buttonText = "다음";
       let nextWordNum = Number(params.num) + 1;
       let nextHref = `${nextPath}/${nextWordNum}`;
-
-    useEffect(() => {
-    // 비디오가 마운트되면 자동으로 재생
-        if (videoRef.current) {
-            setTotalLength(totalLength - 1);
-            videoRef.current.play().catch(error => {
-                console.error('Autoplay failed:', error);
-              });
-        }
-      }, []);
-
 
   //임시로 수화가 인식된 상황 선언
     const delayedFunction = () => {
@@ -74,16 +43,21 @@ const Chatbot = ({params}:{params: {place: string, num: number}}) => {
           setIsCorrect(true);
           setTotalLength(totalLength - 1)
           console.log("3 seconds elapsed, isVariableTrue is now true");
-          console.log(totalLength)
         }, 5000);
       };
 
-    const handleLinkClick = () => {
-        window.location.href = '/';
-      };
-
     const response = scripts[params.num];
-    console.log(response)
+    let totallength, btnText, btnImg, nextLink;
+
+    if (response) {
+        totallength = scripts.length-1;
+        btnText = (nextWordNum == totallength ? "종료" : "다음");
+        btnImg = (nextWordNum == totallength ? ExitBtn : NextBtn);
+    }
+
+    const Chatreload = () => {
+        window.location.replace("/chatbot");
+    }
 
     return(
         <>
@@ -91,14 +65,16 @@ const Chatbot = ({params}:{params: {place: string, num: number}}) => {
                 <div className='detail_title'>수어실습 &gt; {dic[type]}</div>
                 <div className='top_hr'></div>
             </div>
-            <Video response={response}/>
-
-            <div className='nextBtn' onClick={handleLinkClick}>
-                <div className='next_txt'>종료</div>
-                <Image src={ExitBtn} alt="next-button" className='next_image'></Image>
-            </div>
-
+            {response && (<Video take={response.take} role={response.role} subtitle={response.subtitle}
+                                 video={response.video} total_length={totallength - 1}/>)}
+            <Link href={nextWordNum === totallength? "/chatbot": nextHref} className="next_word">
+                <div className='nextBtn' onClick={nextWordNum === totallength? Chatreload : undefined}>
+                    <div className='next_txt'>{btnText}</div>
+                    <Image src={btnImg} alt="next-button" className='next_image'></Image>
+                </div>
+            </Link>
         </>
+
     );
 }
 export default Chatbot;

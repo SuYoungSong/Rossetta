@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import '@/app/styles/selectBtn.css'
-import SelectionButton from '@/app/components/selectionButton';
+import SelectionButton from '@/app/components/selectionBtn_withoutChap';
 import Hospital from '../../../public/hospital.jpg'
 import Store from '../../../public/store.png';
 import Taxi from '../../../public/taxi.png';

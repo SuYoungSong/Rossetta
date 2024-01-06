@@ -1,5 +1,3 @@
-
-
 .detail_title{
     margin: 1vh 0;
     font-size: 1vw;
@@ -72,4 +70,66 @@
 
 .next_image{
     margin: 5px auto 0 5px;
+}
+
+.nextBtn{
+    display: flex;
+    float: right;
+    margin-right: 15vw;
+}
+
+.next_txt{
+    font-size: 5vh;
+    font-weight: 600;
+}
+
+.cam_text{
+    display: flex;
+    margin: auto;
+    color: white;
+    font-size: 2vw;
+    font-weight: 500;
+}
+
+.whole_avatar{
+    position: absolute;
+    display: flex;
+    margin: 2vh 2vw;
+    color: white;
+    z-index: 1;
+    flex-direction: column;
+}
+
+.avatar{
+    font-weight: 600;
+    margin-right: 1vw;
+    display: flex;
+    justify-content: left;
+}
+
+.webcamBox{
+    background-color: #9ca3af;
+}
+
+.pre-text{
+    display: flex;
+    flex-direction: column;
+    color: white;
+    z-index: 1;
+}
+
+.customer{
+    font-weight: 600;
+    display: flex;
+    justify-content: right;
+}
+
+.user_txt {
+    z-index: 1;
+    position: absolute;
+    display: flex;
+    margin: 2vh 15vw 0 0;
+    flex-direction: column;
+    color: black;
+    right: 0;
 }
