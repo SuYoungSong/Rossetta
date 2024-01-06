@@ -9,6 +9,13 @@ import profile from '../../public/profile2.svg';
 import child from '../../public/child.png'
 import { useRef, useEffect, useState } from "react";
 import word_lecture from '../../public/word_lecture.png';
+import subin_profile from '../../public/subin_profile.svg'
+import woojin_profile from '../../public/woojin_profile.svg'
+import hyeongho_profile from '../../public/hyeongho_profile.svg'
+import yeongseong_profile from '../../public/yeongseong_profile.svg'
+import hyeju_profile from '../../public/hyeju_profile.svg'
+import suyeong_profile from '../../public/suyeong_profile.svg'
+import jayeong_profile from '../../public/jayeong_profile.svg'
 import fam from '../../public/fam.jpg';
 
 
@@ -237,22 +244,22 @@ export default function Home() {
           <div className="tpg" ref={tpgRef}>
             <div className="slidePg" ref={spgRef}>
               <ul ref={mvbxRef}>
-                <li><Image src={profile} alt=""/>
-                <div className='li-profile'>github</div></li>
-                <li className="profilemargin"><Image src={profile} alt=""/>
-                <div>github</div></li>
-                <li><Image src={profile} alt=""/>
-                <div>github:</div></li>
+                <li><Image src={subin_profile} alt=""/>
+                <div className='li-profile'></div></li>
                 <li className="profilemargin">
-                <Image src={profile} alt=""/><div>github</div></li>
-                <li><Image src={profile} alt=""/>
-                <div>github</div></li>
-                <li className="profilemargin"><Image src={profile} alt=""/>
-                <div>github</div></li>
-                <li><Image src={profile} alt=""/>
-                <div>github</div></li>
-                <li className="profilemargin"><Image src={profile} alt=""/>
-                <div>github</div></li>
+                  <Image src={woojin_profile} alt=""/>
+                <div></div></li>
+                <li><Image src={hyeongho_profile} alt=""/>
+                <div></div></li>
+                <li className="profilemargin">
+                <Image src={yeongseong_profile} alt=""/><div></div></li>
+                <li><Image src={hyeju_profile} alt=""/>
+                <div></div></li>
+                <li className="profilemargin">
+                  <Image src={suyeong_profile} alt=""/>
+                <div></div></li>
+                <li><Image src={jayeong_profile} alt=""/>
+                <div></div></li>
               </ul>
             </div>
           </div>
