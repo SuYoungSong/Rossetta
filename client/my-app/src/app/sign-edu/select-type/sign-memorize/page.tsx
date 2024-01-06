@@ -55,7 +55,13 @@ export default function SignMemory() {
             const accessToken = localStorage.getItem('accessToken');
             axios.post(API_URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
                 .then((res) => {
+                    // '문제'가 존재하고 'answer'가 존재하며 'word'가 존재할 때 값을 설정
+                  if (res.data && res.data['문제'] && res.data['문제'].answer && res.data['문제'].answer.word) {
                     setAnswer(res.data['문제'].answer.word);
+                  } else {
+                    // 위 조건 중 하나라도 만족하지 않으면 null로 설정
+                    setAnswer('null');
+                 }
                     console.log(res)
                 })
                 .catch((err) => {
@@ -114,22 +120,35 @@ export default function SignMemory() {
         setIsModalOpen(true);
       };
 
+    const handleBack = () => {
+        window.location.href = '/sign-edu';
+    };
+
 
         return (
-            <>
-                <div className="whole_camera">
-                    <WebCamMemorize onLandmarksChange={handleLandmarksChange} frameNumber={second*30}  isStart={isStart}/>
+              <>
+                {answer !== 'null' ? (
+                  // 해당 챕터에 남은 문제가 있는 경우
+                  <div className="whole_camera">
+                    <WebCamMemorize onLandmarksChange={handleLandmarksChange} frameNumber={second * 30} isStart={isStart} />
                     <div className="answer_btn">
-                        <div className="question">
-                            <div className="quest-text">{answer}</div>
-                        </div>
-                        <div className="check">
-                            <button className='startQuiz' onClick={() => setIsStart(true)}>문제 풀기</button>
-                            <p>버튼을 클릭하면 {second}초 안에 동작을 해주세요. </p>
-                        </div>
+                      <div className="question">
+                        <div className="quest-text">{answer}</div>
+                      </div>
+                      <div className="check">
+                        <button className='startQuiz' onClick={() => setIsStart(true)}>문제 풀기</button>
+                        <p>버튼을 클릭하면 {second}초 안에 동작을 해주세요. </p>
+                      </div>
                     </div>
-                </div>
-                <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
-            </>
-        );
+                    <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
+                  </div>
+                ) : (
+                  // 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
+                  <>
+                    <p>모든 문제를 풀었습니다.</p>
+                    <button onClick={handleBack}>돌아가기</button>
+                  </>
+                )}
+              </>
+            );
 }

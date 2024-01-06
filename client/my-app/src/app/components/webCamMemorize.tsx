@@ -64,7 +64,7 @@ const WebCamMemorize: React.FC<CamProps> = ({onLandmarksChange, frameNumber, isS
                 if (webcamRef.current && webcamRef.current.video) {
                   await holistic.send({ image: webcamRef.current.video! });
                 } else {
-                    console.log('error: not connect camera')
+                    // console.log('error: not connect camera')
                 }
             },
             width: 640,
