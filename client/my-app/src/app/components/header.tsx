@@ -1,7 +1,7 @@
 "use client"
 
 import { Inter } from 'next/font/google';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import '@/app/styles/globals.css'
@@ -21,6 +21,8 @@ interface HeaderProps{
 
 const Header = ({username, status, token}: HeaderProps) => {
     const router = useRouter();
+    const [activeNavBtn, setActiveNavBtn] = useState<string | null>(null);
+
 
 
 
@@ -108,10 +110,10 @@ const Header = ({username, status, token}: HeaderProps) => {
         <>
             <div className="nav_basic">
                 <Link  href="/"><Image className="logo" src={RoLogo} alt='logo'/></Link>
-                <Link className='nav_btn'  href='/sign-edu'>수어교육</Link>
-                <Link className='nav_btn'  href='/chatbot'>수어실습</Link>
-                <Link className='nav_btn'  href='/wrongnote'>오답노트</Link>
-                <Link className='nav_btn'  href='/board'>1:1 문의</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'sign-edu' ? 'active' : ''}`} href='/sign-edu' onClick={() => setActiveNavBtn('sign-edu')}>수어교육</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'chatbot' ? 'active' : ''}`} href='/chatbot' onClick={() => setActiveNavBtn('chatbot')}>수어실습</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'wrongnote' ? 'active' : ''}`} href='/wrongnote' onClick={() => setActiveNavBtn('wrongnote')}>오답노트</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'board' ? 'active' : ''}`} href='/board' onClick={() => setActiveNavBtn('board')}>1:1 문의</Link>
             </div>
 
 
