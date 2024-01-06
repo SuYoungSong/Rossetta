@@ -49,6 +49,7 @@ urlpatterns = [
 
     ## Comment API
     path('comment/', QuestionCommentCreateView.as_view()),
+    path('commentinquiry/',QuestionCommentDetailView.as_view()),
 
     ## 문제 API
     path('wordquestion/', WordQuestionView.as_view()),
