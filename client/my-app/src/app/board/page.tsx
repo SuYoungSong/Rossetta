@@ -10,7 +10,7 @@ const Board: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boardData, setBoardData] = useState([]);
   const [username, setUsername] = useState(""); // 추가된 부분
-
+  const is_staff = localStorage.getItem('is_staff');
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -57,10 +57,15 @@ const Board: React.FC = () => {
       <div className='boardName'>1:1 문의</div>
 
       <div className='btnRight'>
-          <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
-            + 등록
-          </button>
-        </div>
+  {
+    is_staff === 'false' &&
+    (
+      <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
+        + 등록
+      </button>
+    )
+  }
+</div>
 
       /
 
