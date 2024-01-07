@@ -148,10 +148,12 @@ export default function TextMemory() {
 
     return (
       <>
-          <div className='question-content'>
+          <div>
+
              {questions.length > 0 ? (
                  // 해당 챕터에 남은 문제가 있는 경우
                  <>
+                     <div className='question-content'>
               <div className='question-video-zone'>
                   <video controls className="video" src={videoPath} style={{width: '700px'}}></video>
               </div>
@@ -180,17 +182,19 @@ export default function TextMemory() {
                   </div>
                   <div>{resultLabel}</div>
               </div>
+                         </div>
                  </>
              ):(// 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
                  <>
-                     <p>모든 문제를 풀었습니다.</p>
-                     <button onClick={handleBack}>돌아가기</button>
+                     <div className="solved">
+                        <p className="solve_txt">모든 문제를 풀었습니다.</p>
+                        <button onClick={handleBack}>돌아가기</button>
+                    </div>
                  </>
              )}
-          </div>
+
           <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
-
-
+          </div>
       </>
     );
     

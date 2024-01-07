@@ -86,3 +86,25 @@
     border-color: #b2b9cb;
     box-shadow: none;
 }
+
+.solved{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 70vh;
+}
+
+.solve_txt{
+    margin: 8vh auto;
+    font-size: 5vh;
+    font-weight: 600;
+}
+
+.solved button{
+    background-color: #2C858D;
+    color: white;
+    width: 20vw;
+    margin: 5vh auto;
+    height: 7vh;
+    border-radius: 20px;
+}
