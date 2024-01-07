@@ -163,6 +163,16 @@ h2 {
   right: 10%;
 }
 
+.form_img2 {
+  position: absolute;
+  border: solid 2px;
+  border-radius: 20px;
+  padding: 50px 10px 10px 5px;
+  width: 45%;
+  height:45%;
+  right: 10%;
+}
+
 /* 카드섹션 */
 
 .tpg {

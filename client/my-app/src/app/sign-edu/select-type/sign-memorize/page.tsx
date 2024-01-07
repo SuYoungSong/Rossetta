@@ -58,11 +58,12 @@ export default function SignMemory() {
                     // '문제'가 존재하고 'answer'가 존재하며 'word'가 존재할 때 값을 설정
                   if (res.data && res.data['문제'] && res.data['문제'].answer && res.data['문제'].answer.word) {
                     setAnswer(res.data['문제'].answer.word);
+                    setQuestionNumber(res.data['문제'].answer.id)
                   } else {
                     // 위 조건 중 하나라도 만족하지 않으면 null로 설정
                     setAnswer('null');
                  }
-                    console.log(res)
+                    // console.log(res)
                 })
                 .catch((err) => {
                     console.log(err)
@@ -98,14 +99,47 @@ export default function SignMemory() {
             }
         }, [landmarks]);
 
+
+        
+    // 이용자가 문제를 푼 경우 상태를 서버에 전달
+      const questionState = (is_answer: boolean) => {
+        let accessToken = localStorage.getItem('accessToken');
+        let userId = localStorage.getItem('id');
+
+        const param = {
+            is_answer: is_answer,
+            paper: Number(questionNumber),
+            user: userId,
+            is_deaf: false
+        }
+
+        axios.post("http://localhost:8000/api/practice-note/", param, {
+            headers: {
+                'Authorization': `Token ${accessToken}`
+            }
+        })
+
+            .then((res) => {
+                // 요청에 성공한 경우
+                // 처리할 내용 없음
+            })
+            .catch((err) => {
+                // 요청에 실패한 경우
+                console.log("err >> ", err);
+            });
+    };
+
+
     // 정답 여부 체크
     const checkAnswer = (predictAnswer: string) => {
 
           // 정답 여부에 따라 표시되는 문구 설정
         if (predictAnswer === answer) {
           setIsAnswerCorrect(true);
+          questionState(true);
         } else {
           setIsAnswerCorrect(false);
+          questionState(false);
         }
         handleOpenModal();
     };

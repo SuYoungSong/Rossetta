@@ -68,5 +68,5 @@ urlpatterns = [
     path('tokenusercheck/', TokenPasswordUserCheckView.as_view()),
 
     # ## AI model api
-    # path('sentencemodel/',SentenceModelView.as_view()),
+    path('sentencemodel/',SentenceModelView.as_view()),
 ]

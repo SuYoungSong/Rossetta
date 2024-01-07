@@ -9,6 +9,7 @@ import profile from '../../public/profile2.svg';
 import child from '../../public/child.png'
 import { useRef, useEffect, useState } from "react";
 import word_lecture from '../../public/word_lecture.png';
+import signlanguage_practice from '../../public/signlanguage_practice.png'
 import subin_profile from '../../public/subin_profile.svg'
 import woojin_profile from '../../public/woojin_profile.svg'
 import hyeongho_profile from '../../public/hyeongho_profile.svg'
@@ -191,7 +192,9 @@ export default function Home() {
             </div>
           </div>
           <div className="main_form">
-            <div className="form_img"></div>
+            <div className="form_img2">
+              <Image alt="" src={signlanguage_practice}></Image>
+            </div>
             <div ref={realRef} className={`${styles.real} ${realRefIsVisible ? styles.animatereal : ''}`} >
               <h2>수어실습</h2>
               <h1>
