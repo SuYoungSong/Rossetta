@@ -215,6 +215,23 @@ const fetchComments = async () => {
   }
 };
 
+const [file, setFile] = useState<File[]>([]);
+const [fileName, setFileName] = useState<string>('첨부파일');
+const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const fileInput = event.target;
+
+  if (fileInput.files && fileInput.files.length > 0) {
+    // 다중 파일이 선택되었을 때
+    const uploadedFiles = Array.from(fileInput.files); // FileList를 배열로 변환
+    setFile(uploadedFiles);
+    setFileName(uploadedFiles.map(file => file.name).join(', ')); // 파일 이름들을 합쳐서 하나의 문자열로 만듭니다.
+  } else {
+    // 파일이 선택되지 않았을 때
+    setFile([]);
+    setFileName('첨부파일');
+  }
+};
+
 
 return (
   <div className='boardList' onClick={handleItemClick}>
@@ -331,7 +348,14 @@ return (
               <div className='modalMainContent'>작성일자</div>
               <div className='queryDate'>{formattedCreatedAt}</div>
               <div className='modalMainContent'>첨부 이미지</div>
-              <div className='queryImageContent'>
+              {modalStatus === 'edit' ? (
+                <div className='attachBtn'>
+                <input id="file" type="file" onChange={handleFileChange} multiple/>
+                <label htmlFor="file">첨부하기</label>
+                <input className="fileName" value={fileName} placeholder="첨부파일" readOnly />
+              </div>    
+              ):(
+                <div className='queryImageContent'>
                 {modalContent?.images ? (
                     modalContent.images.map((image, index) => {
                       // 이미지 URL 수정
@@ -342,6 +366,9 @@ return (
                     <span>No images</span>
                 )}
               </div>
+              )}
+              
+              
 
               {state ? (
                   <div>
