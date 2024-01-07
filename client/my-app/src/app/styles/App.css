@@ -177,7 +177,7 @@ h2 {
 
 .tpg {
   display: block;
-  height: calc(80vh + 1500px);
+  height: calc(80vh + 1200px);
   /* outline: 2px dashed blue; */
   background-color: #A3C6C2;
   background: linear-gradient(180deg, rgb(182, 207, 204) 46%, rgba(33, 157, 81, 0.365) 100%);
