@@ -240,30 +240,32 @@ return (
             </div>
             <div className='staff-management'>
               <div className='staff-modalMain'>
+                <div className='modalusername'>작성자</div>
+                <div>{username}</div>
                 <div className='modalMainTitle'>제목</div>
                 <div>
-                  
-                    <div className='titleInputContent'>{modalContent.title}</div>
-                 
+
+                  <div className='titleInputContent'>{modalContent.title}</div>
+
                 </div>
                 <div className='modalMainContent'>내용</div>
                 <div>
-                  
-                    <div className='queryContent'>{modalContent.body}</div>
-                 
+
+                  <div className='queryContent'>{modalContent.body}</div>
+
                 </div>
                 <div className='modalMainContent'>작성일자</div>
                 <div className='queryDate'>{formattedCreatedAt}</div>
                 <div className='modalMainContent'>첨부 이미지</div>
                 <div className='queryImageContent'>
                   {modalContent?.images ? (
-                    modalContent.images.map((image, index) => {
-                      // 이미지 URL 수정
-                      const correctImageUrl = `http://localhost:8000${image}`;
-                      return <img key={index} src={correctImageUrl} alt={`Image ${index}`} />;
-                    })
+                      modalContent.images.map((image, index) => {
+                        // 이미지 URL 수정
+                        const correctImageUrl = `http://localhost:8000${image}`;
+                        return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
+                      })
                   ) : (
-                    <span>No images</span>
+                      <span>No images</span>
                   )}
                 </div>
               </div>
@@ -301,27 +303,29 @@ return (
             </div>
 
             <div className='modalMain'>
+              <div className='modalusername'>작성자</div>
+              <div>{username}</div>
               <div className='modalMainTitle'>제목</div>
               <div>
                 {modalStatus === 'edit' ? (
-                  <input
-                    type="text"
-                    value={newTitle} // newTitle을 출력
-                    onChange={e => setNewTitle(e.target.value)}
-                  />
+                    <input
+                        type="text"
+                        value={newTitle} // newTitle을 출력
+                        onChange={e => setNewTitle(e.target.value)}
+                    />
                 ) : (
-                  <div className='titleInputContent'>{modalContent.title}</div>
+                    <div className='titleInputContent'>{modalContent.title}</div>
                 )}
               </div>
               <div className='modalMainContent'>내용</div>
               <div>
                 {modalStatus === 'edit' ? (
-                  <textarea
-                    value={newBody} // newBody를 출력
-                    onChange={e => setNewBody(e.target.value)} // newBody를 변경
-                  />
+                    <textarea
+                        value={newBody} // newBody를 출력
+                        onChange={e => setNewBody(e.target.value)} // newBody를 변경
+                    />
                 ) : (
-                  <div className='queryContent'>{modalContent.body}</div>
+                    <div className='queryContent'>{modalContent.body}</div>
                 )}
               </div>
               <div className='modalMainContent'>작성일자</div>
@@ -329,27 +333,27 @@ return (
               <div className='modalMainContent'>첨부 이미지</div>
               <div className='queryImageContent'>
                 {modalContent?.images ? (
-                  modalContent.images.map((image, index) => {
-                    // 이미지 URL 수정
-                    const correctImageUrl = `http://localhost:8000${image}`;
-                    return <img key={index} src={correctImageUrl} alt={`Image ${index}`} />;
-                  })
+                    modalContent.images.map((image, index) => {
+                      // 이미지 URL 수정
+                      const correctImageUrl = `http://localhost:8000${image}`;
+                      return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
+                    })
                 ) : (
-                  <span>No images</span>
+                    <span>No images</span>
                 )}
               </div>
 
               {state ? (
-                <div>
-                  <div className='modalMainContent'>답변</div>
-                  <div className='queryContent'>{comment}</div>
-                </div>
-                ) : null}
+                  <div>
+                    <div className='modalMainContent'>답변</div>
+                    <div className='queryContent'>{comment}</div>
+                  </div>
+              ) : null}
             </div>
 
             <div className='btn-box'>
               {modalStatus === 'edit' ? (
-                <button className='modal-btn' onClick={handleSaveClick}>저장</button>
+                  <button className='modal-btn' onClick={handleSaveClick}>저장</button>
               ) : (
                 <button className='modal-btn' onClick={handleModify}>수정</button>
               )}
