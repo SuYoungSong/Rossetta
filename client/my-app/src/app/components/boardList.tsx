@@ -24,7 +24,11 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
   const [newTitle, setNewTitle] = useState('');
   const [newBody, setNewBody] = useState('');
   const [modalStatus, setModalStatus] = useState('none');
-
+  const [newFile, setNewFile] = useState<File[]>([]);
+  const [accessToken, setAccessToken] = useState('');
+  const [userId, setUserId] = useState('');
+  const [newFileName, setNewFileName] = useState<string>('첨부파일');
+  const formData = new FormData();
 // 모달 state 선언
   // const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
@@ -79,20 +83,28 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 
 
   // 수정>저장 버튼시 통신
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // 파일이 선택되었다면 각각 FormData에 추가
+  newFile.forEach((file) => {
+    formData.append(`images`, file);
+  });
+
+  formData.append('title2', newTitle);
+  formData.append('body', newBody);
+
+
     const accessToken = localStorage.getItem('accessToken');
     const user_id = localStorage.getItem('id');
     try {
       const response = await axios.put(
         `http://localhost:8000/api/question/${boardid}/`,
-        {
-          "title2": newTitle,
-          "body": newBody
-        }
+          formData
         ,
         {
           params: { id: user_id },
-          headers: { 'Authorization': `Token ${accessToken}` },
+          headers: { 'Authorization': `Token ${accessToken}`,
+                      'Content-Type': 'multipart/form-data'},
         }
       );
       console.log('PUT 요청이 성공적으로 전송되었습니다.', response.data);
@@ -102,6 +114,17 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       console.error('PUT 요청이 실패하였습니다.', error);
     }
   };
+
+    // 컴포넌트가 마운트될 때 로컬 스토리지에서 액세스 토큰과 사용자 ID 가져오기
+  useEffect(() => {
+    const storedAccessToken = localStorage.getItem('accessToken');
+    const storedUserId = localStorage.getItem('id');
+
+    if (storedAccessToken && storedUserId) {
+      setAccessToken(storedAccessToken);
+      setUserId(storedUserId);
+    }
+  }, []);
 
   // 삭제
   const handleDeleteClick = async () => {
@@ -164,10 +187,6 @@ const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-  const cancelDelete = () => {
-    setShowDeleteConfirmation(false);
-  };
-
 
 // staff
 const isStaff = localStorage.getItem('is_staff');
@@ -215,20 +234,19 @@ const fetchComments = async () => {
   }
 };
 
-const [file, setFile] = useState<File[]>([]);
-const [fileName, setFileName] = useState<string>('첨부파일');
+// 파일 수정 버튼
 const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
   const fileInput = event.target;
 
   if (fileInput.files && fileInput.files.length > 0) {
     // 다중 파일이 선택되었을 때
     const uploadedFiles = Array.from(fileInput.files); // FileList를 배열로 변환
-    setFile(uploadedFiles);
-    setFileName(uploadedFiles.map(file => file.name).join(', ')); // 파일 이름들을 합쳐서 하나의 문자열로 만듭니다.
+    setNewFile(uploadedFiles);
+    setNewFileName(uploadedFiles.map(file => file.name).join(', ')); // 파일 이름들을 합쳐서 하나의 문자열로 만듭니다.
   } else {
     // 파일이 선택되지 않았을 때
-    setFile([]);
-    setFileName('첨부파일');
+    setNewFile([]);
+    setNewFileName('첨부파일');
   }
 };
 
@@ -352,7 +370,7 @@ return (
                 <div className='attachBtn'>
                 <input id="file" type="file" onChange={handleFileChange} multiple/>
                 <label htmlFor="file">첨부하기</label>
-                <input className="fileName" value={fileName} placeholder="첨부파일" readOnly />
+                <input className="fileName" value={newFileName} placeholder="첨부파일" readOnly />
               </div>    
               ):(
                 <div className='queryImageContent'>
