@@ -66,10 +66,11 @@
 }
 
 .quest-text{
-    font-size: 3.5vw;
-    font-weight: 700;
+    font-size: 2vw;
+    font-weight: 600;
     display: flex;
     margin: auto;
+    word-break: keep-all;
 }
 
 .check{
@@ -81,12 +82,17 @@
     justify-content: center;
     flex-direction: column;
     overflow: hidden;
+    word-break: keep-all;
+    box-shadow: 0px 2px 4px 0px #888888;
+}
+
+.check:hover{
+    box-shadow: none;
 }
 
 .whole_camera {
     display: flex;
     flex-direction: row;
-    margin: auto;
     justify-content: center;
     text-align: center;
     margin: 8vh 20vw;
@@ -112,4 +118,10 @@
 
 .real_cameara {
     display: none;
+}
+
+.startQuiz {
+    margin: 1.5vh auto;
+    font-size: 4vh;
+    font-weight: 650;
 }

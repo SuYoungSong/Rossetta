@@ -71,6 +71,7 @@
     text-align: center;
     background-color: white;
     border: 1px #C9C9C9 solid;
+    word-break: keep-all;
 }
 
 .nextBtn {
