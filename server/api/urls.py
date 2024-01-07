@@ -70,4 +70,5 @@ urlpatterns = [
 
     # ## AI model api
     path('sentencemodel/',SentenceModelView.as_view()),
+    path('wordmodel/',WordModelView.as_view()),
 ]

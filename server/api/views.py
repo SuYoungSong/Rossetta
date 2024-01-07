@@ -1121,3 +1121,46 @@ class SentenceModelView(APIView):
     def post(self , request):
         answer = self.sen_predict(request.data)
         return Response(data={"predict":answer} , status=status.HTTP_200_OK)
+
+
+
+class WordModelView(APIView):
+
+    def extract_keypoints(self, results):
+
+        pose = np.zeros(132)
+        left_hand = np.zeros(63)
+        right_hand = np.zeros(63)
+
+        if 'pose_landmarks' in results:
+            pose = np.array([[res['x'], res['y'], res['z'], res['visibility']] for res in results['pose_landmarks']]).flatten()
+        if 'left_hand_landmarks' in results:
+            left_hand = np.array([[res['x'], res['y'], res['z']] for res in results['left_hand_landmarks']]).flatten()
+        if 'right_hand_landmarks' in results:
+            right_hand = np.array([[res['x'], res['y'], res['z']] for res in results['right_hand_landmarks']]).flatten()
+
+        return np.concatenate([pose, left_hand, right_hand])
+
+    def word_predict(self,data):
+        actions = np.array(
+            ['간호사', '골절', '당뇨병', '병명', '병문안', '불면증', '붕대', '소화제', '의사', '입원', '진단서', '체온', '치료', '퇴원', '화상',
+             '근무', '디자이너', '예술가', '요리사', '운동선수', '출근', '통역사', '퇴사',
+             '교가', '교무실', '교실', '교탁', '답안지', '등교', '모범생', '문제지', '복습', '상장', '실습', '예습', '자습', '재학', '학부모', '학습'])
+
+        # 전체 landmarks에서 특정 landmark만 추출하여 저장할 배열
+        landmarks = []
+
+        # data에 있는 landmark를 하나씩 가져와서 특정 landmark만 추출하고
+        for key, landmark in data.items():
+            landmarks.append(self.extract_keypoints(landmark))
+
+        model = tf.keras.models.load_model('model/lstm_model.h5')
+
+        pred = model.predict(np.expand_dims(landmarks, axis=0))[0]
+
+        answer = actions[np.argmax(pred)]
+
+        return answer
+    def post(self, request):
+        answer = self.word_predict(request.data)
+        return Response(data={"predict": answer}, status=status.HTTP_200_OK)
