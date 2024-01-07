@@ -2,7 +2,7 @@
     width: 100vw;
     height: 15vh;
     display: flex;
-    padding: 28px 20px 30px;
+    padding: 20px 20px 30px;
     background-color: rgb(240, 240, 240);
 }
 
@@ -11,4 +11,52 @@
     margin-left: 10px;
     font-size: 14px;
     color: rgb(135, 133, 133);
+}
+
+.privacypolicyBtn {
+    font-size: 15px;
+    color: black;
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+.privacypolicy-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.privacypolicy-title {
+    font-size: 2em;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.privacypolicy-close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    border: none;
+    background: none;
+    color: #fff;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.privacypolicy-content {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 2em;
+    width: 70%;
+    height: 70%;
+    overflow-y: auto;
+    box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.2);
 }
