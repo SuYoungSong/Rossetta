@@ -10,8 +10,9 @@ import Image from "next/image";
 import AnswerModalProps from '../answerModal';
 import WebCamMemorize from "@/app/components/webCamMemorize";
 import {NormalizedLandmarkList} from "@mediapipe/holistic";
-export default function SignMemory() {
+import {Timer} from "@/app/components/timer";
 
+export default function SignMemory() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const searchParams = useSearchParams()
 
@@ -30,7 +31,6 @@ export default function SignMemory() {
     const handleLandmarksChange = (newLandmarks: Record<string, NormalizedLandmarkList>) => {
         setLandmarks(newLandmarks);
   };
-
 
     let param = {};
     let API_URL = '';
@@ -132,12 +132,20 @@ export default function SignMemory() {
                       <div className="question">
                         <div className="quest-text">{answer}</div>
                       </div>
-                      <div className="check">
-                        <button className='startQuiz' onClick={() => setIsStart(true)}>문제 풀기</button>
-                        <p>버튼을 클릭하면 {second}초 안에 동작을 해주세요. </p>
-                      </div>
+                        <div className="check" onClick={() => setIsStart(true)}>
+                            <div className='startQuiz'>문제 풀기</div>
+                            {/*버튼 누르면 글자 타이머로 바뀌게*/}
+                            {/*{!isStart?*/}
+                            {/*    <>*/}
+                            {/*        <div className='startQuiz'>문제 풀기</div>*/}
+                            {/*    </> :*/}
+                            {/*    <>*/}
+                            {/*        /!*<Timer sec_num={second}/>*!/*/}
+                            {/*    </>}*/}
+                            <p>버튼을 클릭하면 <b>{second}초</b> 안에 <br/>동작을 해주세요. </p>
+                        </div>
                     </div>
-                    <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
+                      <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
                   </div>
                 ) : (
                   // 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
