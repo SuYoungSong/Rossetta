@@ -9,7 +9,6 @@ import axios from "axios";
 const Board: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boardData, setBoardData] = useState([]);
-  // const [boardid, setBoardid] = useState("");
   const [username, setUsername] = useState(""); // 추가된 부분
 
   const handleCloseModal = () => {
