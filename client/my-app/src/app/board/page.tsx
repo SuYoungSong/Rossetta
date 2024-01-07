@@ -67,16 +67,7 @@ const Board: React.FC = () => {
       <div className='board'>
         <div className='titleCount'>총 {boardData.length}건 </div>
         <div className='bulletinBoard'>
-          {/* {boardData.map((boardItem, index) => (
-            <BoardList key={index}
-                       boardNum={index+1}
-                       boardid={boardItem.id}
-                       username={boardItem.user}
-                        boardData={boardData}
-                       {...boardItem} />
-
-          ))} */}
-
+          
           {/* 최신등록글이 상단에 오도록 수정 */}
           {[...boardData].reverse().map((boardItem, index) => (
             <BoardList key={index}
