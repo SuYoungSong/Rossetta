@@ -60,7 +60,7 @@ def word_data_check(id, type, situation, chapter, is_deaf):
         return [help_text, error_code]
     chapters = paper.objects.filter(type=type, situation=situation).values_list('chapter').distinct()
     chapter_min, chapter_max = min(chapters)[0], max(chapters)[0]
-    print(chapter_min , chapter , chapter_max)
+    print(chapter_min, chapter, chapter_max)
     if not (chapter_min <= chapter <= chapter_max):
         help_text = "해당 챕터가 조회되지 않습니다"
         error_code = "404"
@@ -96,5 +96,28 @@ def sentence_data_check(id, type, chapter, is_deaf):
     if is_deaf != False and is_deaf != True:
         help_text = "농아인 여부 정보가 필요합니다."
         error_code = "400"
+        return [help_text, error_code]
+    return [help_text, error_code]
+
+
+def word_wrong_count_check(id, type, situation):
+    help_text = ""
+    error_code = ""
+    situations = ['학교', '병원', '직업']
+    if id is None:
+        help_text = "아이디 정보가 존재하지 않습니다"
+        error_code = "400"
+        return [help_text, error_code]
+    if type != "단어":
+        help_text = "단어 유형 전용 서비스 입니다"
+        error_code = "400"
+        return [help_text, error_code]
+    if len(situation) == 0 or situation is None:
+        help_text = "상황 정보를 입력해주세요"
+        error_code = "400"
+        return [help_text, error_code]
+    if situation not in situations:
+        help_text = "조회되는 상황 정보가 없습니다"
+        error_code = "404"
         return [help_text, error_code]
     return [help_text, error_code]

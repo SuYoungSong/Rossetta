@@ -16,8 +16,8 @@ from .serializers import *
 from .permissions import *
 from .models import practice_note
 # from .preprocessing import *
-import numpy as np
-import tensorflow as tf
+# import numpy as np
+# import tensorflow as tf
 
 # 로그인 서버 시간 갱신 API
 class RenewalTokenTimeView(APIView):
@@ -945,102 +945,144 @@ class WrongSentenceQuestionView(APIView):
             return Response(data={"state": "틀린 문제가 없습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
+class WordWrongCountView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+    def post(self, request):
+        id = request.data.get('id')
+        type = request.data.get('type')
+        situation = request.data.get('situation')
 
-class SentenceModelView(APIView):
-    def get_answer_mapping(self, num):
-        '''
-        Predict에서 나온 숫자가 어떤 문자열인지 알려주는 함수
-        DB의 answer에 맞게 변경하면 된다.
+        help_return = word_wrong_count_check(id, type, situation)
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
 
-        Parameter
-            num: 숫자를 받아서 해당하는 predict 문자열을 반환하는데 사용한다.
-        Return
-            result: 정답 라벨 문자열
-        '''
-        text_mapping = {
-            0: '경찰 불러주세요',
-            1: '돈 계산 잘못했어요',
-            2: '잘못 말씀드렸어요',
-            3: '위가 쪼이듯이 배가 아파요',
-            4: '에어컨이 고장나서 작동하지않아요',
-            5: '영수증 주세요',
-            6: '오늘 하루 수고 많았습니다',
-            7: '잠깐 기다려주세요',
-            8: '지갑을 잃어버렸어요',
-            9: '카드 사용이 안돼요',
-        }
+        if help_text != "":  # 예외 처리가 존재 한다면
+            if error_code == "400":
+                return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+            if error_code == "404":
+                return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+        result = dict()
+        try:
+            chapter_list = paper.objects.filter(type=type, situation=situation).values_list('chapter').distinct()
+            result[f'{situation}'] = list()
+            for chapter in chapter_list:
+                chapter = chapter[0]
+                chapter_info = dict()
+                paper_count = paper.objects.filter(type=type, situation=situation, chapter=chapter).count()
+                deaf_info = practice_note.objects.filter(user_id=id, paper__type=type, paper__situation=situation,
+                                                         paper__chapter=chapter, is_deaf=True, is_answer=True)
+                deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type, paper__situation=situation,
+                                                             paper__chapter=chapter, is_deaf=False, is_answer=True)
+                chapter_info['chapter'] = chapter
+                chapter_info['paper_all_count'] = paper_count
+                chapter_info['deaf_count'] = deaf_info.count()
+                chapter_info['deaf_not_count'] = deaf_not_info.count()
 
-        result = text_mapping[num]
+                result[f'{situation}'].append(chapter_info)
+            return Response(data=result , status=status.HTTP_200_OK)
+        except paper.DoesNotExist:
+            return Response(data={"state":"문제 정보가 조회되지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
 
-        return result
 
-    def get_use_landmark(self, results):
-        '''
-        전체 landmark에서 사용할 landmark만 추출하는 함수
 
-        Parameter
-            data: holistic로 추출된 landmark
-        Return
-            landmark: 전체 landmark에서 추출한 258개의 keypoint return
-        '''
-        # landmark 1차원 배열에 추가
-        pose_landmarks = [0] * (33 * 4)  # 33개의 pose landmarks * 4 (x, y, z, visibility)
-        left_hand_landmarks = [0] * (21 * 3)  # 21개의 hand landmarks * 3 (x, y, z)
-        right_hand_landmarks = [0] * (21 * 3)  # 21개의 hand landmarks * 3 (x, y, z)
-        print(results)
-        if 'pose_landmarks' in results:
-            pose_landmarks = [landmark["x"] for landmark in results['pose_landmarks']] + \
-                             [landmark["y"] for landmark in results['pose_landmarks']] + \
-                             [landmark["z"] for landmark in results['pose_landmarks']] + \
-                             [landmark["visibility"] for landmark in results['pose_landmarks']]
 
-        if 'left_hand_landmarks' in results:
-            left_hand_landmarks = [landmark["x"] for landmark in results['left_hand_landmarks']] + \
-                                  [landmark["y"] for landmark in results['left_hand_landmarks']] + \
-                                  [landmark["z"] for landmark in results['left_hand_landmarks']]
 
-        if 'right_hand_landmarks' in results:
-            right_hand_landmarks = [landmark["x"] for landmark in results['right_hand_landmarks']] + \
-                                   [landmark["y"] for landmark in results['right_hand_landmarks']] + \
-                                   [landmark["z"] for landmark in results['right_hand_landmarks']]
 
-        landmark = pose_landmarks + left_hand_landmarks + right_hand_landmarks
 
-        return landmark
 
-    def sen_predict(self, data):
-        '''
-        사용자의 동작을 보고 수어 문장을 예측하는 함수
-        수어 문장의 경우 data에 landmark가 120개 넘어와야 한다.
-
-        Parameter
-            data: front로 부터 넘어오는 landmarks 데이터
-        Return
-            result: 모델이 예측한 수어 문장
-        '''
-
-        # 전체 landmarks에서 특정 landmark만 추출하여 저장할 배열
-        landmarks = []
-
-        # data에 있는 landmark를 하나씩 가져와서 특정 landmark만 추출하고
-        for key, landmark in data.items():
-            landmarks.append(self.get_use_landmark(landmark))
-
-        # 수어 문장을 detect할 model 불러오기
-        model = tf.keras.models.load_model(r'model/model_gru.h5')
-
-        # 모델 input data
-        input_data = np.array([landmarks])
-
-        # 모델의 수어 문장 예측
-        pred = model.predict(input_data, verbose=0)[0]
-
-        # 모델이 예측한 수어 문장
-        result = self.get_answer_mapping(pred.argmax(-1))
-
-        # 결과 반환
-        return result
-    def post(self , request):
-        answer = self.sen_predict(request.data)
-
-        return Response(data={"predict":answer} , status=status.HTTP_200_OK)
+# class SentenceModelView(APIView):
+#     def get_answer_mapping(self, num):
+#         '''
+#         Predict에서 나온 숫자가 어떤 문자열인지 알려주는 함수
+#         DB의 answer에 맞게 변경하면 된다.
+#
+#         Parameter
+#             num: 숫자를 받아서 해당하는 predict 문자열을 반환하는데 사용한다.
+#         Return
+#             result: 정답 라벨 문자열
+#         '''
+#         text_mapping = {
+#             0: '경찰 불러주세요',
+#             1: '돈 계산 잘못했어요',
+#             2: '잘못 말씀드렸어요',
+#             3: '위가 쪼이듯이 배가 아파요',
+#             4: '에어컨이 고장나서 작동하지않아요',
+#             5: '영수증 주세요',
+#             6: '오늘 하루 수고 많았습니다',
+#             7: '잠깐 기다려주세요',
+#             8: '지갑을 잃어버렸어요',
+#             9: '카드 사용이 안돼요',
+#         }
+#
+#         result = text_mapping[num]
+#
+#         return result
+#
+#     def get_use_landmark(self, results):
+#         '''
+#         전체 landmark에서 사용할 landmark만 추출하는 함수
+#
+#         Parameter
+#             data: holistic로 추출된 landmark
+#         Return
+#             landmark: 전체 landmark에서 추출한 258개의 keypoint return
+#         '''
+#         # landmark 1차원 배열에 추가
+#         pose_landmarks = [0] * (33 * 4)  # 33개의 pose landmarks * 4 (x, y, z, visibility)
+#         left_hand_landmarks = [0] * (21 * 3)  # 21개의 hand landmarks * 3 (x, y, z)
+#         right_hand_landmarks = [0] * (21 * 3)  # 21개의 hand landmarks * 3 (x, y, z)
+#         print(results)
+#         if 'pose_landmarks' in results:
+#             pose_landmarks = [landmark["x"] for landmark in results['pose_landmarks']] + \
+#                              [landmark["y"] for landmark in results['pose_landmarks']] + \
+#                              [landmark["z"] for landmark in results['pose_landmarks']] + \
+#                              [landmark["visibility"] for landmark in results['pose_landmarks']]
+#
+#         if 'left_hand_landmarks' in results:
+#             left_hand_landmarks = [landmark["x"] for landmark in results['left_hand_landmarks']] + \
+#                                   [landmark["y"] for landmark in results['left_hand_landmarks']] + \
+#                                   [landmark["z"] for landmark in results['left_hand_landmarks']]
+#
+#         if 'right_hand_landmarks' in results:
+#             right_hand_landmarks = [landmark["x"] for landmark in results['right_hand_landmarks']] + \
+#                                    [landmark["y"] for landmark in results['right_hand_landmarks']] + \
+#                                    [landmark["z"] for landmark in results['right_hand_landmarks']]
+#
+#         landmark = pose_landmarks + left_hand_landmarks + right_hand_landmarks
+#
+#         return landmark
+#
+#     def sen_predict(self, data):
+#         '''
+#         사용자의 동작을 보고 수어 문장을 예측하는 함수
+#         수어 문장의 경우 data에 landmark가 120개 넘어와야 한다.
+#
+#         Parameter
+#             data: front로 부터 넘어오는 landmarks 데이터
+#         Return
+#             result: 모델이 예측한 수어 문장
+#         '''
+#
+#         # 전체 landmarks에서 특정 landmark만 추출하여 저장할 배열
+#         landmarks = []
+#
+#         # data에 있는 landmark를 하나씩 가져와서 특정 landmark만 추출하고
+#         for key, landmark in data.items():
+#             landmarks.append(self.get_use_landmark(landmark))
+#
+#         # 수어 문장을 detect할 model 불러오기
+#         model = tf.keras.models.load_model(r'model/model_gru.h5')
+#
+#         # 모델 input data
+#         input_data = np.array([landmarks])
+#
+#         # 모델의 수어 문장 예측
+#         pred = model.predict(input_data, verbose=0)[0]
+#
+#         # 모델이 예측한 수어 문장
+#         result = self.get_answer_mapping(pred.argmax(-1))
+#
+#         # 결과 반환
+#         return result
+#     def post(self , request):
+#         answer = self.sen_predict(request.data)
+#         return Response(data={"predict":answer} , status=status.HTTP_200_OK)

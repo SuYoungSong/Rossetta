@@ -40,6 +40,7 @@ urlpatterns = [
     path('practice-note/word/', WordPlacticeNoteView.as_view()),  # 단어 오답 조회
     path('practice-note/sentence/', SentencePlacticeNoteView.as_view()),  # 문장 오답 조회
     path('practice-note/<int:paper_id>/<str:user_id>/', PracticeNoteView.as_view()),
+    path('wordwrongcount/',WordWrongCountView.as_view()),
 
     ## Posting API
     path('question/', QuestionView.as_view()),
@@ -66,6 +67,6 @@ urlpatterns = [
     ## id + password cross check
     path('tokenusercheck/', TokenPasswordUserCheckView.as_view()),
 
-    ## AI model api
-    path('sentencemodel/',SentenceModelView.as_view()),
+    # ## AI model api
+    # path('sentencemodel/',SentenceModelView.as_view()),
 ]
