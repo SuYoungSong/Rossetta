@@ -34,11 +34,12 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
   const [modalContent, setModalContent] = useState('');
   const [selectedItems, setSelectedItems] = useState<number[]>([]); //체크박스 선택유무
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // 체크확인 모달
+  const storedUsername = localStorage.getItem('username');
 
   const handleItemClick = async () => {
     const accessToken = localStorage.getItem('accessToken');
     const user_id = localStorage.getItem('id');
-    // const storedUsername = localStorage.getItem('username');
+   
     try {
       const response = await axios.get(
         `http://localhost:8000/api/question/${boardid}/`,
@@ -109,7 +110,9 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       );
       console.log('PUT 요청이 성공적으로 전송되었습니다.', response.data);
       setModalContent(response.data);
-      setModalStatus('open');
+      setModalStatus('none')
+      window.location.reload();
+
     } catch (error) {
       console.error('PUT 요청이 실패하였습니다.', error);
     }
@@ -258,7 +261,7 @@ return (
     <div className='boardMain'>
       <h4 className='boardTitle'>[문의] {title}</h4>
       <p className='boardContent'>
-        {formattedCreatedAt || 'N/A'}&ensp;&ensp;{username}
+        {formattedCreatedAt || 'N/A'}&ensp;&ensp;{storedUsername}
       </p>
     </div>
     <div className='waitBtn' style={{ backgroundColor: state ? 'gray' : '#2C858D', color: state ? 'black' : 'white'  }}>{state ? '답변완료' : '답변대기'}</div>
