@@ -261,7 +261,7 @@ return (
     <div className='boardMain'>
       <h4 className='boardTitle'>[문의] {title}</h4>
       <p className='boardContent'>
-        {formattedCreatedAt || 'N/A'}&ensp;&ensp;{storedUsername}
+        {formattedCreatedAt || 'N/A'}&ensp;&ensp;{isStaff === 'true' ? username : storedUsername}
       </p>
     </div>
     <div className='waitBtn' style={{ backgroundColor: state ? 'gray' : '#2C858D', color: state ? 'black' : 'white'  }}>{state ? '답변완료' : '답변대기'}</div>
@@ -278,8 +278,6 @@ return (
             </div>
             <div className='staff-management'>
               <div className='staff-modalMain'>
-                <div className='modalusername'>작성자</div>
-                <div>{username}</div>
                 <div className='modalMainTitle'>제목</div>
                 <div>
 
@@ -293,7 +291,7 @@ return (
 
                 </div>
                 <div className='modalMainContent'>작성일자</div>
-                <div className='queryDate'>{formattedCreatedAt}</div>
+                <div className='queryDate'>{formattedCreatedAt} {username}</div>
                 <div className='modalMainContent'>첨부 이미지</div>
                 <div className='queryImageContent'>
                   {modalContent?.images ? (
@@ -341,8 +339,7 @@ return (
             </div>
 
             <div className='modalMain'>
-              <div className='modalusername'>작성자</div>
-              <div>{username}</div>
+              
               <div className='modalMainTitle'>제목</div>
               <div>
                 {modalStatus === 'edit' ? (
@@ -367,7 +364,7 @@ return (
                 )}
               </div>
               <div className='modalMainContent'>작성일자</div>
-              <div className='queryDate'>{formattedCreatedAt}</div>
+              <div className='queryDate'>{formattedCreatedAt} {storedUsername}</div>
               <div className='modalMainContent'>첨부 이미지</div>
               {modalStatus === 'edit' ? (
                 <div className='attachBtn'>
