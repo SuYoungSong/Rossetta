@@ -4,6 +4,7 @@ import React, {useState, useEffect } from "react";
 import {useSearchParams} from "next/navigation";
 import axios from "axios";
 import AnswerModalProps from "@/app/sign-edu/select-type/answerModal";
+import "@/app/styles/text_memo.css";
 
 
 export default function TextMemory() {
@@ -27,6 +28,8 @@ export default function TextMemory() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
     const [questionNumber, setQuestionNumber] = useState(0);
+
+    const [selectedOption, setSelectedOption] = useState(null);
 
 
     let param = {};
@@ -138,10 +141,13 @@ export default function TextMemory() {
         setIsModalOpen(true);
       };
 
+    const handleRadioChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
 
     return (
       <>
-        <div>문자 암기 페이지</div>
           <div className='question-content'>
              {questions.length > 0 ? (
                  // 해당 챕터에 남은 문제가 있는 경우
@@ -151,9 +157,27 @@ export default function TextMemory() {
               </div>
 
               <div className='question-choice-zone'>
-                  {questions.map((word, idx) => (
-                       <button key={idx} onClick={() => checkAnswer(word)}>{word}</button>
-                    ))}
+                  <div className='back_white'>
+
+                  {/*{questions.map((word, idx) => (*/}
+                  {/*     <button className="select_answer" key={idx} onClick={() => checkAnswer(word)}>{word}</button>*/}
+                  {/*  ))}*/}
+                      <fieldset>
+                          <div className="fixed-question">수화가 뜻하는 것은?</div>
+                          <div>
+                          {questions.map((word, idx) => (
+                                  <label className={`radio-btn ${selectedOption === word ? 'selected' : ''}`} htmlFor={`radio_${idx}`}>
+                                      <div className="plan">
+                                          <input type="radio" id={`radio_${idx}`} name="input-radio" value={word} onChange={handleRadioChange}/>
+                                          <span className="btn-choice">{word}</span>
+                                      </div>
+                                  </label>
+                          ))}
+                          </div>
+                           {selectedOption && <button className="select_answer" onClick={() => checkAnswer(selectedOption)}>채점하기</button>}
+                      </fieldset>
+
+                  </div>
                   <div>{resultLabel}</div>
               </div>
                  </>
