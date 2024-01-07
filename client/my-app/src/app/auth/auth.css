@@ -313,3 +313,9 @@ Input {
     height: 200px;
     border-radius: 20px;
 }
+
+.pass_rule{
+    font-size: 0.8vw;
+    margin: -2vh auto 0.5vh 3.5vw;
+    color: #4B4B4B;
+}

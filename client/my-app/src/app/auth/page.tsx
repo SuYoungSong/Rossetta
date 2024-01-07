@@ -237,6 +237,7 @@ const Auth =()=>{
                                         value={RegisterPassword}
                                         onKeyPress={handleOnKeyPress}
                                     />
+                                    <div className="pass_rule">대,소문자, 숫자, 특수문자가 포함된 8자 이상으로 구성해주세요.</div>
                                     <Input
                                         label="비밀번호확인"
                                         onChange={(ev: any) => {
@@ -246,7 +247,9 @@ const Auth =()=>{
                                         type='password'
                                         value={confirmPassword}
                                         onKeyPress={handleOnKeyPress}
-                                    />{<div className="error-message">{ispassSignAvailable}</div>}
+                                    />
+                                    {<div className="error-message">{ispassSignAvailable}</div>}
+
 
                                     <Input
                                         label="이름"
@@ -269,7 +272,7 @@ const Auth =()=>{
                                         speclassName={isEmailVerified ? "graybtn" : null}
                                         spetextclassName={isEmailVerified ? "graytext" : null}
                                         spelabelclassName={"wb-label-style"}
-                                        disabled={isEmailVerified? true: null}
+                                        disabled={isEmailVerified ? true : null}
                                         onclick={isEmailVerified ? null : () => {
                                             handleSendEmailClick();
                                             handleInputFocus();
@@ -294,7 +297,7 @@ const Auth =()=>{
                                             spelabelclassName={"wb-label-style"}
                                             speclassName={isEmailVerified ? "graybtn" : "whitebtn"}
                                             spetextclassName={isEmailVerified ? "graytext" : "greentext"}
-                                            disabled={isEmailVerified? true : null}
+                                            disabled={isEmailVerified ? true : null}
                                             btntext={isEmailVerified ? "인증 완료" : "인증번호 확인"}
                                         />
                                     )}
