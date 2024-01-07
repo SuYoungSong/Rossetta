@@ -8,9 +8,12 @@ interface BoardListItemProps {
   state: boolean;
   created: string;
   boardid:number;
+  isChecked:boolean;
+  handleCheckboxClick: (boardid: number) => void;
 }
 
-const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, state, created ,boardid}) => {
+const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, state
+                                                   , created ,boardid, isChecked,handleCheckboxClick}) => {
   // 작성일자를 Date 객체로 파싱
   const createdAt = new Date(created);
 
@@ -26,11 +29,12 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 // 모달 state 선언
   // const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
-
+  const [selectedItems, setSelectedItems] = useState<number[]>([]); //체크박스 선택유무
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // 체크확인 모달
   const handleItemClick = async () => {
     const accessToken = localStorage.getItem('accessToken');
     const user_id = localStorage.getItem('id');
-    // const storedUsername = localStorage.getItem('username');
+
     try {
       const response = await axios.get(
         `http://localhost:8000/api/question/${boardid}/`,
@@ -113,81 +117,134 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     }
 };
 
+     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const itemId = boardid;
+
+    if (event.target.checked) {
+      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, itemId]);
+    } else {
+      setSelectedItems((prevSelectedItems) => prevSelectedItems.filter((id) => id !== itemId));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedItems.length > 0) {
+      setShowDeleteConfirmation(true);
+    }
+  };
+
+  const confirmDelete = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    const user_id = localStorage.getItem('id');
+
+    try {
+      await Promise.all(
+        selectedItems.map(async (selectedItemId) => {
+          await axios.delete(`http://localhost:8000/api/question/${selectedItemId}/`, {
+            params: { id: user_id },
+            headers: { Authorization: `Token ${accessToken}` },
+          });
+        })
+      );
+
+      setSelectedItems([]);
+      setShowDeleteConfirmation(false);
+      window.location.reload();
+    } catch (error) {
+      console.error('삭제 요청이 실패하였습니다.', error);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirmation(false);
+  };
 
   return (
-    <div className='boardList' onClick={handleItemClick}>
-      <div className='boardNum'>{boardNum}</div>
-      <div className='boardMain'>
-        <h4 className='boardTitle'>[문의] {title}</h4>
-        <p className='boardContent'>{formattedCreatedAt || 'N/A'}
+      <div className='boardList' onClick={handleItemClick}>
+        <input type="checkbox" onChange={handleCheckboxChange} onClick={(e) => e.stopPropagation()}/>
+        <div className='boardNum'>{boardNum}</div>
+        <div className='boardMain'>
+          <h4 className='boardTitle'>[문의] {title}</h4>
+          <p className='boardContent'>{formattedCreatedAt || 'N/A'}
             {''}
             &ensp;&ensp;{username}</p>
-      </div>
-      <div className='waitBtn'>{state ? '답변완료' : '답변대기'}</div>
-
-{/* 모달부분 */}
-      {/* 모달부분 */}
-    {modalStatus !== 'none' && (
-      <form className='modalWrapper' onClick={e => e.stopPropagation()}>
-        <div className='modalContent'>
-          <div className='modalTop'>
-            <div className='modalTitle'>1:1문의</div>
-            <div className='modalClose' onClick={closeModal}>X</div>
-          </div>
-
-          <div className='modalMain'>
-            <div className='modalMainTitle'>제목</div>
-            <div>
-              {modalStatus === 'edit' ? (
-                  <input
-                      type="text"
-                      value={newTitle} // newTitle을 출력
-                      onChange={e => setNewTitle(e.target.value)}
-                  />
-              ) : (
-                  <div className='titleInputContent'>{modalContent.title}</div>
-              )}
-            </div>
-            <div className='modalMainContent'>내용</div>
-            <div>
-              {modalStatus === 'edit' ? (
-                  <textarea
-                      value={newBody} // newBody를 출력
-                      onChange={e => setNewBody(e.target.value)} // newBody를 변경
-                  />
-              ) : (
-                  <div className='queryContent'>{modalContent.body}</div>
-              )}
-            </div>
-            <div className='modalMainContent'>작성일자</div>
-            <div className='queryDate'>{formattedCreatedAt}</div>
-            <div className='modalMainContent'>첨부 이미지</div>
-            <div className='queryImageContent'>
-              {modalContent?.images ? (
-                  modalContent.images.map((image, index) => {
-                    // 이미지 URL 수정
-                    const correctImageUrl = `http://localhost:8000${image}`;
-                    return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>
-                  })
-              ) : (
-                  <span>No images</span>
-              )}
-            </div>
-
-          </div>
-
-          <div className='btn-box'>
-            {modalStatus === 'edit' ? (
-                <button className='modal-btn' onClick={handleSaveClick}>저장</button>
-            ) : (
-                <button className='modal-btn' onClick={handleModify}>수정</button>
-            )}
-            <button className='modal-btn' onClick={handleDeleteClick}>삭제</button>
-          </div>
         </div>
-      </form>
-    )}
-    </div>
+        <div className='waitBtn'>{state ? '답변완료' : '답변대기'}</div>
+
+        {/* 모달부분 */}
+        {/* 모달부분 */}
+        {modalStatus !== 'none' && (
+            <form className='modalWrapper' onClick={e => e.stopPropagation()}>
+              <div className='modalContent'>
+                <div className='modalTop'>
+                  <div className='modalTitle'>1:1문의</div>
+                  <div className='modalClose' onClick={closeModal}>X</div>
+                </div>
+
+                <div className='modalMain'>
+                  <div className='modalMainTitle'>제목</div>
+                  <div>
+                    {modalStatus === 'edit' ? (
+                        <input
+                            type="text"
+                            value={newTitle} // newTitle을 출력
+                            onChange={e => setNewTitle(e.target.value)}
+                        />
+                    ) : (
+                        <div className='titleInputContent'>{modalContent.title}</div>
+                    )}
+                  </div>
+                  <div className='modalMainContent'>내용</div>
+                  <div>
+                    {modalStatus === 'edit' ? (
+                        <textarea
+                            value={newBody} // newBody를 출력
+                            onChange={e => setNewBody(e.target.value)} // newBody를 변경
+                        />
+                    ) : (
+                        <div className='queryContent'>{modalContent.body}</div>
+                    )}
+                  </div>
+                  <div className='modalMainContent'>작성일자</div>
+                  <div className='queryDate'>{formattedCreatedAt}</div>
+                  <div className='modalMainContent'>첨부 이미지</div>
+                  <div className='queryImageContent'>
+                    {modalContent?.images ? (
+                        modalContent.images.map((image, index) => {
+                          // 이미지 URL 수정
+                          const correctImageUrl = `http://localhost:8000${image}`;
+                          return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>
+                        })
+                    ) : (
+                        <span>No images</span>
+                    )}
+                  </div>
+
+                </div>
+
+                <div className='btn-box'>
+                  {modalStatus === 'edit' ? (
+                      <button className='modal-btn' onClick={handleSaveClick}>저장</button>
+                  ) : (
+                      <button className='modal-btn' onClick={handleModify}>수정</button>
+                  )}
+                  <button className='modal-btn' onClick={handleDeleteClick}>삭제</button>
+                </div>
+              </div>
+            </form>
+        )}
+        {/* 선택된 항목 삭제 버튼 */}
+        {selectedItems.length > 0 && (
+            <div className='deleteButtonContainer'>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                if (window.confirm('정말로 삭제하시겠습니까?')) {
+                  confirmDelete();
+                }
+              }}>항목 삭제</button>
+            </div>
+        )}
+      </div>
   );
 };
 

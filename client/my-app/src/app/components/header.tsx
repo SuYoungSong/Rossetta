@@ -32,6 +32,7 @@ const Header = ({username, status, token}: HeaderProps) => {
           localStorage.removeItem('username');
           localStorage.removeItem('id');
           localStorage.removeItem("real_script")
+          localStorage.removeItem('is_staff');
           router.push('/');
           window.location.replace('/');
       })

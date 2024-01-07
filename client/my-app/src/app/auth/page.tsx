@@ -155,6 +155,8 @@ const Auth =()=>{
         console.log("res >>",res);
         const usernamee = res.data.name;
         const accessToken = res.data.token;
+        const isstaff = res.data.is_staff;
+        localStorage.setItem('is_staff', isstaff);
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('username', usernamee);
         localStorage.setItem('id', username);

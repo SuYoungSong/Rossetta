@@ -121,3 +121,19 @@ def word_wrong_count_check(id, type, situation):
         error_code = "404"
         return [help_text, error_code]
     return [help_text, error_code]
+
+
+def sentence_wrong_count_check(id, type):
+    help_text = ""
+    error_code = ""
+
+    if id is None:
+        help_text = "아이디 정보가 존재하지 않습니다"
+        error_code = "400"
+        return [help_text, error_code]
+    if type != "문장":
+        help_text = "문장 유형 전용 서비스 입니다"
+        error_code = "400"
+        return [help_text, error_code]
+
+    return [help_text, error_code]
