@@ -362,12 +362,14 @@ return (
     {/* 선택된 항목 삭제 버튼 */}
     {selectedItems.length > 0 && (
             <div className='deleteButtonContainer'>
-              <button onClick={(e) => {
+              <button 
+              className='waitBtn' style={{ border:'solid 1px'}}
+              onClick={(e) => {
                 e.stopPropagation();
                 if (window.confirm('정말로 삭제하시겠습니까?')) {
                   confirmDelete();
                 }
-              }}>항목 삭제</button>
+              }}>항목삭제</button>
             </div>
         )}
   </div>
