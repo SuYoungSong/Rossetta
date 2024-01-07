@@ -984,7 +984,42 @@ class WordWrongCountView(APIView):
 
 
 
+class SentenceWrongCountView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
 
+    def post(self,request):
+        id = request.data.get('id')
+        type = request.data.get('type')
+        help_return = sentence_wrong_count_check(id, type)
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+        if help_text != "":  # 예외 처리가 존재 한다면
+            if error_code == "400":
+                return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+            if error_code == "404":
+                return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+
+        result = dict()
+        try:
+            chapter_list = paper.objects.filter(type=type).values_list('chapter').distinct()
+            result[f'{type}'] = list()
+            for chapter in chapter_list:
+                chapter = chapter[0]
+                chapter_info = dict()
+                paper_count = paper.objects.filter(type=type, chapter=chapter).count()
+                deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                         paper__chapter=chapter, is_deaf=True, is_answer=True)
+                deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                             paper__chapter=chapter, is_deaf=False, is_answer=True)
+                chapter_info['chapter'] = chapter
+                chapter_info['paper_all_count'] = paper_count
+                chapter_info['deaf_count'] = deaf_info.count()
+                chapter_info['deaf_not_count'] = deaf_not_info.count()
+
+                result[f'{type}'].append(chapter_info)
+            return Response(data=result , status=status.HTTP_200_OK)
+        except paper.DoesNotExist:
+            return Response(data={"state":"문제 정보가 조회되지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
 
 
 
