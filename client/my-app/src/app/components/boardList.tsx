@@ -112,6 +112,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       setModalContent(response.data);
       setModalStatus('none')
       window.location.reload();
+      alert("수정되었습니다.")
 
     } catch (error) {
       console.error('PUT 요청이 실패하였습니다.', error);
@@ -131,26 +132,32 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 
   // 삭제
   const handleDeleteClick = async () => {
-    const accessToken = localStorage.getItem('accessToken');
-    const user_id = localStorage.getItem('id');
-    try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/question/${boardid}/`,
-        {
-          params: { id: user_id },
-          headers: { 'Authorization': `Token ${accessToken}` },
-        }
-      );
-      // 성공적인 응답 처리
-      console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
-      setModalStatus('none');
-      window.location.reload();
+    event.preventDefault();
+    if(window.confirm("삭제하시겠습니까?")){
+      
+      const accessToken = localStorage.getItem('accessToken');
+      const user_id = localStorage.getItem('id');
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/api/question/${boardid}/`,
+          {
+            params: { id: user_id },
+            headers: { 'Authorization': `Token ${accessToken}` },
+          }
+        );
+        // 성공적인 응답 처리
+        console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
+        setModalStatus('none');
+        window.location.reload();
+        alert("문의가 삭제되었습니다.")
 
-    } catch (error) {
-      // 실패한 응답 처리
-      console.error('delete 요청이 실패하였습니다.', error);
-    }
-};
+      } catch (error) {
+        // 실패한 응답 처리
+        console.error('delete 요청이 실패하였습니다.', error);
+      }
+    } else {
+      console.log("Deletion was cancelled.");
+    } };
 
 const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const itemId = boardid;
@@ -205,6 +212,7 @@ const handleStaffSubmit = async () => {
     );
 
     console.log(response.data);
+    alert("답변완료.")
   } catch (error) {
     console.error(error);
   }
@@ -278,6 +286,7 @@ return (
             </div>
             <div className='staff-management'>
               <div className='staff-modalMain'>
+              <div className='modalusername'>작성자: {username}</div>
                 <div className='modalMainTitle'>제목</div>
                 <div>
 
@@ -291,7 +300,7 @@ return (
 
                 </div>
                 <div className='modalMainContent'>작성일자</div>
-                <div className='queryDate'>{formattedCreatedAt} {username}</div>
+                <div className='queryDate'>{formattedCreatedAt}</div>
                 <div className='modalMainContent'>첨부 이미지</div>
                 <div className='queryImageContent'>
                   {modalContent?.images ? (
@@ -339,7 +348,7 @@ return (
             </div>
 
             <div className='modalMain'>
-              
+              <div className='modalusername'>작성자: {username}</div>
               <div className='modalMainTitle'>제목</div>
               <div>
                 {modalStatus === 'edit' ? (
@@ -347,6 +356,7 @@ return (
                         type="text"
                         value={newTitle} // newTitle을 출력
                         onChange={e => setNewTitle(e.target.value)}
+                        maxLength="25"
                     />
                 ) : (
                     <div className='titleInputContent'>{modalContent.title}</div>
@@ -364,7 +374,7 @@ return (
                 )}
               </div>
               <div className='modalMainContent'>작성일자</div>
-              <div className='queryDate'>{formattedCreatedAt} {storedUsername}</div>
+              <div className='queryDate'>{formattedCreatedAt}</div>
               <div className='modalMainContent'>첨부 이미지</div>
               {modalStatus === 'edit' ? (
                 <div className='attachBtn'>
@@ -397,11 +407,13 @@ return (
             </div>
 
             <div className='btn-box'>
-              {modalStatus === 'edit' ? (
-                  <button className='modal-btn' onClick={handleSaveClick}>저장</button>
-              ) : (
-                <button className='modal-btn' onClick={handleModify}>수정</button>
-              )}
+            {!state && (
+                  modalStatus === 'edit' ? (
+                      <button className='modal-btn' onClick={handleSaveClick}>저장</button>
+                  ) : (
+                      <button className='modal-btn' onClick={handleModify}>수정</button>
+                  )
+                )}
               <button className='modal-btn' onClick={handleDeleteClick}>삭제</button>
             </div>
           </div>
