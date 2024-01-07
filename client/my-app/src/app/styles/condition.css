@@ -273,11 +273,11 @@
 .waitBtn {
   margin-left: 2vw;
   color: #505050;
-  border: 2px solid #868787;
+  /* border: 2px solid #868787; */
   border-radius: 12px;
   padding: 1vh 1vw;
   font-size: 1vw;
-
+  font-weight: 600;
 }
 
 
@@ -299,6 +299,20 @@
     background-color: #fff;
     padding: 2vw;
     width: 35vw;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 13vh;
+    bottom: 0;
+    margin: auto;
+    overflow: auto;
+  }
+
+  .staff-modalContent {
+    background-color: #fff;
+    padding: 2vw;
+    width: 70vw;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -362,6 +376,8 @@
 
   .queryImageContent {
     margin-bottom: 30px;
+    width: 30%;
+    height: 30%;
   }
 
   input[type="text"],
@@ -542,4 +558,20 @@
 .btn-box{
   display: flex;
   justify-content: center;
+}
+
+/* 관리자 */
+.staff-management{
+  display: flex;
+  text-align: left;
+}
+.staff-modalMain{
+  flex: 1;
+}
+.staffMain{
+  flex: 1;
+}
+.staff-answerBox{
+  min-height: 300px;
+  font-size: 1.5vw;
 }
