@@ -269,9 +269,12 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 
 return (
     <div className='boardList' onClick={handleItemClick}>
-      <input type="checkbox"
-             onChange={() => handleCheckboxClick(boardid)}
-             onClick={(e) => e.stopPropagation()} />
+      {!isStaff &&(
+        <input type="checkbox"
+        onChange={() => handleCheckboxClick(boardid)}
+        onClick={(e) => e.stopPropagation()} />
+      )}
+      
       <div className='boardNum'>{boardNum}</div>
       <div className='boardMain'>
         <h4 className='boardTitle'>[문의] {title}</h4>
@@ -296,10 +299,12 @@ return (
                   </div>
                   <div className='staff-management'>
                     <div className='staff-modalMain'>
-                      <div className='modalusername'>작성자: {username}</div>
-                      <div className='modalMainTitle'>제목</div>
+                      <div className='modalusername'>
+                        <div className='userinfo-modal'>작성자: {username}</div>
+                        <div className='queryDatuserinfo-modale'>작성일자: {formattedCreatedAt}</div>
+                      </div>
                       <div>
-
+                        <div>제목</div>
                         <div className='titleInputContent'>{modalContent.title}</div>
 
                       </div>
@@ -320,6 +325,7 @@ return (
                               return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
                             })
                         ) : (
+                          
                             <span>No images</span>
                         )}
                       </div>

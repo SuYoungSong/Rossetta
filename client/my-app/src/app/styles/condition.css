@@ -177,10 +177,25 @@
   border: 0px;
   }
 
-  .boardBtn:hover {
-    background-color: #2e676c;
-    cursor: pointer;
-  }
+.boardBtnDelete {
+  width: 80px;
+  height: 35px;
+  font-size: 17px;
+  margin: 1vh 1vw;
+  color: white;
+  background-color:  gray;
+  border-radius: 10px;
+  border: 0px;
+}
+.boardBtnDelete:hover {
+  background-color: rgb(99, 98, 98);
+  cursor: pointer;
+}
+
+.boardBtn:hover {
+  background-color: #2e676c;
+  cursor: pointer;
+}
 
 
 /* 게시판 전체 하얀부분 */

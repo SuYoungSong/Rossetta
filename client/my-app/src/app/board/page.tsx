@@ -15,6 +15,7 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boardData, setBoardData] = useState([]);
   const [username, setUsername] = useState(""); // 추가된 부분
+  const is_staff = localStorage.getItem('is_staff');
 
 
    const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -145,18 +146,19 @@ const confirmDelete = async () => {
 
   return (
     <>
-      <div className='boardName'>1:1 문의</div>
-      <div className='board'>
+    <div className='boardName'>1:1 문의</div>
+    <div className='board'>
+    {is_staff && (
       <div className='btnRight'>
-        <button className='boardBtn' style={{ backgroundColor: 'sandybrown' }} onClick={() => handleDeleteClick()}>
-          삭제
+        <button className='boardBtnDelete' onClick={() => handleDeleteClick()}>
+          - 삭제
         </button>
         <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
           + 등록
         </button>
       </div>
-
-      
+    )}
+                
         <div className='titleCount'>총 {boardData.length}건 </div>
         <div className='bulletinBoard'>
           {/* 최신등록글이 상단에 오도록 수정 */}
