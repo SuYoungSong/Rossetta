@@ -4,6 +4,12 @@ officialrossetta@gmail.com
 ---
 ---
 <br>
+
+## 📌프로젝트 소개
+**KT AIVLE School 4기 빅프로젝트**
+- AI 기반 수어 교육 플랫폼
+- Next.js, Django, SQLite3, MediaPipe, Tensorflow, OpenCV
+
 <br>
 
 ## 👨‍👩‍👧‍👧팀원
@@ -24,9 +30,19 @@ officialrossetta@gmail.com
 <br>
 
 ## 단어 모델 성능 지표
+### LSTM Model
 
 ![model_loss_word](https://github.com/SuYoungSong/Rossetta/assets/98371516/22c1b3d4-2651-4019-a690-4f5c775601ed)|![model_acc_word](https://github.com/SuYoungSong/Rossetta/assets/98371516/9fef2deb-b347-442b-b334-5bec0db10ad1)
 ---|---|
 
 ![word_lstm_confusion_metrix](https://github.com/SuYoungSong/Rossetta/assets/98371516/a6277988-788d-4893-8658-144e3d8f30cf)
+
+
+## 문장 모델 성능 지표
+### GRU Model
+![gru_grape](https://github.com/SuYoungSong/Rossetta/assets/98371516/3f1726ee-a568-4240-a602-f36ef96e1d8f)
+![gru_confu](https://github.com/SuYoungSong/Rossetta/assets/98371516/e5f71a3e-6cf7-4375-8b0f-63acd8d99ee2)
+
+
+
 
