@@ -26,7 +26,7 @@ const WrongChapters: React.FC<CorrectProps> = ({ allCount, correct }) => {
           datasets: [
             {
               label: "Info",
-              data: [chartData.correct, chartData.total],
+              data: [chartData.correct, chartData.total - chartData.correct],
               backgroundColor: [
                 "rgba(44, 133, 141, 0.8)",
                 "rgba(235, 235, 235, 1)",
@@ -45,6 +45,22 @@ const WrongChapters: React.FC<CorrectProps> = ({ allCount, correct }) => {
           plugins: {
             legend: {
               display: false,
+            },
+            tooltip: {
+              // Disable the on-canvas tooltip
+              enabled: false,
+              external: function (context) {
+                // Tooltip Element
+                let tooltipEl = document.getElementById('chartjs-tooltip');
+
+                // Create element on first render
+                if (!tooltipEl) {
+                  tooltipEl = document.createElement('div');
+                  tooltipEl.id = 'chartjs-tooltip';
+                  tooltipEl.innerHTML = '<table></table>';
+                  document.body.appendChild(tooltipEl);
+                }
+              }
             },
           },
           animation: {
@@ -65,7 +81,6 @@ const WrongChapters: React.FC<CorrectProps> = ({ allCount, correct }) => {
       chartRef.current.chart = newChart;
     }
   }, [chartData]);
-
 
   useEffect(() => {
     setChartData({ correct: correct, total: allCount });

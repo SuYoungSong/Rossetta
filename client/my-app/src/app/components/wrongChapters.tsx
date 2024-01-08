@@ -19,8 +19,10 @@ interface ChapterProps {
 interface CorrectData {
   chapter: number;
   paper_all_count: number;
-  deaf_count: number;
-  deaf_not_count: number;
+  correct_deaf_count: number;
+  unsolved_deaf_count: number;
+  correct_deaf_not_count: number;
+  unsolved_deaf_not_count: number;
 }
 
 const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isdeaf}) => {
@@ -55,24 +57,24 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isd
                     const leng = res.data[selectName].length;
                     if (leng != undefined) {
                         setIsChapLength(leng)
-                        console.log(islength);
-
                         const correctData: CorrectData[] = res.data[selectName];
-                        console.log(correctData);
 
-                      const correct: number[][] = correctData.map(item => [
-                        item.paper_all_count,
-                        item.deaf_count,
-                        item.deaf_not_count
+                      const ccorrect: number[][] = correctData.map(item => [
+                          item.paper_all_count,
+                          item.correct_deaf_count,
+                          item.correct_deaf_not_count,
+                          item.unsolved_deaf_count,
+                          item.unsolved_deaf_not_count
                       ]);
 
-                    setCorrect(correct);
+                    setCorrect(ccorrect);
                     }
                 })
               .catch((err) => {
                   console.log(err)
               });
       }, []);
+   console.log(correct);
 
     const chapters = setChapLength(islength);
 
@@ -89,7 +91,8 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isd
                 <div className="chapter-btn"><div className="dnchart">
                     <Chart
                         allCount={correct[index][0]}
-                        correct={isdeaf ? correct[index][2] : correct[index][1]}
+                        // unsolved={isdeaf ? correct[index][3] : correct[index][4]}
+                        correct={isdeaf ? correct[index][1] : correct[index][2]}
                       />
                 </div>
                     <div className='btnText'>Chapter {chapterNumber}</div></div>
