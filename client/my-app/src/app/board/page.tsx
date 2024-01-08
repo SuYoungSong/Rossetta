@@ -15,10 +15,10 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boardData, setBoardData] = useState([]);
   const [username, setUsername] = useState(""); // 추가된 부분
-  const is_staff = localStorage.getItem('is_staff');
+  const is_staff = localStorage.getItem('is_staff') === 'true';
 
 
-   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const handleCloseModal = () => {
@@ -147,34 +147,36 @@ const confirmDelete = async () => {
   return (
     <>
     <div className='boardName'>1:1 문의</div>
-    <div className='board'>
-    {is_staff && (
-      <div className='btnRight'>
-        <button className='boardBtnDelete' onClick={() => handleDeleteClick()}>
-          - 삭제
-        </button>
-        <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
-          + 등록
-        </button>
-      </div>
-    )}
-                
-        <div className='titleCount'>총 {boardData.length}건 </div>
-        <div className='bulletinBoard'>
-          {/* 최신등록글이 상단에 오도록 수정 */}
-          {[...boardData].reverse().map((boardItem, index) => (
-            <BoardList key={index}
-                      boardNum={boardData.length - index}
-                      boardid={boardItem.id}
-                      username={boardItem.user}
-                      boardData={boardData}
-                      selectedItems={selectedItems}
-                      handleCheckboxClick={handleCheckboxChange}
-                      {...boardItem} />
-          ))}
+    <div className='board_container'>
+      <div className='board'>
+      {!is_staff && (
+        <div className='btnRight'>
+          <button className='boardBtnDelete' onClick={() => handleDeleteClick()}>
+            - 삭제
+          </button>
+          <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
+            + 등록
+          </button>
         </div>
+      )}
+                  
+          <div className='titleCount'>총 {boardData.length}건 </div>
+          <div className='bulletinBoard'>
+            {/* 최신등록글이 상단에 오도록 수정 */}
+            {[...boardData].reverse().map((boardItem, index) => (
+              <BoardList key={index}
+                        boardNum={boardData.length - index}
+                        boardid={boardItem.id}
+                        username={boardItem.user}
+                        boardData={boardData}
+                        selectedItems={selectedItems}
+                        handleCheckboxClick={handleCheckboxChange}
+                        {...boardItem} />
+            ))}
+          </div>
+        </div>
+        {isModalOpen && <Modal onClose={handleCloseModal} />}
       </div>
-      {isModalOpen && <Modal onClose={handleCloseModal} />}
     </>
   );
 };

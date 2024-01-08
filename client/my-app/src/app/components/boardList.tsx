@@ -338,7 +338,9 @@ const handleDeleteButtonClick = (imgUrl: string) => {
 
 return (
     <div className='boardList' onClick={handleItemClick}>
-      {!isStaff &&(
+      {isStaff === 'true' ? (
+        null
+      ):(
         <input type="checkbox"
         onChange={() => handleCheckboxClick(boardid)}
         onClick={(e) => e.stopPropagation()} />
@@ -368,24 +370,16 @@ return (
                   </div>
                   <div className='staff-management'>
                     <div className='staff-modalMain'>
-                      <div className='modalusername'>
-                        <div className='userinfo-modal'>작성자: {username}</div>
-                        <div className='queryDatuserinfo-modale'>작성일자: {formattedCreatedAt}</div>
+                      <div className='modalinfo'>
+                        <div className='modalusername'>작성자: {username}</div>
+                        <div className='modaluserdate'>작성일자: {formattedCreatedAt}</div>
                       </div>
                       <div>
-                        <div>제목</div>
-                        <div className='titleInputContent'>{modalContent.title}</div>
-
+                        <div className='modalinnertitle'>제목</div>
+                        <div className='modalusertitle'>{modalContent.title}</div>
                       </div>
-                      <div className='modalMainContent'>내용</div>
-                      <div>
-
-                        <div className='queryContent'>{modalContent.body}</div>
-
-                      </div>
-                      <div className='modalMainContent'>작성일자</div>
-                      <div className='queryDate'>{formattedCreatedAt}</div>
-
+                      <div className='modalinnertitle'>내용</div>                    
+                      <div className='modalusercontent'>{modalContent.body}</div>                        
                       {modalContent?.images && modalContent.images.length > 0 ? (
                         <>
                           <div className='modalMainContent'>첨부 이미지</div>
@@ -451,24 +445,30 @@ return (
                   </div>
 
                   <div className='modalMain'>
-                    <div className='modalusername'>작성자: {username}</div>
-                    <div className='modalMainTitle'>제목</div>
-                    <div>
-                      {modalStatus === 'edit' ? (
-                          <input
-                              type="text"
-                              value={newTitle} // newTitle을 출력
-                              onChange={e => setNewTitle(e.target.value)}
-                              maxLength="25"
-                          />
-                      ) : (
-                          <div className='titleInputContent'>{modalContent.title}</div>
-                      )}
+                    <div className='modalinfo'>
+                      <div className='modalusername'>작성자: {username}</div>
+                      <div className='modaluserdate'>작성일자: {formattedCreatedAt}</div>
                     </div>
-                    <div className='modalMainContent'>내용</div>
+                    <div>
+                      <div className='modalinnertitle'>제목</div>
+                      <div>
+                        {modalStatus === 'edit' ? (
+                            <input
+                                type="text"
+                                value={newTitle} // newTitle을 출력
+                                onChange={e => setNewTitle(e.target.value)}
+                                maxLength="25"
+                            />
+                        ) : (
+                            <div className='titleInputContent'>{modalContent.title}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className='modalinnertitle'>내용</div>
                     <div>
                       {modalStatus === 'edit' ? (
                           <textarea
+                              className='userEditContent'
                               value={newBody} // newBody를 출력
                               onChange={e => setNewBody(e.target.value)} // newBody를 변경
                           />
@@ -476,11 +476,10 @@ return (
                           <div className='queryContent'>{modalContent.body}</div>
                       )}
                     </div>
-                    <div className='modalMainContent'>작성일자</div>
-                    <div className='queryDate'>{formattedCreatedAt}</div>
+                    
                       {modalStatus === 'edit' && (
                         <div>
-                          <div className='modalMainContent'>이미지 추가하기</div>
+                          
                           <div className='attachBtn'>
                             <input id="file" type="file" onChange={handleFileChange} multiple/>
                             <label htmlFor="file">첨부하기</label>
@@ -489,7 +488,6 @@ return (
                           <div className='queryImageContent'>
                             {modalContent?.images ?  (
                               <div>
-                                <div className='modalMainContent baseImageZone'>기존 이미지 삭제하기</div>
                                 {modalContent.images.map((image, index) => {
                                   // 이미지 URL 수정
                                   const correctImageUrl = `http://localhost:8000${image}`;
@@ -509,8 +507,8 @@ return (
                       )}
 
                       {modalStatus !== 'edit' && modalContent?.images && modalContent.images.length > 0 && (
+                        
                     <div className='queryImageContent'>
-                      <div className='modalMainContent'>첨부 이미지</div>
                       {modalContent.images.map((image, index) => {
                         // 이미지 URL 수정
                         const correctImageUrl = `http://localhost:8000${image}`;
@@ -523,7 +521,7 @@ return (
 
                     {state ? (
                         <div>
-                          <div className='modalMainContent'>답변</div>
+                          <div className='modalinnertitle'>답변</div>
                           <div className='queryContent'>{comment}</div>
                         </div>
                     ) : null}
