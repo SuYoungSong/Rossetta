@@ -29,6 +29,9 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState('');
   const [newFileName, setNewFileName] = useState<string>('첨부파일');
+
+  const [baseFileUpload, setBaseFileUpload] = useState<File[]>([]);
+
   const formData = new FormData();
 // 모달 state 선언
   // const [modalOpen, setModalOpen] = useState(false);
@@ -40,7 +43,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
   const handleItemClick = async () => {
     const accessToken = localStorage.getItem('accessToken');
     const user_id = localStorage.getItem('id');
-   
+
     try {
       const response = await axios.get(
         `http://localhost:8000/api/question/${boardid}/`,
@@ -74,7 +77,29 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
     setNewTitle(modalContent.title); // 기존의 제목 설정
     setNewBody(modalContent.body); // 기존의 내용 설정
     setModalStatus('edit');
+    setBaseFileUpload([])
+
+    if (modalContent.images) {
+      modalContent.images.map((image, index) => {
+        // 이미지 URL 수정
+        const correctImageUrl = `http://localhost:8000${image}`;
+        addBlobToState(correctImageUrl);
+      });
+    }
   };
+
+const getImageBlob = async (imageUrl: string): Promise<Blob> => {
+  const response = await fetch(imageUrl);
+  return await response.blob();
+};
+
+// Blob 추출
+const addBlobToState = async (imgUrl: string) => {
+  const blob = await getImageBlob(imgUrl);
+  const fileNameFromUrl = imgUrl.substring(imgUrl.lastIndexOf('/') + 1);
+  // 현재 상태 복사 후 새 Blob 추가
+  setBaseFileUpload(prevState => [...prevState, new File([blob], fileNameFromUrl, { type: blob.type })]);
+};
 
   const [staffAnswer, setStaffAnswer] = useState('false');
   const answerModify = (event) => {
@@ -84,11 +109,20 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 
 
 
+
   // 수정>저장 버튼시 통신
   const handleSaveClick = async (event: React.FormEvent) => {
     event.preventDefault();
+
+  const imageUrl = 'http://localhost:8000/media/question_board_images/8a9e75e2-fac1-4a8f-b100-37d47cc2a24c.png';
+  const blob = await fetch(imageUrl).then(response => response.blob());
+
     // 파일이 선택되었다면 각각 FormData에 추가
   newFile.forEach((file) => {
+    formData.append(`images`, file);
+  });
+
+  baseFileUpload.forEach((file) => {
     formData.append(`images`, file);
   });
 
@@ -135,7 +169,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
   const handleDeleteClick = async () => {
     event.preventDefault();
     if(window.confirm("삭제하시겠습니까?")){
-      
+
       const accessToken = localStorage.getItem('accessToken');
       const user_id = localStorage.getItem('id');
       try {
@@ -209,7 +243,7 @@ const isStaff = localStorage.getItem('is_staff');
 // 관리자
 const [staffcomment, setStaffcomment] = useState('');
 
-const handleStaffSubmit = async () => {  
+const handleStaffSubmit = async () => {
   const accessToken = localStorage.getItem('accessToken');
   try {
     const response = await axios.post('http://localhost:8000/api/comment/', { "comment" : staffcomment, "board" : boardid},
@@ -235,7 +269,7 @@ const fetchComments = async () => {
   const accessToken = localStorage.getItem('accessToken');
   try {
     const response = await axios.post(
-      'http://localhost:8000/api/commentinquiry/', 
+      'http://localhost:8000/api/commentinquiry/',
       {
         "board": boardid
       },
@@ -243,7 +277,7 @@ const fetchComments = async () => {
         headers: { 'Authorization': `Token ${accessToken}` }
       }
     );
-    const commentsData = response.data.comment; 
+    const commentsData = response.data.comment;
     setcomment(commentsData);
   } catch(error) {
     console.error('댓글을 가져오는데 실패했습니다:', error);
@@ -266,6 +300,41 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
   }
 };
 
+
+// 이미지 삭제 버튼이 클릭되었을 때 호출되는 함수
+const handleDeleteButtonClick = (imgUrl: string) => {
+  // 삭제 확인 여부를 묻는 등의 추가적인 로직이 필요할 수 있습니다.
+  const isConfirmed = window.confirm('이미지를 삭제하시겠습니까?');
+
+  if (isConfirmed) {
+    // 확인이 되었다면 이미지 삭제 함수 호출
+    deleteBaseFile(imgUrl);
+  }
+};
+
+
+    const deleteBaseFile = (imgUrl:string) => {
+      const fileNameFromUrl = imgUrl.substring(imgUrl.lastIndexOf('/') + 1);
+      const updatedFiles = baseFileUpload.filter(file => file.name !== fileNameFromUrl);
+      setBaseFileUpload(updatedFiles);
+
+      // 이미지 및 HTML 요소를 찾아서 숨김 처리
+      const imageElements = document.querySelectorAll(`img[src="${imgUrl}"]`);
+      imageElements.forEach((element) => {
+        const boardImageEditZone = element.closest('.board-image-edit-zone');
+        if (boardImageEditZone) {
+          boardImageEditZone.remove();
+          // boardImageEditZone.style.display = 'none';
+        }
+      });
+    const bi = document.querySelector('.board-image-edit-zone');
+    // 이미지가 모두 삭제된 경우에는 modalMainContent도 함께 삭제
+    if (!bi) {
+      const modalMainContent = document.querySelector('.baseImageZone');
+        modalMainContent.remove();
+         // modalMainContent.style.display = 'none';
+    }
+  };
 
 return (
     <div className='boardList' onClick={handleItemClick}>
@@ -316,6 +385,24 @@ return (
                       </div>
                       <div className='modalMainContent'>작성일자</div>
                       <div className='queryDate'>{formattedCreatedAt}</div>
+
+                      {modalContent?.images && modalContent.images.length > 0 ? (
+                        <>
+                          <div className='modalMainContent'>첨부 이미지</div>
+                          <div className='queryImageContent'>
+                            {modalContent.images.map((image, index) => {
+                              // 이미지 URL 수정
+                              const correctImageUrl = `http://localhost:8000${image}`;
+                              return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
+                            })}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <span></span>
+                        </>
+                      )}
+
                       <div className='modalMainContent'>첨부 이미지</div>
                       <div className='queryImageContent'>
                         {modalContent?.images ? (
@@ -354,7 +441,7 @@ return (
               </form>
           ))
       ) : (
-        // 사용자가 보는 모달창
+
           (modalStatus !== 'none' && (
               <form className='modalWrapper' onClick={e => e.stopPropagation()}>
                 <div className='modalContent'>
@@ -364,11 +451,7 @@ return (
                   </div>
 
                   <div className='modalMain'>
-                    <div className='modalusername'>
-                      <div className='userinfo-modal'>작성자: {username}</div>
-                      <div className='queryDatuserinfo-modale'>작성일자: {formattedCreatedAt}</div>
-                    </div>
-                    
+                    <div className='modalusername'>작성자: {username}</div>
                     <div className='modalMainTitle'>제목</div>
                     <div>
                       {modalStatus === 'edit' ? (
@@ -376,7 +459,7 @@ return (
                               type="text"
                               value={newTitle} // newTitle을 출력
                               onChange={e => setNewTitle(e.target.value)}
-                              maxLength="30"
+                              maxLength="25"
                           />
                       ) : (
                           <div className='titleInputContent'>{modalContent.title}</div>
@@ -386,7 +469,6 @@ return (
                     <div>
                       {modalStatus === 'edit' ? (
                           <textarea
-                              className='editTextbox'
                               value={newBody} // newBody를 출력
                               onChange={e => setNewBody(e.target.value)} // newBody를 변경
                           />
@@ -394,28 +476,49 @@ return (
                           <div className='queryContent'>{modalContent.body}</div>
                       )}
                     </div>
-                    
-                    
-                    <div className='modalMainContent'>첨부 이미지</div>
-                    {modalStatus === 'edit' ? (
-                        <div className='attachBtn'>
-                          <input id="file" type="file" onChange={handleFileChange} multiple/>
-                          <label htmlFor="file">첨부하기</label>
-                          <input className="fileName" value={newFileName} placeholder="첨부파일" readOnly/>
+                    <div className='modalMainContent'>작성일자</div>
+                    <div className='queryDate'>{formattedCreatedAt}</div>
+                      {modalStatus === 'edit' && (
+                        <div>
+                          <div className='modalMainContent'>이미지 추가하기</div>
+                          <div className='attachBtn'>
+                            <input id="file" type="file" onChange={handleFileChange} multiple/>
+                            <label htmlFor="file">첨부하기</label>
+                            <input className="fileName" value={newFileName} placeholder="첨부파일 추가하기" readOnly/>
+                          </div>
+                          <div className='queryImageContent'>
+                            {modalContent?.images ?  (
+                              <div>
+                                <div className='modalMainContent baseImageZone'>기존 이미지 삭제하기</div>
+                                {modalContent.images.map((image, index) => {
+                                  // 이미지 URL 수정
+                                  const correctImageUrl = `http://localhost:8000${image}`;
+                                  return (
+                                    <div className="board-image-edit-zone" key={index}>
+                                      <img src={correctImageUrl} alt={`Image ${index}`}/>
+                                      <div className='delete-x-button' onClick={() => handleDeleteButtonClick(correctImageUrl)}>X</div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <span></span>
+                            )}
+                          </div>
                         </div>
-                    ) : (
-                        <div className='queryImageContent'>
-                          {modalContent?.images ? (
-                              modalContent.images.map((image, index) => {
-                                // 이미지 URL 수정
-                                const correctImageUrl = `http://localhost:8000${image}`;
-                                return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
-                              })
-                          ) : (
-                              <span>No images</span>
-                          )}
-                        </div>
-                    )}
+                      )}
+
+                      {modalStatus !== 'edit' && modalContent?.images && modalContent.images.length > 0 && (
+                    <div className='queryImageContent'>
+                      <div className='modalMainContent'>첨부 이미지</div>
+                      {modalContent.images.map((image, index) => {
+                        // 이미지 URL 수정
+                        const correctImageUrl = `http://localhost:8000${image}`;
+                        return <img key={index} src={correctImageUrl} alt={`Image ${index}`} />;
+                      })}
+                    </div>
+                  )}
+
 
 
                     {state ? (
