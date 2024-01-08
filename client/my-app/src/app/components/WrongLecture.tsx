@@ -14,15 +14,6 @@ interface LectureProps {
     word_num: number;
 }
 
-interface VideoData {
-    id: number;
-    type: string;
-    situation: string;
-    chapter: number;
-    sign_video_url: string;
-    sign_answer: string;
-}
-
 interface WrongData {
   answer: string;
   video: string;
@@ -32,21 +23,22 @@ const WrongLecture: React.FC<LectureProps> = ({type, situation, chapter, is_deaf
     const userId = typeof window !== 'undefined' ? localStorage.getItem('id') : null;
     const accessToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     const [length_wrong, setIsChapLength] = useState<number>(0);
-    const [videoData, setVideoData] = useState<VideoData[]>([]);
+    const [videoData, setVideoData] = useState<string>('');
+    const [wordData, setWordData] = useState<string>('');
     const [wrong, setWrong] = useState<string[][]>([]);
     const searchParams = useSearchParams();
     const router = useRouter();
-    const total = parseInt(searchParams.get('total'));
+
     let URL:string;
     let param = {};
    if (type=='word'){
-       URL = "http://localhost:8000/api/wordwrongcount/"
+       URL = "http://localhost:8000/api/wordwronginfo/"
        param = {
            id: userId, type: "단어", situation: situation, chapter: chapter, is_deaf:is_deaf
        }
    }
    else if (type=='sentence'){
-       URL = "http://localhost:8000/api/sentencewrongcount/"
+       URL = "http://localhost:8000/api/sentencewronginfo/"
        param = {
            id: userId, type:"문장", chapter: chapter, is_deaf: is_deaf
        }
@@ -55,7 +47,7 @@ const WrongLecture: React.FC<LectureProps> = ({type, situation, chapter, is_deaf
     useEffect(() => {
           axios.post(URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
               .then((res) => {
-                    const leng = res.data.wrong.length;
+                    const leng = res.data.wrong;
                     if (leng != undefined) {
                         setIsChapLength(leng)
                         const wrongData: WrongData[] = res.data.wrong;
@@ -66,12 +58,17 @@ const WrongLecture: React.FC<LectureProps> = ({type, situation, chapter, is_deaf
                     ]);
 
                     setWrong(wrong);
+                    setVideoData("http://localhost:8000" + wrong[word_num][1]);
+                    setWordData(wrong[word_num][0]);
                     }
                 })
               .catch((err) => {
                   console.log(err);
               });
       }, []);
+   console.log(videoData);
+   console.log(wordData);
+
 
     return (
         <>
@@ -85,12 +82,16 @@ const WrongLecture: React.FC<LectureProps> = ({type, situation, chapter, is_deaf
                 </div>
             </div>
 
-            <div className='section_lecture'>
-                <VideoPlayer src_url={urls} count={chapter}/>
-                <div className='word_part'>{videoData[chapter]?.sign_answer}</div>
-            </div>
+            {wrong !== undefined && (
+                <div className='section_lecture'>
+                    {/*<div className="outer"><video className="video" src={videoData}/></div>*/}
+                    <VideoPlayer src_url={[videoData]}></VideoPlayer>
+                    <div className='word_part'>{wordData}</div>
+                </div>
+            )}
+
         </>
-  );
+    );
 };
 
 export default WrongLecture;

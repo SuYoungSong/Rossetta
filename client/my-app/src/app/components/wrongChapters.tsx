@@ -126,7 +126,7 @@ return (
                 <div className="chapter-area">
                     {chapterState.map((chapterItem, index) => (
                         <Link
-                            href={`../../../${currentPath}/${chapterItem.chapter}/0?total=${chapterItem.paper_all_count - chapterItem.unsolved_count}`}
+                            href={`../../../${currentPath}/${chapterItem.chapter}/0?total=${chapterItem.wrong_count}`}
                             key={index}>
                             <div className="chapter-btn">
                                 <div className="dnchart">

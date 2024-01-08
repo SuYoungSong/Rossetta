@@ -108,3 +108,7 @@
 .next_word{
     float: right;
 }
+
+.video_part{
+    overflow: hidden;
+}
