@@ -896,12 +896,15 @@ class WrongWordQuestionView(APIView):
             )
             result['문제'] = list()
             if is_deaf:  # 농아인 문제
+                info_list = list()
                 for practice in practice_notes:
                     paper_info = practice.paper  # 틀린 문제 정보
-                    result["1"] = dict()
-                    result["1"]["id"] = paper_info.id
-                    result["1"]["word"] = paper_info.sign_answer
-                    result["1"]["isAnswer"] = True
+                    info = dict()
+                    info["1"] = dict()
+                    info["1"]["id"] = paper_info.id
+                    info["1"]["word"] = paper_info.sign_answer
+                    info["1"]["word"] = paper_info.sign_answer
+                    info["1"]["isAnswer"] = True
                     wrong_infos = paper.objects.exclude(id=paper_info.id).filter(type=paper_info.type,
                                                                                  situation=paper_info.situation)
                     wrong_infos_len = len(wrong_infos)
@@ -909,18 +912,21 @@ class WrongWordQuestionView(APIView):
                     random_numbers = random.sample(range(wrong_infos_len), 3)
                     for i in range(len(random_numbers)):
                         wrong_info = wrong_infos[random_numbers[i]]
-                        result[f'{i + 2}'] = dict()
-                        result[f'{i + 2}']['id'] = wrong_info.id
-                        result[f'{i + 2}']['word'] = wrong_info.sign_answer
-                        result[f'{i + 2}']['isAnswer'] = False
-                    result['video'] = dict()
-                    result['video']['url'] = paper_info.sign_video_url.url
+                        info[f'{i + 2}'] = dict()
+                        info[f'{i + 2}']['id'] = wrong_info.id
+                        info[f'{i + 2}']['word'] = wrong_info.sign_answer
+                        info[f'{i + 2}']['isAnswer'] = False
+                    info['video'] = paper_info.sign_video_url.url
+                    result['문제'].append(info)
             else:  # 청각 장애인 문제
+                info_list = list()
                 for practice in practice_notes:
                     paper_info = practice.paper  # 틀린 문제 정보
-                    result['answer'] = dict()
-                    result['answer']['word'] = paper_info.sign_answer
-            return Response(data={"문제": result}, status=status.HTTP_200_OK)
+                    info = dict()
+                    info['answer'] = dict()
+                    info['answer']['word'] = paper_info.sign_answer
+                    result['문제'].append(info)
+            return Response(data=result, status=status.HTTP_200_OK)
 
         except practice_note.DoesNotExist:
             return Response(data={"state": "틀린 문제가 없습니다"}, status=status.HTTP_404_NOT_FOUND)
@@ -937,8 +943,6 @@ class WrongSentenceQuestionView(APIView):
         token = request.headers['Authorization']
         auth_token = token.split(' ')[-1]
         auth_token_user = Token.objects.get(key=auth_token).user_id
-
-
 
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 단어/문장
@@ -983,7 +987,7 @@ class WrongSentenceQuestionView(APIView):
                         result[f'{i + 2}']['id'] = wrong_info.id
                         result[f'{i + 2}']['word'] = wrong_info.sign_answer
                         result[f'{i + 2}']['isAnswer'] = False
-                    result['video'] = dict()
+                    result['video'] = paper_info.sign_video_url.url
                     result['video']['url'] = paper_info.sign_video_url.url
             else:  # 청각 장애인 문제
                 for practice in practice_notes:
