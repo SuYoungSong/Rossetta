@@ -17,7 +17,7 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
   const [username, setUsername] = useState(""); // 추가된 부분
 
 
-   const [selectedItems, setSelectedItems] = useState([]);
+   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const handleCloseModal = () => {
@@ -60,41 +60,57 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
   }, []);
 
   //삭제
-  const handleDeleteClick = async (boardid: number) => {
-    event.preventDefault();
-    if(window.confirm("삭제하시겠습니까?")){
+  const handleDeleteClick = async () => {
+    if (selectedItems.length === 0) {
+    // 선택된 항목이 없을 경우 알림을 표시
+    alert('선택된 게시글이 없습니다. 게시글을 선택 후 삭제해주세요.');
+    return;
+  }
 
-      const accessToken = localStorage.getItem('accessToken');
-      const user_id = localStorage.getItem('id');
-      try {
-        const response = await axios.delete(
-          `http://localhost:8000/api/question/${boardid}/`,
-          {
-            params: { id: user_id },
-            headers: { 'Authorization': `Token ${accessToken}` },
-          }
-        );
-        // 성공적인 응답 처리
-        console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
-        window.location.reload();
-        alert("문의가 삭제되었습니다.")
+  if (window.confirm("삭제하시겠습니까?")) {
+    const accessToken = localStorage.getItem('accessToken');
+    const user_id = localStorage.getItem('id');
 
-      } catch (error) {
-        // 실패한 응답 처리
-        console.error('delete 요청이 실패하였습니다.', error);
-      }
-    } else {
-      console.log("Deletion was cancelled.");
-    } };
+    try {
+      // selectedItems 배열을 순회하며 각 boardId에 대한 삭제 요청을 보냄
+      await Promise.all(
+        selectedItems.map(async (boardId) => {
+          const response = await axios.delete(
+            `http://localhost:8000/api/question/${boardId}/`,
+            {
+              params: { id: user_id },
+              headers: { 'Authorization': `Token ${accessToken}` },
+            }
+          );
+          console.log(`Delete 요청이 성공적으로 전송되었습니다. BoardId: ${boardId}`, response.data);
+        })
+      );
 
+      window.location.reload();
+      alert("선택한 항목이 삭제되었습니다.");
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, boardid: number) => {
-  if (event.target.checked) {
-    setSelectedItems((prevSelectedItems) => [...prevSelectedItems, boardid]);
+    } catch (error) {
+      console.error('Delete 요청이 실패하였습니다.', error);
+    }
   } else {
-    setSelectedItems((prevSelectedItems) => prevSelectedItems.filter((id) => id !== boardid));
+    console.log("Deletion was cancelled.");
   }
 };
+
+
+const handleCheckboxChange = (boardid: number) => {
+  setSelectedItems(prevItems => {
+    if (prevItems.includes(boardid)) {
+      return prevItems.filter(item => item !== boardid);
+    } else {
+      return [...prevItems, boardid];
+    }
+  });
+};
+
+useEffect(() => {
+  // console.log('현재 상태:',selectedItems);
+}, [selectedItems]);
 
 const handleDeleteSelected = () => {
   if (selectedItems.length > 0) {
@@ -132,7 +148,7 @@ const confirmDelete = async () => {
       <div className='boardName'>1:1 문의</div>
 
       <div className='btnRight'>
-        <button onClick={() => handleDeleteClick(boardid)}>
+        <button onClick={() => handleDeleteClick()}>
           삭제
         </button>
         <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
@@ -155,7 +171,7 @@ const confirmDelete = async () => {
                       username={boardItem.user}
                       boardData={boardData}
                        selectedItems={selectedItems}
-                      handleCheckboxChange={handleCheckboxChange}
+                      handleCheckboxClick={handleCheckboxChange}
                       {...boardItem} />
           ))}
         </div>

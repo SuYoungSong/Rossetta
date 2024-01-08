@@ -32,7 +32,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 // 모달 state 선언
   // const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
-  const [selectedItems, setSelectedItems] = useState<number[]>([]); //체크박스 선택유무
+  // const [selectedItems, setSelectedItems] = useState<number[]>([]); //체크박스 선택유무
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // 체크확인 모달
   const storedUsername = localStorage.getItem('username');
 
@@ -159,15 +159,19 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       console.log("Deletion was cancelled.");
     } };
 
-const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, boardid: number) => {
-    const itemId = boardid;
-
-    if (event.target.checked) {
-      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, itemId]);
-    } else {
-      setSelectedItems((prevSelectedItems) => prevSelectedItems.filter((id) => id !== itemId));
-    }
-  };
+// const handleCheckboxChange = (boardid: number) => {
+//   setSelectedItems(prevItems => {
+//     if (prevItems.includes(boardid)) {
+//       return prevItems.filter(item => item !== boardid);
+//     } else {
+//       return [...prevItems, boardid];
+//     }
+//   });
+// };
+//
+// useEffect(() => {
+//   console.log('현재 상태:',selectedItems);
+// }, [selectedItems]);
 
   const handleDeleteSelected = () => {
     if (selectedItems.length > 0) {
@@ -264,8 +268,9 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 
 return (
     <div className='boardList' onClick={handleItemClick}>
-      <input type="checkbox" onChange={(event) => handleCheckboxChange(event, boardid)}
-             onClick={(e) => e.stopPropagation()}/>
+      <input type="checkbox"
+             onChange={() => handleCheckboxClick(boardid)}
+             onClick={(e) => e.stopPropagation()} />
       <div className='boardNum'>{boardNum}</div>
       <div className='boardMain'>
         <h4 className='boardTitle'>[문의] {title}</h4>
@@ -424,19 +429,19 @@ return (
           ))
       )}
       {/* 선택된 항목 삭제 버튼 */}
-      {selectedItems.length > 0 && (
-          <div className='deleteButtonContainer'>
-            <button
-                className='waitBtn' style={{border: 'solid 1px'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (window.confirm('정말로 삭제하시겠습니까?')) {
-                    confirmDelete();
-                  }
-                }}>항목삭제
-            </button>
-          </div>
-      )}
+      {/*{selectedItems.length > 0 && (*/}
+      {/*    <div className='deleteButtonContainer'>*/}
+      {/*      <button*/}
+      {/*          className='waitBtn' style={{border: 'solid 1px'}}*/}
+      {/*          onClick={(e) => {*/}
+      {/*            e.stopPropagation();*/}
+      {/*            if (window.confirm('정말로 삭제하시겠습니까?')) {*/}
+      {/*              confirmDelete();*/}
+      {/*            }*/}
+      {/*          }}>항목삭제*/}
+      {/*      </button>*/}
+      {/*    </div>*/}
+      {/*)}*/}
     </div>
 );
 }
