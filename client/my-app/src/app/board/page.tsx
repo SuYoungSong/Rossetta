@@ -38,7 +38,7 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
             headers: { 'Authorization': `Token ${accessToken}` },
             params: { id: user_id }
           });
-          console.log(response.data);
+          // console.log(response.data);
           setBoardData(response.data);
           // 다른 API에서 받아온 데이터 처리
         } else {
@@ -47,7 +47,7 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
             headers: { 'Authorization': `Token ${accessToken}` },
             params: { id: user_id }
           });
-          console.log(response.data);
+          // console.log(response.data);
           // setBoardid(response.data.id);
           setBoardData(response.data);
         }
@@ -82,7 +82,7 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
               headers: { 'Authorization': `Token ${accessToken}` },
             }
           );
-          console.log(`Delete 요청이 성공적으로 전송되었습니다. BoardId: ${boardId}`, response.data);
+          // console.log(`Delete 요청이 성공적으로 전송되었습니다. BoardId: ${boardId}`, response.data);
         })
       );
 
@@ -93,7 +93,7 @@ const Board: React.FC<BoardItemProps> = ({boardid}) => {
       console.error('Delete 요청이 실패하였습니다.', error);
     }
   } else {
-    console.log("Deletion was cancelled.");
+    // console.log("Deletion was cancelled.");
   }
 };
 
@@ -148,7 +148,7 @@ const confirmDelete = async () => {
       <div className='boardName'>1:1 문의</div>
 
       <div className='btnRight'>
-        <button onClick={() => handleDeleteClick()}>
+        <button className='boardBtn' style={{ backgroundColor: 'sandybrown' }} onClick={() => handleDeleteClick()}>
           삭제
         </button>
         <button onClick={() => setIsModalOpen(true)} className='boardBtn'>

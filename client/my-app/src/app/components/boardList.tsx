@@ -50,11 +50,11 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       );
       // 성공적인 응답 처리
 
-      console.log('GET 요청이 성공적으로 전송되었습니다.', response.data);
-      console.log('Modal Content:', response.data);
+      // console.log('GET 요청이 성공적으로 전송되었습니다.', response.data);
+      // console.log('Modal Content:', response.data);
       setModalContent(response.data);
       setModalStatus('open');
-      console.log(boardid);
+      // console.log(boardid);
 
     } catch (error) {
       // 실패한 응답 처리
@@ -108,7 +108,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
                       'Content-Type': 'multipart/form-data'},
         }
       );
-      console.log('PUT 요청이 성공적으로 전송되었습니다.', response.data);
+      // console.log('PUT 요청이 성공적으로 전송되었습니다.', response.data);
       setModalContent(response.data);
       setModalStatus('none')
       window.location.reload();
@@ -146,7 +146,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
           }
         );
         // 성공적인 응답 처리
-        console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
+        // console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
         setModalStatus('none');
         window.location.reload();
         alert("문의가 삭제되었습니다.")
@@ -156,7 +156,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
         console.error('delete 요청이 실패하였습니다.', error);
       }
     } else {
-      console.log("Deletion was cancelled.");
+      // console.log("Deletion was cancelled.");
     } };
 
 // const handleCheckboxChange = (boardid: number) => {
@@ -215,7 +215,7 @@ const handleStaffSubmit = async () => {
     {headers:{'Authorization': `Token ${accessToken}` }}
     );
 
-    console.log(response.data);
+    // console.log(response.data);
     alert("답변완료.")
   } catch (error) {
     console.error(error);
