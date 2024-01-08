@@ -15,6 +15,7 @@ export default function TextMemory() {
     const type = searchParams.get('type')
     const situation = searchParams.get('situation')
     const chapter = Number(searchParams.get('chapter'))
+    const [isLoading, setIsLoading] = useState(true);
 
     const [videoPath, setVideoPath] = useState("");
     const [questionAnswer, setAnswer] = useState("");
@@ -69,6 +70,7 @@ export default function TextMemory() {
                 setResultLabel('');
                 setQuestions(shuffleArray(questionArray));
                 setVideoPath('http://localhost:8000' + res.data['문제']['video']['url'])
+                setIsLoading(false)
             })
             .catch((err) => {
                 console.log('err>>',err)
@@ -148,8 +150,11 @@ export default function TextMemory() {
 
     return (
       <>
+          {isLoading ? (
+        <div>로딩 중...</div>
+      ) :
+          (
           <div>
-
              {questions.length > 0 ? (
                  // 해당 챕터에 남은 문제가 있는 경우
                  <>
@@ -195,6 +200,7 @@ export default function TextMemory() {
 
           <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
           </div>
+          )}
       </>
     );
     
