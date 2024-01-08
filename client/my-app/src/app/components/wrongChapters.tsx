@@ -16,92 +16,142 @@ interface ChapterProps {
   isdeaf: boolean;
 }
 
-interface CorrectData {
+interface ChapterItem {
   chapter: number;
   paper_all_count: number;
-  correct_deaf_count: number;
-  unsolved_deaf_count: number;
-  correct_deaf_not_count: number;
-  unsolved_deaf_not_count: number;
+  correct_count: number;
+  wrong_count: number;
+  unsolved_count: number;
 }
 
 const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isdeaf}) => {
    const userId = typeof window !== 'undefined' ? localStorage.getItem('id') : null;
    const accessToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken'):null;
    const [islength, setIsChapLength] = useState<number>(0);
-   const [correct, setCorrect] = useState<number[][]>([]);
+   const [chapterState, setChapterState] = useState<ChapterItem[]>([]);
+   const [isLoding, setIsLoding] = useState(true);
    const currentPath = usePathname();
+   const pathParts = currentPath.split('/'); // 경로를 '/'로 나눕니다.
+    const lastPartUrl = pathParts[pathParts.length - 1]; // 마지막 부분을 가져옵니다.
+
+
    let URL:string;
    let param = {};
+   let subUrl = ''
+    let subPageLastUrl = ''
+
    if (type=='word'){
        URL = "http://localhost:8000/api/wordwrongcount/"
        param = {
            id: userId, type: "단어", situation: selectName
        }
+       subUrl = selectName
+       subPageLastUrl = 'text_wrong'
    }
    else if (type=='sentence'){
        URL = "http://localhost:8000/api/sentencewrongcount/"
        param = {
            id: userId, type:"문장"
        }
+       subUrl = '문장'
+       subPageLastUrl = 'text-wrong'
    }
 
    const setChapLength = (n: number): number[] => {
       return Array.from({ length: n }, (_, index) => index + 1);
     };
-   console.log(accessToken)
 
-      useEffect(() => {
-          axios.post(URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
-              .then((res) => {
-                    const leng = res.data[selectName].length;
-                    if (leng != undefined) {
-                        setIsChapLength(leng)
-                        const correctData: CorrectData[] = res.data[selectName];
+  useEffect(() => {
+      axios.post(URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
+          .then((res) => {
 
-                      const ccorrect: number[][] = correctData.map(item => [
-                          item.paper_all_count,
-                          item.correct_deaf_count,
-                          item.correct_deaf_not_count,
-                          item.unsolved_deaf_count,
-                          item.unsolved_deaf_not_count
-                      ]);
+              setChapterState([])
+              const dataList = res.data[subUrl]
 
-                    setCorrect(ccorrect);
-                    }
-                })
-              .catch((err) => {
-                  console.log(err)
-              });
-      }, []);
-   console.log(correct);
+              dataList.forEach(item => {
+
+                  const correctCountKey = lastPartUrl == subPageLastUrl ? 'correct_deaf_count' : 'correct_deaf_not_count';
+                  const wrongCountKey = lastPartUrl == subPageLastUrl ? 'wrong_deaf_count' : 'wrong_deaf_not_count';
+                  const unsolvedCountKey = lastPartUrl == subPageLastUrl ? 'unsolved_deaf_count' : 'unsolved_deaf_not_count';
+
+                  const newItem: ChapterItem = {
+                    chapter: item.chapter,
+                    paper_all_count: item.paper_all_count,
+                    correct_count: item[correctCountKey],
+                    wrong_count: item[wrongCountKey],
+                    unsolved_count: item[unsolvedCountKey]
+                  };
+                  // 틀린문제가 있는 경우만 저장한다.
+                  if (newItem.wrong_count > 0){
+                    setChapterState(prevChapterState => [...prevChapterState, newItem]);
+                  }
+                });
+
+              setIsLoding(false)
+
+            })
+          .catch((err) => {
+              console.log(err)
+          });
+  }, []);
+
+    useEffect(() => {
+        // setIsLoding(false)
+    }, [chapterState]);
 
     const chapters = setChapLength(islength);
+      const handleBack = () => {
+        window.location.href = '/wrong_note';
+      };
+return (
+  <div className="chapter">
 
-  return (
-    <div className="chapter">
-      <div className="spot-area">
-        <Image className='btn-image' src={imagePath} alt="btn-image" />
-        <div className="gradient-overlay"></div>
-        <span className="spot-text">{selectName}</span>
-      </div>{islength > 0 &&(
-        <div className="chapter-area">
-            {chapters.map((chapterNumber, index) => (
-              <Link href={`../../../${currentPath}/${chapterNumber}/0?total=${isdeaf ? correct[index][0] - correct[index][2] : correct[index][0] - correct[index][1]}`} key={index}>
-                <div className="chapter-btn"><div className="dnchart">
-                    <Chart
-                        allCount={correct[index][0]}
-                        // unsolved={isdeaf ? correct[index][3] : correct[index][4]}
-                        correct={isdeaf ? correct[index][1] : correct[index][2]}
-                      />
+
+    {isLoding ? (
+      <>
+          <div className="loading-container">
+              <div className="loading"></div>
+              <div id="loading-text">loading</div>
+          </div>
+      </>
+    ) : (
+        <>
+            {chapterState.length > 0 ? (
+                <>
+                <div className="spot-area">
+                    <Image className='btn-image' src={imagePath} alt="btn-image"/>
+                    <div className="gradient-overlay"></div>
+                    <span className="spot-text">{selectName}</span>
                 </div>
-                    <div className='btnText'>Chapter {chapterNumber}</div></div>
-              </Link>
-            ))}
-        </div>)}
-    </div>
-  );
-};
-
+                <div className="chapter-area">
+                    {chapterState.map((chapterItem, index) => (
+                        <Link
+                            href={`../../../${currentPath}/${chapterItem.chapter}/0?total=${chapterItem.paper_all_count - chapterItem.unsolved_count}`}
+                            key={index}>
+                            <div className="chapter-btn">
+                                <div className="dnchart">
+                                    <Chart
+                                        allCount={chapterItem.wrong_count + chapterItem.correct_count}
+                                        correct={chapterItem.correct_count}
+                                    />
+                                </div>
+                                <div className='btnText'>Chapter {chapterItem.chapter}</div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+                </>
+            ) : (
+                <>
+                    <div className="solved">
+                        <p className="solve_txt">오답 문제가 없습니다.</p>
+                        <button onClick={handleBack}>돌아가기</button>
+                    </div>
+                </>
+            )}
+        </>
+    )}
+  </div>
+);
+}
 export default wrongChapters;
-

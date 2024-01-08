@@ -188,7 +188,7 @@ export default function TextMemory() {
                   </div>
                   <div>{resultLabel}</div>
               </div>
-                         </div>
+                 </div>
                  </>
              ):(// 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
                  <>
