@@ -146,7 +146,7 @@ const confirmDelete = async () => {
   return (
     <>
       <div className='boardName'>1:1 문의</div>
-
+      <div className='board'>
       <div className='btnRight'>
         <button className='boardBtn' style={{ backgroundColor: 'sandybrown' }} onClick={() => handleDeleteClick()}>
           삭제
@@ -156,7 +156,7 @@ const confirmDelete = async () => {
         </button>
       </div>
 
-      <div className='board'>
+      
         <div className='titleCount'>총 {boardData.length}건 </div>
         <div className='bulletinBoard'>
           {/* 최신등록글이 상단에 오도록 수정 */}
