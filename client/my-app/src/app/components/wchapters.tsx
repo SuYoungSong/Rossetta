@@ -6,7 +6,7 @@ import Image, { StaticImageData } from 'next/image';
 import "@/app/styles/condition_1.css"
 
 import { usePathname, useRouter } from 'next/navigation';
-import DoughnutChart from "../components/DoughnutChart";
+import DoughnutChart from "./donut";
 
 interface ChapterProps {
   imagePath: StaticImageData;
