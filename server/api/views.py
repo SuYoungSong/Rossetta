@@ -780,6 +780,7 @@ class SentenceQuestionView(APIView):
         chapter = request.data.get('chapter')  # chapter
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
 
+        chapter = int(chapter)
         help_return = sentence_data_check(id, type, chapter, is_deaf)  # 예외처리 함수
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
 
@@ -893,6 +894,7 @@ class WrongWordQuestionView(APIView):
                 is_deaf=is_deaf,
                 is_answer=False
             )
+            result['문제'] = list()
             if is_deaf:  # 농아인 문제
                 for practice in practice_notes:
                     paper_info = practice.paper  # 틀린 문제 정보
@@ -1064,6 +1066,7 @@ class SentenceWrongQuestionInfoView(APIView):
         chapter = request.data.get('chapter')  # 챕터 정보
         is_deaf = request.data.get('is_deaf')  # 농아인 전용 문제  / 청각장애인 전용 문제
 
+        chapter = int(chapter)
         help_return = sentence_data_check(id, type, chapter, is_deaf)
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
 
