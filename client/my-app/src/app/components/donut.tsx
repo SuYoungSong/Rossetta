@@ -72,7 +72,7 @@ const WrongChapters: React.FC<CorrectProps> = ({ allCount, correct }) => {
   }, []);
 
   return (
-    <div style={{ position: "relative", width: "8vw", height: "8vw" }}>
+    <div style={{ position: "relative", width: "6vw", height: "6vw" }}>
       <div
         className="chartText"
         style={{
