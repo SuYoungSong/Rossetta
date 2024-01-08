@@ -368,6 +368,12 @@ class QuestionView(APIView):
 
     @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticated, IsTokenOwner, IsUserOwner])
     def delete(self, request, id):
+        token = request.headers['Authorization']
+        token_user = token.split(' ')[-1]
+        req_user_id = Token.objects.get(key=token_user).user_id
+        user_info = User.objects.get(id=req_user_id)
+        if user_info.is_staff:
+            return Response({"state":"관리자 는 게시글을 삭제 할수 없습니다."} , status=status.HTTP_400_BAD_REQUEST)
         try:
             user = question_board.objects.get(id=id)
             user.delete()
