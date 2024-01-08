@@ -74,6 +74,7 @@ export default function TextMemory() {
             })
             .catch((err) => {
                 console.log('err>>',err)
+                setIsLoading(false)
             });
         };
 
@@ -151,7 +152,10 @@ export default function TextMemory() {
     return (
       <>
           {isLoading ? (
-        <div>로딩 중...</div>
+            <div className="loading-container">
+                <div className="loading"></div>
+                <div id="loading-text">loading</div>
+            </div>
       ) :
           (
           <div>
@@ -166,9 +170,6 @@ export default function TextMemory() {
               <div className='question-choice-zone'>
                   <div className='back_white'>
 
-                  {/*{questions.map((word, idx) => (*/}
-                  {/*     <button className="select_answer" key={idx} onClick={() => checkAnswer(word)}>{word}</button>*/}
-                  {/*  ))}*/}
                       <fieldset>
                           <div className="fixed-question">수화가 뜻하는 것은?</div>
                           <div>
