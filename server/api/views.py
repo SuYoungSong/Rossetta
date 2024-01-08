@@ -44,8 +44,6 @@ class UserView(APIView):
     @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsTokenOwner])  # get 함수를 사용할때 적용하는 권한 설정
     def get(self, request):
         id = request.query_params.get('id')  # url 에서 받아온 id 값
-        print(id)
-        print(request.user.id)
         if id != request.user.id:
             return Response(data={"state": "다른 이용자의 정보입니다 열람 하실수 없습니다."})
         try:
@@ -94,7 +92,7 @@ class UserView(APIView):
         token = request.headers['Authorization']
         auth_token = token.split(' ')[-1]
         auth_token_user = Token.objects.get(key=auth_token).user_id
-        print(auth_token_user, request.user.id)
+
         if auth_token_user != request.user.id:  # url 에서 받아온 id 와 request 요청으로 들어온 아이디가 다를시에도 탈퇴 불가
             return Response(data={"state": "다른 사용자의 아이디 입니다. 계정 탈퇴할수 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -706,6 +704,12 @@ class WordQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
+
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 단어/문장
         situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
@@ -713,6 +717,10 @@ class WordQuestionView(APIView):
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
         help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+
+        if id != auth_token_user:
+            return Response(data={"state":"id 정보가 일치하지 않습니다"} , status=status.HTTP_400_BAD_REQUEST)
         if help_text != "":
             if error_code == "400":
                 return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
@@ -761,6 +769,12 @@ class SentenceQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+        # headers 의 사용자 토큰 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
+
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 문장
         chapter = request.data.get('chapter')  # chapter
@@ -768,6 +782,10 @@ class SentenceQuestionView(APIView):
 
         help_return = sentence_data_check(id, type, chapter, is_deaf)  # 예외처리 함수
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+        if id != auth_token_user:
+            return Response(data={"state":"id 정보가 일치하지 않습니다"} , status=status.HTTP_400_BAD_REQUEST)
+
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
                 return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
@@ -841,6 +859,12 @@ class WrongWordQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+        # 사용자 토큰의 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
+
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 단어/문장
         situation = request.data.get('situation')  # 상황 (단어 유형에서만 존재)
@@ -848,6 +872,10 @@ class WrongWordQuestionView(APIView):
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
         help_return = word_data_check(id, type, situation, chapter, is_deaf)  # 예외처리 함수
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+
+        if id != auth_token_user:
+            return Response(data={"state":"id 정보가 일치하지 않습니다"} , status=status.HTTP_400_BAD_REQUEST)
 
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
@@ -902,12 +930,23 @@ class WrongSentenceQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+
+        # 사용자 토큰의 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
+
+
         id = request.data.get('id')  # 사용자 id
         type = request.data.get('type')  # 단어/문장
         chapter = request.data.get('chapter')  # chapter
         is_deaf = request.data.get('is_deaf')  # 농아인 여부
         help_return = sentence_data_check(id, type, chapter, is_deaf)  # 예외처리 함수
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+        if id != auth_token_user:
+            return Response(data={"state":"id 정보가 일치하지 않습니다"} , status=status.HTTP_400_BAD_REQUEST)
 
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
@@ -961,6 +1000,12 @@ class WordWrongQuestionInfoView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+
+        # 사용자 토큰의 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
         id = request.data.get('id')  # 사용자 아이디
         type = request.data.get('type')  # 유형 (단어/문장)
         situation = request.data.get('situation')  # 병원 학교 직업
@@ -970,6 +1015,10 @@ class WordWrongQuestionInfoView(APIView):
         chapter = int(chapter)
         help_return = word_data_check(id, type, situation , chapter , is_deaf)
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+
+        if id != auth_token_user:
+            return Response(data={"state":"id 정보가 일치하지 않습니다"} , status=status.HTTP_400_BAD_REQUEST)
 
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
@@ -1004,6 +1053,12 @@ class SentenceWrongQuestionInfoView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+
+        # 사용자 토큰의 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
         id = request.data.get('id')  # 사용자 아이디
         type = request.data.get('type')  # 유형 (단어/문장)
         chapter = request.data.get('chapter')  # 챕터 정보
@@ -1011,6 +1066,10 @@ class SentenceWrongQuestionInfoView(APIView):
 
         help_return = sentence_data_check(id, type, chapter, is_deaf)
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+
+        if id != auth_token_user:
+            return Response(data={"state": "id 정보가 일치하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
@@ -1044,12 +1103,23 @@ class WordWrongCountView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+
+        # 사용자 토큰의 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
         id = request.data.get('id')
         type = request.data.get('type')
         situation = request.data.get('situation')
 
         help_return = word_wrong_count_check(id, type, situation)
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+
+        if id != auth_token_user:
+            return Response(data={"state": "id 정보가 일치하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
+
 
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
@@ -1113,10 +1183,19 @@ class SentenceWrongCountView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
+        # 사용자 토큰의 정보
+        token = request.headers['Authorization']
+        auth_token = token.split(' ')[-1]
+        auth_token_user = Token.objects.get(key=auth_token).user_id
+
         id = request.data.get('id')
         type = request.data.get('type')
         help_return = sentence_wrong_count_check(id, type)
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+
+        if id != auth_token_user:
+            return Response(data={"state": "id 정보가 일치하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
         if help_text != "":  # 예외 처리가 존재 한다면
             if error_code == "400":
