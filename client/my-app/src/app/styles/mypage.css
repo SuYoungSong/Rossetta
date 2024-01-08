@@ -226,7 +226,8 @@ tr{
     height: 25px;
     font-size: 13px;
     color: rgb(104, 102, 102);
-    margin: 10px 620px;
+    /*margin: 10px 620px;*/
+    margin-top: 10px;
 }
 
 .withdrawal-button:hover {
@@ -235,4 +236,11 @@ tr{
 
 .modal-content{
     width: 50vw;
+}
+.exit_user_button_tr{
+    border-bottom: none;
+}
+.exit_user_button_td{
+    display: flex;
+    justify-content: flex-end;
 }
