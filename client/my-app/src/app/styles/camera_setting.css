@@ -92,6 +92,11 @@
     border: 2px solid #a9a8a8;
 }
 
+.check.disabled {
+    opacity: 0.5; 
+    pointer-events: none;
+}
+
 .whole_camera {
     display: flex;
     flex-direction: row;

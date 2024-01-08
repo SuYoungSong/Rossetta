@@ -29,6 +29,8 @@ export default function SignMemory() {
     const isInitialRender = useRef(true);
     const [questionNumber, setQuestionNumber] = useState(0);
 
+    const [disabled, setDisabled] = useState(false);
+
     const handleLandmarksChange = (newLandmarks: Record<string, NormalizedLandmarkList>) => {
         setLandmarks(newLandmarks);
   };
@@ -157,40 +159,32 @@ export default function SignMemory() {
     };
 
 
-        return (
-              <>
-                {answer !== 'null' ? (
-                  // 해당 챕터에 남은 문제가 있는 경우
-                  <div className="whole_camera">
-                    <WebCamMemorize onLandmarksChange={handleLandmarksChange} frameNumber={second * 30} isStart={isStart} />
-                    <div className="answer_btn">
-                      <div className="question">
-                        <div className="quest-text">{answer}</div>
-                      </div>
-                        <div className="check" onClick={() => setIsStart(true)}>
-                            <div className='startQuiz'>문제 풀기</div>
-                            {/*버튼 누르면 글자 타이머로 바뀌게*/}
-                            {/*{!isStart?*/}
-                            {/*    <>*/}
-                            {/*        <div className='startQuiz'>문제 풀기</div>*/}
-                            {/*    </> :*/}
-                            {/*    <>*/}
-                            {/*        /!*<Timer sec_num={second}/>*!/*/}
-                            {/*    </>}*/}
-                            <p>버튼을 클릭하면 <b>{second}초</b> 안에 <br/>동작을 해주세요. </p>
-                        </div>
-                    </div>
-                      <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
-                  </div>
-                ) : (
-                  // 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
-                  <>
-                    <div className="solved">
-                        <p className="solve_txt">모든 문제를 풀었습니다.</p>
-                        <button onClick={handleBack}>돌아가기</button>
-                    </div>
-                  </>
-                )}
-              </>
-            );
+    return (
+      <>
+        {answer !== 'null' ? (
+          // 해당 챕터에 남은 문제가 있는 경우
+          <div className="whole_camera">
+            <WebCamMemorize onLandmarksChange={handleLandmarksChange} frameNumber={second * 30} isStart={isStart} />
+            <div className="answer_btn">
+              <div className="question">
+                <div className="quest-text">{answer}</div>
+              </div>
+                <div className={`check ${disabled ? 'disabled' : ''}`} onClick={() => {if (!disabled) {setIsStart(true); setDisabled(true);}}}>
+                    <div className='startQuiz'>문제 풀기</div>
+                    <p>버튼을 클릭하면 <b>{second}초</b> 안에 <br/>동작을 해주세요. </p>
+                </div>
+            </div>
+              <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
+          </div>
+        ) : (
+          // 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
+          <>
+            <div className="solved">
+                <p className="solve_txt">모든 문제를 풀었습니다.</p>
+                <button onClick={handleBack}>돌아가기</button>
+            </div>
+          </>
+        )}
+      </>
+    );
 }
