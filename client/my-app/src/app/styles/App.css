@@ -1,3 +1,19 @@
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #dfebec;
+}
+::-webkit-scrollbar-thumb {
+  background: #5eb2b9;
+  border-radius: 30px;
+}
+
+
 /* 섞이면서 이상해진거 */
 main{
   width: 100vw;

@@ -168,9 +168,9 @@
 
 
 .boardBtn {
-  width: 80px;
-  height: 35px;
-  font-size: 17px;
+  width: 6vw;
+  height: 3vw;
+  font-size: 1.5vw;
   margin: 1vh 1vw;
   color: white;
   background-color:  #2C858D;
@@ -179,9 +179,9 @@
   }
 
 .boardBtnDelete {
-  width: 80px;
-  height: 35px;
-  font-size: 17px;
+  width: 6vw;
+  height: 3vw;
+  font-size: 1.5vw;
   margin: 1vh 1vw;
   color: white;
   background-color:  gray;

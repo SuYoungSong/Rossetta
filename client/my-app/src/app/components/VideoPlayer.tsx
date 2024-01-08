@@ -11,7 +11,7 @@ const VideoPlayer: React.FC<VideoProps> = ({src_url, count}) => {
   return (
     <>
         <div className="outer">
-            <video controls className="video" src={src_url[count ?? 0]}></video>
+          <video controls loop className="video" src={src_url[count ?? 0]}></video>
         </div>
     </>
   );
