@@ -112,6 +112,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       setModalContent(response.data);
       setModalStatus('none')
       window.location.reload();
+      alert("수정되었습니다.")
 
     } catch (error) {
       console.error('PUT 요청이 실패하였습니다.', error);
@@ -131,28 +132,34 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 
   // 삭제
   const handleDeleteClick = async () => {
-    const accessToken = localStorage.getItem('accessToken');
-    const user_id = localStorage.getItem('id');
-    try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/question/${boardid}/`,
-        {
-          params: { id: user_id },
-          headers: { 'Authorization': `Token ${accessToken}` },
-        }
-      );
-      // 성공적인 응답 처리
-      console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
-      setModalStatus('none');
-      window.location.reload();
+    event.preventDefault();
+    if(window.confirm("삭제하시겠습니까?")){
+      
+      const accessToken = localStorage.getItem('accessToken');
+      const user_id = localStorage.getItem('id');
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/api/question/${boardid}/`,
+          {
+            params: { id: user_id },
+            headers: { 'Authorization': `Token ${accessToken}` },
+          }
+        );
+        // 성공적인 응답 처리
+        console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
+        setModalStatus('none');
+        window.location.reload();
+        alert("문의가 삭제되었습니다.")
 
-    } catch (error) {
-      // 실패한 응답 처리
-      console.error('delete 요청이 실패하였습니다.', error);
-    }
-};
+      } catch (error) {
+        // 실패한 응답 처리
+        console.error('delete 요청이 실패하였습니다.', error);
+      }
+    } else {
+      console.log("Deletion was cancelled.");
+    } };
 
-const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, boardid: number) => {
     const itemId = boardid;
 
     if (event.target.checked) {
@@ -205,6 +212,7 @@ const handleStaffSubmit = async () => {
     );
 
     console.log(response.data);
+    alert("답변완료.")
   } catch (error) {
     console.error(error);
   }
@@ -255,173 +263,182 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 
 
 return (
-  <div className='boardList' onClick={handleItemClick}>
-    <input type="checkbox" onChange={handleCheckboxChange} onClick={(e) => e.stopPropagation()}/>
-    <div className='boardNum'>{boardNum}</div>
-    <div className='boardMain'>
-      <h4 className='boardTitle'>[문의] {title}</h4>
-      <p className='boardContent'>
-        {formattedCreatedAt || 'N/A'}&ensp;&ensp;{isStaff === 'true' ? username : storedUsername}
-      </p>
-    </div>
-    <div className='waitBtn' style={{ backgroundColor: state ? 'gray' : '#2C858D', color: state ? 'black' : 'white'  }}>{state ? '답변완료' : '답변대기'}</div>
+    <div className='boardList' onClick={handleItemClick}>
+      <input type="checkbox" onChange={(event) => handleCheckboxChange(event, boardid)}
+             onClick={(e) => e.stopPropagation()}/>
+      <div className='boardNum'>{boardNum}</div>
+      <div className='boardMain'>
+        <h4 className='boardTitle'>[문의] {title}</h4>
+        <p className='boardContent'>
+          {formattedCreatedAt || 'N/A'}&ensp;&ensp;{isStaff === 'true' ? username : storedUsername}
+        </p>
+      </div>
+      <div className='waitBtn' style={{
+        backgroundColor: state ? 'gray' : '#2C858D',
+        color: state ? 'black' : 'white'
+      }}>{state ? '답변완료' : '답변대기'}</div>
 
-    {/* 모달부분 */}
-    {isStaff === 'true' ? (
-      // 관리자가 볼 수 있는 내용
-      (modalStatus !== 'none' && (
-        <form className='modalWrapper' onClick={e => e.stopPropagation()}>
-          <div className='staff-modalContent'>
-            <div className='modalTop'>
-              <div className='modalTitle'>게시글 관리</div>
-              <div className='modalClose' onClick={closeModal}>X</div>
-            </div>
-            <div className='staff-management'>
-              <div className='staff-modalMain'>
-                <div className='modalMainTitle'>제목</div>
-                <div>
-
-                  <div className='titleInputContent'>{modalContent.title}</div>
-
-                </div>
-                <div className='modalMainContent'>내용</div>
-                <div>
-
-                  <div className='queryContent'>{modalContent.body}</div>
-
-                </div>
-                <div className='modalMainContent'>작성일자</div>
-                <div className='queryDate'>{formattedCreatedAt} {username}</div>
-                <div className='modalMainContent'>첨부 이미지</div>
-                <div className='queryImageContent'>
-                  {modalContent?.images ? (
-                      modalContent.images.map((image, index) => {
-                        // 이미지 URL 수정
-                        const correctImageUrl = `http://localhost:8000${image}`;
-                        return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
-                      })
-                  ) : (
-                      <span>No images</span>
-                  )}
-                </div>
-              </div>
-
-              <div className='staffMain'>
-                <div className='modalMainTitle'>답변</div>
-
-                {state ? (
-                    
-                    <div className='titleInputContent'>{comment}</div>
-                  ) : (
-                    <textarea
-                    className='staff-answerBox'
-                    value={staffcomment} 
-                    onChange={e => setStaffcomment(e.target.value)}/>
-                  )}
-              </div>
-            </div>
-            {!state && (
-              <div className='btn-box'>
-                <button className='modal-btn' onClick={handleStaffSubmit}>답변하기</button>
-              </div>
-            )}
-          </div>
-        </form>
-      ))
-    ) : (
-     
-      (modalStatus !== 'none' && (
-        <form className='modalWrapper' onClick={e => e.stopPropagation()}>
-          <div className='modalContent'>
-            <div className='modalTop'>
-              <div className='modalTitle'>1:1문의</div>
-              <div className='modalClose' onClick={closeModal}>X</div>
-            </div>
-
-            <div className='modalMain'>
-              
-              <div className='modalMainTitle'>제목</div>
-              <div>
-                {modalStatus === 'edit' ? (
-                    <input
-                        type="text"
-                        value={newTitle} // newTitle을 출력
-                        onChange={e => setNewTitle(e.target.value)}
-                    />
-                ) : (
-                    <div className='titleInputContent'>{modalContent.title}</div>
-                )}
-              </div>
-              <div className='modalMainContent'>내용</div>
-              <div>
-                {modalStatus === 'edit' ? (
-                    <textarea
-                        value={newBody} // newBody를 출력
-                        onChange={e => setNewBody(e.target.value)} // newBody를 변경
-                    />
-                ) : (
-                    <div className='queryContent'>{modalContent.body}</div>
-                )}
-              </div>
-              <div className='modalMainContent'>작성일자</div>
-              <div className='queryDate'>{formattedCreatedAt} {storedUsername}</div>
-              <div className='modalMainContent'>첨부 이미지</div>
-              {modalStatus === 'edit' ? (
-                <div className='attachBtn'>
-                <input id="file" type="file" onChange={handleFileChange} multiple/>
-                <label htmlFor="file">첨부하기</label>
-                <input className="fileName" value={newFileName} placeholder="첨부파일" readOnly />
-              </div>    
-              ):(
-                <div className='queryImageContent'>
-                {modalContent?.images ? (
-                    modalContent.images.map((image, index) => {
-                      // 이미지 URL 수정
-                      const correctImageUrl = `http://localhost:8000${image}`;
-                      return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
-                    })
-                ) : (
-                    <span>No images</span>
-                )}
-              </div>
-              )}
-              
-              
-
-              {state ? (
-                  <div>
-                    <div className='modalMainContent'>답변</div>
-                    <div className='queryContent'>{comment}</div>
+      {/* 모달부분 */}
+      {isStaff === 'true' ? (
+          // 관리자가 볼 수 있는 내용
+          (modalStatus !== 'none' && (
+              <form className='modalWrapper' onClick={e => e.stopPropagation()}>
+                <div className='staff-modalContent'>
+                  <div className='modalTop'>
+                    <div className='modalTitle'>게시글 관리</div>
+                    <div className='modalClose' onClick={closeModal}>X</div>
                   </div>
-              ) : null}
-            </div>
+                  <div className='staff-management'>
+                    <div className='staff-modalMain'>
+                      <div className='modalusername'>작성자: {username}</div>
+                      <div className='modalMainTitle'>제목</div>
+                      <div>
 
-            <div className='btn-box'>
-              {modalStatus === 'edit' ? (
-                  <button className='modal-btn' onClick={handleSaveClick}>저장</button>
-              ) : (
-                <button className='modal-btn' onClick={handleModify}>수정</button>
-              )}
-              <button className='modal-btn' onClick={handleDeleteClick}>삭제</button>
-            </div>
+                        <div className='titleInputContent'>{modalContent.title}</div>
+
+                      </div>
+                      <div className='modalMainContent'>내용</div>
+                      <div>
+
+                        <div className='queryContent'>{modalContent.body}</div>
+
+                      </div>
+                      <div className='modalMainContent'>작성일자</div>
+                      <div className='queryDate'>{formattedCreatedAt}</div>
+                      <div className='modalMainContent'>첨부 이미지</div>
+                      <div className='queryImageContent'>
+                        {modalContent?.images ? (
+                            modalContent.images.map((image, index) => {
+                              // 이미지 URL 수정
+                              const correctImageUrl = `http://localhost:8000${image}`;
+                              return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
+                            })
+                        ) : (
+                            <span>No images</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className='staffMain'>
+                      <div className='modalMainTitle'>답변</div>
+
+                      {state ? (
+
+                          <div className='titleInputContent'>{comment}</div>
+                      ) : (
+                          <textarea
+                              className='staff-answerBox'
+                              value={staffcomment}
+                              onChange={e => setStaffcomment(e.target.value)}/>
+                      )}
+                    </div>
+                  </div>
+                  {!state && (
+                      <div className='btn-box'>
+                        <button className='modal-btn' onClick={handleStaffSubmit}>답변하기</button>
+                      </div>
+                  )}
+                </div>
+              </form>
+          ))
+      ) : (
+
+          (modalStatus !== 'none' && (
+              <form className='modalWrapper' onClick={e => e.stopPropagation()}>
+                <div className='modalContent'>
+                  <div className='modalTop'>
+                    <div className='modalTitle'>1:1문의</div>
+                    <div className='modalClose' onClick={closeModal}>X</div>
+                  </div>
+
+                  <div className='modalMain'>
+                    <div className='modalusername'>작성자: {username}</div>
+                    <div className='modalMainTitle'>제목</div>
+                    <div>
+                      {modalStatus === 'edit' ? (
+                          <input
+                              type="text"
+                              value={newTitle} // newTitle을 출력
+                              onChange={e => setNewTitle(e.target.value)}
+                              maxLength="25"
+                          />
+                      ) : (
+                          <div className='titleInputContent'>{modalContent.title}</div>
+                      )}
+                    </div>
+                    <div className='modalMainContent'>내용</div>
+                    <div>
+                      {modalStatus === 'edit' ? (
+                          <textarea
+                              value={newBody} // newBody를 출력
+                              onChange={e => setNewBody(e.target.value)} // newBody를 변경
+                          />
+                      ) : (
+                          <div className='queryContent'>{modalContent.body}</div>
+                      )}
+                    </div>
+                    <div className='modalMainContent'>작성일자</div>
+                    <div className='queryDate'>{formattedCreatedAt}</div>
+                    <div className='modalMainContent'>첨부 이미지</div>
+                    {modalStatus === 'edit' ? (
+                        <div className='attachBtn'>
+                          <input id="file" type="file" onChange={handleFileChange} multiple/>
+                          <label htmlFor="file">첨부하기</label>
+                          <input className="fileName" value={newFileName} placeholder="첨부파일" readOnly/>
+                        </div>
+                    ) : (
+                        <div className='queryImageContent'>
+                          {modalContent?.images ? (
+                              modalContent.images.map((image, index) => {
+                                // 이미지 URL 수정
+                                const correctImageUrl = `http://localhost:8000${image}`;
+                                return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
+                              })
+                          ) : (
+                              <span>No images</span>
+                          )}
+                        </div>
+                    )}
+
+
+                    {state ? (
+                        <div>
+                          <div className='modalMainContent'>답변</div>
+                          <div className='queryContent'>{comment}</div>
+                        </div>
+                    ) : null}
+                  </div>
+
+                  <div className='btn-box'>
+                    {!state && (
+                        modalStatus === 'edit' ? (
+                            <button className='modal-btn' onClick={handleSaveClick}>저장</button>
+                        ) : (
+                            <button className='modal-btn' onClick={handleModify}>수정</button>
+                        )
+                    )}
+                    <button className='modal-btn' onClick={handleDeleteClick}>삭제</button>
+                  </div>
+                </div>
+              </form>
+          ))
+      )}
+      {/* 선택된 항목 삭제 버튼 */}
+      {selectedItems.length > 0 && (
+          <div className='deleteButtonContainer'>
+            <button
+                className='waitBtn' style={{border: 'solid 1px'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (window.confirm('정말로 삭제하시겠습니까?')) {
+                    confirmDelete();
+                  }
+                }}>항목삭제
+            </button>
           </div>
-        </form>
-      ))
-    )}
-    {/* 선택된 항목 삭제 버튼 */}
-    {selectedItems.length > 0 && (
-            <div className='deleteButtonContainer'>
-              <button 
-              className='waitBtn' style={{ border:'solid 1px'}}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (window.confirm('정말로 삭제하시겠습니까?')) {
-                  confirmDelete();
-                }
-              }}>항목삭제</button>
-            </div>
-        )}
-  </div>
-);}
+      )}
+    </div>
+);
+}
 
 export default BoardList;

@@ -59,16 +59,15 @@ const handleSubmit = async (event: React.FormEvent) => {
           },
         });
       console.log(response.data)
+      alert("문의가 등록되었습니다.");
+      onClose();
       window.location.reload();
-        // 성공 시 처리
+
       } catch (error) {
         // 에러 처리
         console.error('서버 요청 중 에러 발생:', error);
+        alert("제목과 내용란을 채워주세요.");
       }
-
-      // 모달 닫기
-      onClose();
-
   };
 
   // 컴포넌트가 마운트될 때 로컬 스토리지에서 액세스 토큰과 사용자 ID 가져오기
@@ -95,6 +94,7 @@ const handleSubmit = async (event: React.FormEvent) => {
           <div className='modalMainTitle'>제목</div>
           <input
             name='title'
+            maxLength="25"
             className='inputTitle'
             type="text"
             placeholder="제목을 입력하세요"

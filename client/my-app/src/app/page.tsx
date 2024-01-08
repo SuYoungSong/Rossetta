@@ -71,18 +71,20 @@ export default function Home() {
 
   useEffect(() => {
     const ImgWidthControlHandler = () => {
-      let difference = window.innerHeight - ImgWall.current.getBoundingClientRect().top;
+      if (ImgWall.current) {
+        let difference = window.innerHeight - ImgWall.current.getBoundingClientRect().top;
 
-      if (difference <= 150) {
-        wall1.current.style.width = `300px`;
-        wall2.current.style.width = `300px`;
-      } else if (difference > 150 && difference < 700) {
-        let width = `${-(4 / 11) * difference + 300}px`;
-        wall1.current.style.width = width;
-        wall2.current.style.width = width;
-      } else if (difference >= 700) {
-        wall1.current.style.width = '0px';
-        wall2.current.style.width = '0px';
+        if (difference <= 150) {
+          wall1.current.style.width = `300px`;
+          wall2.current.style.width = `300px`;
+        } else if (difference > 150 && difference < 700) {
+          let width = `${-(4 / 11) * difference + 300}px`;
+          wall1.current.style.width = width;
+          wall2.current.style.width = width;
+        } else if (difference >= 700) {
+          wall1.current.style.width = '0px';
+          wall2.current.style.width = '0px';
+        }
       }
     };
 
