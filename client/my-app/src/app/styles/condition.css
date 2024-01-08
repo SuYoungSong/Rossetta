@@ -150,7 +150,7 @@
 /* 1:1문의 */
 .boardName {
   margin-top: 1vh;
-  font-size: 2vw;
+  font-size: 3vw;
   font-weight: 600;
   text-align: center;
 
@@ -163,6 +163,7 @@
   align-items: center;
   justify-content: flex-end;
   max-width: 1400px;
+
 }
 
 
@@ -188,9 +189,9 @@
 .board {
   background-color: white;
   border-radius: 15px;
-  width: 70vw;
-  height: auto;
-  margin: 0 auto;
+  width: 55vw;
+  height: 60vh;
+  margin: 3vh auto;
   max-width: 1400px;
   justify-content: center;
   text-align: center;
@@ -227,15 +228,7 @@
   justify-content: space-between;
   overflow-y: auto;
 }
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-::-webkit-scrollbar-thumb {
-  background: #38808769;
-}
+
 
 /* 게시판 리스트 요소 */
 
@@ -280,7 +273,6 @@
 
 .waitBtn {
   margin-left: 2vw;
-  margin-right: 0.5vw;
   color: #505050;
   /* border: 2px solid #868787; */
   border-radius: 12px;
@@ -418,12 +410,12 @@
     margin-top: 1vh;
     margin-bottom: 1vh;
   }
-/* 문의 모달아래 버튼 */
+
   .attachBtn {
-    display: flex;
     align-items: center;
     margin-bottom: 3vh;
     width: 90%;
+
   }
 
 
@@ -560,11 +552,10 @@
 .modal-btn{
   background-color: #6e6e6d;
   color: white;
-  width: 8vw;
-  height: 4vw;
+  width: 85px;
+  height: 45px;
   margin: 10px;
   border-radius: 20px;
-  font-size: 1rem;
 }
 
 .modal-btn:hover {
@@ -592,21 +583,23 @@
   font-size: 1.5vw;
 }
 
-/* 수정폼 */
-.editTextbox{
-  height: 90px;
-}
-.modalusername{
-  font-size: 0.8rem;
-  display: flex;
-}
-.userinfo-modal{
-  flex: 1;
+
+
+
+.board-image-edit-zone {
+  position: relative;
 }
 
-.imgfile-up{
-  display: flex;
+.delete-x-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red; /* 선택적으로 배경색 추가 */
+  color: white; /* 선택적으로 글자색 추가 */
+  padding: 5px; /* 선택적으로 여백 추가 */
+  cursor: pointer;
 }
-.imgfileupload{
-  flex: 1;
+
+.delete-x-button:hover {
+  background-color: darkred; /* 선택적으로 호버 시 배경색 변경 */
 }
