@@ -11,6 +11,7 @@ import AnswerModalProps from '../answerModal';
 import WebCamMemorize from "@/app/components/webCamMemorize";
 import {NormalizedLandmarkList} from "@mediapipe/holistic";
 import {Timer} from "@/app/components/timer";
+import "@/app/styles/text_memo.css";
 
 export default function SignMemory() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -184,8 +185,10 @@ export default function SignMemory() {
                 ) : (
                   // 해당 챕터에 모든 문제를 푼 경우 (정답 여부 상관 없이)
                   <>
-                    <p>모든 문제를 풀었습니다.</p>
-                    <button onClick={handleBack}>돌아가기</button>
+                    <div className="solved">
+                        <p className="solve_txt">모든 문제를 풀었습니다.</p>
+                        <button onClick={handleBack}>돌아가기</button>
+                    </div>
                   </>
                 )}
               </>

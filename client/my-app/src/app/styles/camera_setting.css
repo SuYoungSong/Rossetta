@@ -88,6 +88,8 @@
 
 .check:hover{
     box-shadow: none;
+    cursor: pointer;
+    border: 2px solid #a9a8a8;
 }
 
 .whole_camera {
