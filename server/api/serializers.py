@@ -308,6 +308,11 @@ class QuestionUpdateSerializer(serializers.ModelSerializer):
         images_obj = question_board_images.objects.filter(board_id=id)  # 기존에 DB 에 저장되어있는 게시글의 이미지
         base_path = 'question_board_images/'
 
+        if len(images_data) == 0:
+            images_obj.delete()
+            for image in images_obj:
+                os.remove(image.image_url)
+
         if len(images_data) > 0:
             images_obj.delete()
             for image_data in images_data:
