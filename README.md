@@ -1,14 +1,9 @@
-officialrossetta@gmail.com
-
----
----
----
-<br>
 
 ## 📌프로젝트 소개
 **KT AIVLE School 4기 빅프로젝트**
 - AI 기반 수어 교육 플랫폼
 - Next.js, Django, SQLite3, MediaPipe, Tensorflow, OpenCV
+<!-- - ✉️officialrossetta@gmail.com -->
 
 <br>
 
@@ -27,6 +22,10 @@ officialrossetta@gmail.com
 |[@Ieejayoung](https://github.com/Ieejayoung) |[@hy2jv](https://github.com/hy2jv)|[@SuYoungSong](https://github.com/SuYoungSong)|
 
 <br>
+
+## 🔧개발 내용
+
+
 <br>
 
 ## 단어 모델 성능 지표
