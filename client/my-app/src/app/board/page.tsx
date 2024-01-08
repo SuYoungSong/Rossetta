@@ -154,15 +154,11 @@ const confirmDelete = async () => {
         <button onClick={() => setIsModalOpen(true)} className='boardBtn'>
           + 등록
         </button>
-
       </div>
-
-      /
 
       <div className='board'>
         <div className='titleCount'>총 {boardData.length}건 </div>
         <div className='bulletinBoard'>
-          
           {/* 최신등록글이 상단에 오도록 수정 */}
           {[...boardData].reverse().map((boardItem, index) => (
             <BoardList key={index}
@@ -170,7 +166,7 @@ const confirmDelete = async () => {
                       boardid={boardItem.id}
                       username={boardItem.user}
                       boardData={boardData}
-                       selectedItems={selectedItems}
+                      selectedItems={selectedItems}
                       handleCheckboxClick={handleCheckboxChange}
                       {...boardItem} />
           ))}

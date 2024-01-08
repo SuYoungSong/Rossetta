@@ -33,12 +33,12 @@ const FindPw =()=>{
         if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/userpasswordemailsend/", { "email": email })
             .then((res) => {
-                console.log("res >> ", res);
+                // console.log("res >> ", res);
                 setUniqueNum(res.data.unique_number);
                 setemailBtntext("재전송");
             })
             .catch((err) => {
-                console.log("err >> ", err);
+                // console.log("err >> ", err);
             });
         }
     
@@ -54,7 +54,7 @@ const FindPw =()=>{
     const handleCheckEmailClick = () => {
         axios.post("http://localhost:8000/api/emailcheck/", {"input_number": emailnum},{ headers: headers })
           .then((res) => {
-              console.log("res >>",res);
+            //   console.log("res >>",res);
               setIsemailcheck("");
               setAuthBool(res.data.is_auth);
               const errorMessage = res.data.state;
@@ -62,7 +62,7 @@ const FindPw =()=>{
               setIsEmailVerified(true);
           })
           .catch((err) => {
-            console.log("err >> ", err.response.data);
+            // console.log("err >> ", err.response.data);
             if (err.response && err.response.data && err.response.status === 400) {
                 const errorMessage = err.response.data.state;
                 setIsemailcheck(errorMessage);}
@@ -79,11 +79,11 @@ const FindPw =()=>{
         axios.post("http://127.0.0.1:8000/api/userpassword/",
         {"name":name,"id":username, "email":email, "is_auth":authBool})
         .then((res) =>{
-            console.log("res >>",res);
+            // console.log("res >>",res);
             router.push('/auth/pw_change');
         })
         .catch((err) => {
-            console.log("err >> ", err);
+            // console.log("err >> ", err);
         });
     }
 

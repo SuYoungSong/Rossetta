@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
+import '@/app/styles/condition.css';
 
 interface BoardListItemProps {
   boardNum: number;
@@ -347,7 +348,7 @@ return (
               </form>
           ))
       ) : (
-
+        // 사용자가 보는 모달창
           (modalStatus !== 'none' && (
               <form className='modalWrapper' onClick={e => e.stopPropagation()}>
                 <div className='modalContent'>
@@ -357,7 +358,11 @@ return (
                   </div>
 
                   <div className='modalMain'>
-                    <div className='modalusername'>작성자: {username}</div>
+                    <div className='modalusername'>
+                      <div className='userinfo-modal'>작성자: {username}</div>
+                      <div className='queryDatuserinfo-modale'>작성일자: {formattedCreatedAt}</div>
+                    </div>
+                    
                     <div className='modalMainTitle'>제목</div>
                     <div>
                       {modalStatus === 'edit' ? (
@@ -365,7 +370,7 @@ return (
                               type="text"
                               value={newTitle} // newTitle을 출력
                               onChange={e => setNewTitle(e.target.value)}
-                              maxLength="25"
+                              maxLength="30"
                           />
                       ) : (
                           <div className='titleInputContent'>{modalContent.title}</div>
@@ -375,6 +380,7 @@ return (
                     <div>
                       {modalStatus === 'edit' ? (
                           <textarea
+                              className='editTextbox'
                               value={newBody} // newBody를 출력
                               onChange={e => setNewBody(e.target.value)} // newBody를 변경
                           />
@@ -382,8 +388,8 @@ return (
                           <div className='queryContent'>{modalContent.body}</div>
                       )}
                     </div>
-                    <div className='modalMainContent'>작성일자</div>
-                    <div className='queryDate'>{formattedCreatedAt}</div>
+                    
+                    
                     <div className='modalMainContent'>첨부 이미지</div>
                     {modalStatus === 'edit' ? (
                         <div className='attachBtn'>

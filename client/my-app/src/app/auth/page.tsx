@@ -73,14 +73,14 @@ const Auth =()=>{
         if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
             .then((res) => {
-                console.log("res >> ", res);
+                // console.log("res >> ", res);
                 setemailAvailable(null);
                 setUniqueNum(res.data.unique_number);
                 setemailBtntext("재전송");
                 setShowEmailVerification(true)
             })
             .catch((err) => {
-                console.log("err >> ", err);
+                // console.log("err >> ", err);
                 setShowEmailVerification(false)
                 if (err.response && err.response.data && err.response.status === 400) {
                     const errorMessage = err.response.data.state;
@@ -97,7 +97,7 @@ const Auth =()=>{
     const handleCheckEmailClick = () => {
     axios.post("http://localhost:8000/api/emailcheck/", {"input_number": emailnum},{ headers: headers })
       .then((res) => {
-          console.log("res >>",res);
+        //   console.log("res >>",res);
           setIsemailcheck("");
           setAuthBool(res.data.is_auth);
           const errorMessage = res.data.state;
@@ -105,7 +105,7 @@ const Auth =()=>{
           setIsEmailVerified(true);
       })
       .catch((err) => {
-        console.log("err >> ", err.response.data);
+        // console.log("err >> ", err.response.data);
         if (err.response && err.response.data && err.response.status === 400) {
             const errorMessage = err.response.data.state;
             setemailAvailable(errorMessage);}
@@ -116,16 +116,16 @@ const Auth =()=>{
       axios.post("http://localhost:8000/api/user/",
           {"id":RegisterId, "password": RegisterPassword, "password_check": confirmPassword, "name": name, "email": email, "is_auth": authBool})
     .then((res) => {
-          console.log("res >>",res);
+        //   console.log("res >>",res);
           setVariant("login")
 
       })
       .catch((err) => {
-        console.log("err >> ", err.response.data);
+        // console.log("err >> ", err.response.data);
         if (err.response && err.response.data && err.response.status === 400) {
             if (err.response.data.non_field_errors){
                     const errorMessage = err.response.data.non_field_errors[0];
-                    console.log(errorMessage)
+                    // console.log(errorMessage)
                     if (errorMessage.slice(0,4) === "비밀번호"){
                         setpassIsSignAvailable(errorMessage);
                     }
@@ -152,7 +152,7 @@ const Auth =()=>{
       axios.post("http://localhost:8000/api/login/",
           {"id":username, "password": password})
     .then((res) => {
-        console.log("res >>",res);
+        // console.log("res >>",res);
         const usernamee = res.data.name;
         const accessToken = res.data.token;
         const isstaff = res.data.is_staff;
@@ -165,7 +165,7 @@ const Auth =()=>{
         window.location.replace('/');
       })
       .catch((err) => {
-        console.log("err >> ", err.response.data);
+        // console.log("err >> ", err.response.data);
         if (err.response && err.response.data && err.response.status === 400) {
                     const errorMessage = err.response.data.error;
                     setError(errorMessage);
@@ -181,12 +181,12 @@ const Auth =()=>{
         else{
             axios.post("http://localhost:8000/api/idcheckduplicate/", {"id": RegisterId})
             .then((res) => {
-                console.log("res>>", res);
+                // console.log("res>>", res);
                 const errorMessage = res.data.state;
                 setIsUsernameAvailable(errorMessage);
             })
             .catch((err) => {
-                console.log("err >>", err.response.data);
+                // console.log("err >>", err.response.data);
                 if (err.response && err.response.data && err.response.status === 400) {
                     const errorMessage = err.response.data.state;
                     setIsUsernameAvailable(errorMessage);

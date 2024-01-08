@@ -32,12 +32,12 @@ const FindId =()=>{
         if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/useridemailsend/", { "email": email })
             .then((res) => {
-                console.log("res >> ", res);
+                // console.log("res >> ", res);
                 setUniqueNum(res.data.unique_number);
                 setemailBtntext("재전송");
             })
             .catch((err) => {
-                console.log("err >> ", err);
+                // console.log("err >> ", err);
             });
         }
     }
@@ -52,7 +52,7 @@ const FindId =()=>{
     const handleCheckEmailClick = () => {
         axios.post("http://localhost:8000/api/emailcheck/", {"input_number": emailnum},{ headers: headers })
           .then((res) => {
-              console.log("res >>",res);
+            //   console.log("res >>",res);
               setIsemailcheck("");
               setAuthBool(res.data.is_auth);
               const errorMessage = res.data.state;
@@ -60,7 +60,7 @@ const FindId =()=>{
               setIsEmailVerified(true);
           })
           .catch((err) => {
-            console.log("err >> ", err.response.data);
+            // console.log("err >> ", err.response.data);
             if (err.response && err.response.data && err.response.status === 400) {
                 const errorMessage = err.response.data.state;
                 setIsemailcheck(errorMessage);}
@@ -77,14 +77,14 @@ const FindId =()=>{
         axios.post("http://127.0.0.1:8000/api/userfindid/",
         {"name": name, "email": email, "is_auth": authBool})
         .then((res) =>{
-            console.log("res >>",res);
+            // console.log("res >>",res);
             setVariant("find")
             if (res.data && res.data.id) {
                 setUserId(res.data.id); 
               }
         })
         .catch((err) => {
-            console.log("err >> ", err);
+            // console.log("err >> ", err);
         });
     }
 

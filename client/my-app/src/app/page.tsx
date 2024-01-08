@@ -35,11 +35,11 @@ export default function Home() {
     const mvbx = mvbxRef.current;
 
     const movePage = () => {
-      console.log(window.scrollY);
+      // console.log(window.scrollY);
 
       const retVal = (x) => x.getBoundingClientRect().top;
       let tgpos = retVal(tpg);
-      console.log("바운딩값: ", tgpos);
+      // console.log("바운딩값: ", tgpos);
 
       // 적용구간 설정 0이하 -2000px 이상
       if (tgpos <= 0 && tgpos >= -3600) mvbx.style.left = tgpos + "px";
