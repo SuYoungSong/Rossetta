@@ -19,6 +19,7 @@ from .models import practice_note
 import numpy as np
 import tensorflow as tf
 
+
 # 로그인 서버 시간 갱신 API
 class RenewalTokenTimeView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
@@ -373,7 +374,7 @@ class QuestionView(APIView):
         req_user_id = Token.objects.get(key=token_user).user_id
         user_info = User.objects.get(id=req_user_id)
         if user_info.is_staff:
-            return Response({"state":"관리자 는 게시글을 삭제 할수 없습니다."} , status=status.HTTP_400_BAD_REQUEST)
+            return Response({"state": "관리자 는 게시글을 삭제 할수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = question_board.objects.get(id=id)
             user.delete()
@@ -424,17 +425,21 @@ class QuestionCommentCreateView(APIView):
             return Response(data={"state": "댓글 작성이 완료되었습니다"}, status=status.HTTP_201_CREATED)
         return Response(data=serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class QuestionCommentDetailView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
-    def post(self , request):
+
+    def post(self, request):
         board_id = request.data.get('board')
         if board_id is None:
-            return Response(data={"state":"게시글 정보를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"state": "게시글 정보를 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             comment = question_board_comments.objects.get(board_id=board_id)
-            return Response(data={"comment":comment.comment} , status=status.HTTP_200_OK)
+            return Response(data={"comment": comment.comment}, status=status.HTTP_200_OK)
         except question_board_comments.DoesNotExist:
-            return Response(data={"state":"댓글 정보가 존재하지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"state": "댓글 정보가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
+
+
 ##########################################################################
 ################################ Paper ###################################
 ##########################################################################
@@ -613,9 +618,9 @@ class PracticeNoteView(APIView):
 
     def post(self, request):  # 중복 문제 발생 -> 한 문제 를 같은 사람이 여러번 푸는것이 record 에 남는다
         paper_id = request.data.get('paper', None)  # 정수
-        user = request.data.get('user', None)   # 문자
-        is_deaf = request.data.get('is_deaf', None) # bool
-        count = paper.objects.all().count() # 정수
+        user = request.data.get('user', None)  # 문자
+        is_deaf = request.data.get('is_deaf', None)  # bool
+        count = paper.objects.all().count()  # 정수
         if is_deaf != True and is_deaf != False:
             return Response(data={"state": "문제 유형을 찾을수 없습니다"}, status=status.HTTP_404_NOT_FOUND)
         if is_null(user) or is_null(paper_id):
@@ -950,17 +955,17 @@ class WrongSentenceQuestionView(APIView):
         except practice_note.DoesNotExist:
             return Response(data={"state": "틀린 문제가 없습니다"}, status=status.HTTP_404_NOT_FOUND)
 
+
 ## 틀린 문제 정보
 class WordWrongQuestionInfoView(APIView):
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
-    permission_classes = [IsAuthenticated , IsTokenOwner]
-
-    def post(self,request):
-        id = request.data.get('id')             # 사용자 아이디
-        type = request.data.get('type')         # 유형 (단어/문장)
-        situation = request.data.get('situation')   # 병원 학교 직업
-        chapter = request.data.get('chapter')    # 챕터 정보
-        is_deaf = request.data.get('is_deaf')    # 농아인 전용 문제  / 청각장애인 전용 문제
+    def post(self, request):
+        id = request.data.get('id')  # 사용자 아이디
+        type = request.data.get('type')  # 유형 (단어/문장)
+        situation = request.data.get('situation')  # 병원 학교 직업
+        chapter = request.data.get('chapter')  # 챕터 정보
+        is_deaf = request.data.get('is_deaf')  # 농아인 전용 문제  / 청각장애인 전용 문제
 
         chapter = int(chapter)
         help_return = word_data_check(id, type, situation , chapter , is_deaf)
@@ -989,14 +994,14 @@ class WordWrongQuestionInfoView(APIView):
                 wrong_info["answer"] = practice.paper.sign_answer
                 wrong_info["video"] = practice.paper.sign_video_url.url
                 result['wrong'].append(wrong_info)
-            return Response(data=result , status=status.HTTP_200_OK)
+            return Response(data=result, status=status.HTTP_200_OK)
 
         except practice_note.DoesNotExist:
-            return Response(data={"state":"틀린문제가 조회되자 않습니다"} , status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"state": "틀린문제가 조회되자 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class SentenceWrongQuestionInfoView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
     def post(self, request):
         id = request.data.get('id')  # 사용자 아이디
@@ -1036,7 +1041,8 @@ class SentenceWrongQuestionInfoView(APIView):
 
 
 class WordWrongCountView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
+
     def post(self, request):
         id = request.data.get('id')
         type = request.data.get('type')
@@ -1058,26 +1064,55 @@ class WordWrongCountView(APIView):
                 chapter = chapter[0]
                 chapter_info = dict()
                 paper_count = paper.objects.filter(type=type, situation=situation, chapter=chapter).count()
-                deaf_info = practice_note.objects.filter(user_id=id, paper__type=type, paper__situation=situation,
-                                                         paper__chapter=chapter, is_deaf=True, is_answer=True)
-                deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type, paper__situation=situation,
-                                                             paper__chapter=chapter, is_deaf=False, is_answer=True)
+                # 사용자가 맞은 문제 개수
+                correct_deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                 paper__situation=situation,
+                                                                 paper__chapter=chapter, is_deaf=True, is_answer=True)
+                correct_deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                     paper__situation=situation,
+                                                                     paper__chapter=chapter, is_deaf=False,
+                                                                     is_answer=True)
+                # 사용자가 틀린 문제 개수
+                wrong_deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                               paper__situation=situation,
+                                                               paper__chapter=chapter, is_deaf=True, is_answer=False)
+                wrong_deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                   paper__situation=situation,
+                                                                   paper__chapter=chapter, is_deaf=False,
+                                                                   is_answer=False)
+
+                # 사용자가 푼 문제수
+                unsolved_deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                  paper__situation=situation,
+                                                                  paper__chapter=chapter,
+                                                                  is_deaf=True)  # 사용자가 해당 챕터 문제를 푼 기록 전부 (풀든 안풀든)
+                unsolved_deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                      paper__situation=situation,
+                                                                      paper__chapter=chapter,
+                                                                      is_deaf=False)  # 사용자가 해당 챕터 문제를 푼 기록 전부 (풀든 안풀든)
+
                 chapter_info['chapter'] = chapter
                 chapter_info['paper_all_count'] = paper_count
-                chapter_info['deaf_count'] = deaf_info.count()
-                chapter_info['deaf_not_count'] = deaf_not_info.count()
+                ## 농아인 유형 문제
+                chapter_info['correct_deaf_count'] = correct_deaf_info.count()  # 맞은 문제
+                chapter_info['wrong_deaf_count'] = wrong_deaf_info.count()  # 틀린 문제
+                chapter_info['unsolved_deaf_count'] = paper_count - unsolved_deaf_info.count()  # 안푼 문제
+
+                ## 청각 장애인 유형
+                chapter_info['correct_deaf_not_count'] = correct_deaf_not_info.count()  # 맞은 문제
+                chapter_info['wrong_deaf_not_count'] = wrong_deaf_not_info.count()
+                chapter_info['unsolved_deaf_not_count'] = paper_count - unsolved_deaf_not_info.count()  # 안푼 문제
 
                 result[f'{situation}'].append(chapter_info)
-            return Response(data=result , status=status.HTTP_200_OK)
+            return Response(data=result, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
-            return Response(data={"state":"문제 정보가 조회되지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
-
+            return Response(data={"state": "문제 정보가 조회되지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class SentenceWrongCountView(APIView):
-    permission_classes = [IsAuthenticated , IsTokenOwner]
+    permission_classes = [IsAuthenticated, IsTokenOwner]
 
-    def post(self,request):
+    def post(self, request):
         id = request.data.get('id')
         type = request.data.get('type')
         help_return = sentence_wrong_count_check(id, type)
@@ -1097,21 +1132,43 @@ class SentenceWrongCountView(APIView):
                 chapter = chapter[0]
                 chapter_info = dict()
                 paper_count = paper.objects.filter(type=type, chapter=chapter).count()
-                deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
-                                                         paper__chapter=chapter, is_deaf=True, is_answer=True)
-                deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
-                                                             paper__chapter=chapter, is_deaf=False, is_answer=True)
+                # 사용자가 맞은 문제 개수
+                correct_deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                 paper__chapter=chapter, is_deaf=True, is_answer=True)
+                correct_deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                     paper__chapter=chapter, is_deaf=False,
+                                                                     is_answer=True)
+                # 사용자가 틀린 문제 개수
+                wrong_deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                               paper__chapter=chapter, is_deaf=True, is_answer=False)
+                wrong_deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                   paper__chapter=chapter, is_deaf=False,
+                                                                   is_answer=False)
+
+                # 사용자가 푼 문제수
+                unsolved_deaf_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                  paper__chapter=chapter,
+                                                                  is_deaf=True)  # 사용자가 해당 챕터 문제를 푼 기록 전부 (풀든 안풀든)
+                unsolved_deaf_not_info = practice_note.objects.filter(user_id=id, paper__type=type,
+                                                                      paper__chapter=chapter,
+                                                                      is_deaf=False)  # 사용자가 해당 챕터 문제를 푼 기록 전부 (풀든 안풀든)
+
                 chapter_info['chapter'] = chapter
                 chapter_info['paper_all_count'] = paper_count
-                chapter_info['deaf_count'] = deaf_info.count()
-                chapter_info['deaf_not_count'] = deaf_not_info.count()
+                ## 농아인 유형 문제
+                chapter_info['correct_deaf_count'] = correct_deaf_info.count()  # 맞은 문제
+                chapter_info['wrong_deaf_count'] = wrong_deaf_info.count()  # 틀린 문제
+                chapter_info['unsolved_deaf_count'] = paper_count - unsolved_deaf_info.count()  # 안푼 문제
+
+                ## 청각 장애인 유형
+                chapter_info['correct_deaf_not_count'] = correct_deaf_not_info.count()  # 맞은 문제
+                chapter_info['wrong_deaf_not_count'] = wrong_deaf_not_info.count()
+                chapter_info['unsolved_deaf_not_count'] = paper_count - unsolved_deaf_not_info.count()  # 안푼 문제
 
                 result[f'{type}'].append(chapter_info)
-            return Response(data=result , status=status.HTTP_200_OK)
+            return Response(data=result, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
-            return Response(data={"state":"문제 정보가 조회되지 않습니다"} , status=status.HTTP_404_NOT_FOUND)
-
-
+            return Response(data={"state": "문제 정보가 조회되지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class SentenceModelView(APIView):
@@ -1208,10 +1265,10 @@ class SentenceModelView(APIView):
 
         # 결과 반환
         return result
-    def post(self , request):
-        answer = self.sen_predict(request.data)
-        return Response(data={"predict":answer} , status=status.HTTP_200_OK)
 
+    def post(self, request):
+        answer = self.sen_predict(request.data)
+        return Response(data={"predict": answer}, status=status.HTTP_200_OK)
 
 
 class WordModelView(APIView):
@@ -1223,7 +1280,8 @@ class WordModelView(APIView):
         right_hand = np.zeros(63)
 
         if 'pose_landmarks' in results:
-            pose = np.array([[res['x'], res['y'], res['z'], res['visibility']] for res in results['pose_landmarks']]).flatten()
+            pose = np.array(
+                [[res['x'], res['y'], res['z'], res['visibility']] for res in results['pose_landmarks']]).flatten()
         if 'left_hand_landmarks' in results:
             left_hand = np.array([[res['x'], res['y'], res['z']] for res in results['left_hand_landmarks']]).flatten()
         if 'right_hand_landmarks' in results:
@@ -1231,7 +1289,7 @@ class WordModelView(APIView):
 
         return np.concatenate([pose, left_hand, right_hand])
 
-    def word_predict(self,data):
+    def word_predict(self, data):
         actions = np.array(
             ['간호사', '골절', '당뇨병', '병명', '병문안', '불면증', '붕대', '소화제', '의사', '입원', '진단서', '체온', '치료', '퇴원', '화상',
              '근무', '디자이너', '예술가', '요리사', '운동선수', '출근', '통역사', '퇴사',
@@ -1251,6 +1309,7 @@ class WordModelView(APIView):
         answer = actions[np.argmax(pred)]
 
         return answer
+
     def post(self, request):
         answer = self.word_predict(request.data)
         return Response(data={"predict": answer}, status=status.HTTP_200_OK)
