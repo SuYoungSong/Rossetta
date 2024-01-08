@@ -53,6 +53,11 @@ urlpatterns = [
     path('comment/', QuestionCommentCreateView.as_view()),
     path('commentinquiry/',QuestionCommentDetailView.as_view()),
 
+    ## 틀린 문제 정보 조회
+    path('wordwronginfo/',WordWrongQuestionInfoView.as_view()),
+    path('sentencewronginfo/',SentenceWrongQuestionInfoView.as_view()),
+
+
     ## 문제 API
     path('wordquestion/', WordQuestionView.as_view()),
     path('sentencequestion/', SentenceQuestionView.as_view()),
@@ -71,4 +76,6 @@ urlpatterns = [
     # ## AI model api
     path('sentencemodel/',SentenceModelView.as_view()),
     path('wordmodel/',WordModelView.as_view()),
+
+
 ]

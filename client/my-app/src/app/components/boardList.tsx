@@ -32,7 +32,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
 // 모달 state 선언
   // const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
-  const [selectedItems, setSelectedItems] = useState<number[]>([]); //체크박스 선택유무
+  // const [selectedItems, setSelectedItems] = useState<number[]>([]); //체크박스 선택유무
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // 체크확인 모달
   const storedUsername = localStorage.getItem('username');
 
@@ -50,11 +50,11 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
       );
       // 성공적인 응답 처리
 
-      console.log('GET 요청이 성공적으로 전송되었습니다.', response.data);
-      console.log('Modal Content:', response.data);
+      // console.log('GET 요청이 성공적으로 전송되었습니다.', response.data);
+      // console.log('Modal Content:', response.data);
       setModalContent(response.data);
       setModalStatus('open');
-      console.log(boardid);
+      // console.log(boardid);
 
     } catch (error) {
       // 실패한 응답 처리
@@ -108,7 +108,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
                       'Content-Type': 'multipart/form-data'},
         }
       );
-      console.log('PUT 요청이 성공적으로 전송되었습니다.', response.data);
+      // console.log('PUT 요청이 성공적으로 전송되었습니다.', response.data);
       setModalContent(response.data);
       setModalStatus('none')
       window.location.reload();
@@ -146,7 +146,7 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
           }
         );
         // 성공적인 응답 처리
-        console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
+        // console.log('delete 요청이 성공적으로 전송되었습니다.', response.data);
         setModalStatus('none');
         window.location.reload();
         alert("문의가 삭제되었습니다.")
@@ -156,18 +156,22 @@ const BoardList: React.FC<BoardListItemProps> = ({ boardNum, username, title, st
         console.error('delete 요청이 실패하였습니다.', error);
       }
     } else {
-      console.log("Deletion was cancelled.");
+      // console.log("Deletion was cancelled.");
     } };
 
-const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, boardid: number) => {
-    const itemId = boardid;
-
-    if (event.target.checked) {
-      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, itemId]);
-    } else {
-      setSelectedItems((prevSelectedItems) => prevSelectedItems.filter((id) => id !== itemId));
-    }
-  };
+// const handleCheckboxChange = (boardid: number) => {
+//   setSelectedItems(prevItems => {
+//     if (prevItems.includes(boardid)) {
+//       return prevItems.filter(item => item !== boardid);
+//     } else {
+//       return [...prevItems, boardid];
+//     }
+//   });
+// };
+//
+// useEffect(() => {
+//   console.log('현재 상태:',selectedItems);
+// }, [selectedItems]);
 
   const handleDeleteSelected = () => {
     if (selectedItems.length > 0) {
@@ -211,7 +215,7 @@ const handleStaffSubmit = async () => {
     {headers:{'Authorization': `Token ${accessToken}` }}
     );
 
-    console.log(response.data);
+    // console.log(response.data);
     alert("답변완료.")
   } catch (error) {
     console.error(error);
@@ -264,8 +268,9 @@ const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 
 return (
     <div className='boardList' onClick={handleItemClick}>
-      <input type="checkbox" onChange={(event) => handleCheckboxChange(event, boardid)}
-             onClick={(e) => e.stopPropagation()}/>
+      <input type="checkbox"
+             onChange={() => handleCheckboxClick(boardid)}
+             onClick={(e) => e.stopPropagation()} />
       <div className='boardNum'>{boardNum}</div>
       <div className='boardMain'>
         <h4 className='boardTitle'>[문의] {title}</h4>
@@ -424,19 +429,19 @@ return (
           ))
       )}
       {/* 선택된 항목 삭제 버튼 */}
-      {selectedItems.length > 0 && (
-          <div className='deleteButtonContainer'>
-            <button
-                className='waitBtn' style={{border: 'solid 1px'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (window.confirm('정말로 삭제하시겠습니까?')) {
-                    confirmDelete();
-                  }
-                }}>항목삭제
-            </button>
-          </div>
-      )}
+      {/*{selectedItems.length > 0 && (*/}
+      {/*    <div className='deleteButtonContainer'>*/}
+      {/*      <button*/}
+      {/*          className='waitBtn' style={{border: 'solid 1px'}}*/}
+      {/*          onClick={(e) => {*/}
+      {/*            e.stopPropagation();*/}
+      {/*            if (window.confirm('정말로 삭제하시겠습니까?')) {*/}
+      {/*              confirmDelete();*/}
+      {/*            }*/}
+      {/*          }}>항목삭제*/}
+      {/*      </button>*/}
+      {/*    </div>*/}
+      {/*)}*/}
     </div>
 );
 }
