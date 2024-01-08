@@ -1,40 +1,42 @@
 "use client"
-import React from 'react';
-import Link from 'next/link';
-import Image, { StaticImageData } from 'next/image';
-// import { useRouter } from 'next/router';
-import "@/app/styles/condition_1.css"
+import Link from 'next/link'
+import '@/app/styles/selectBtn.css'
+import SelectionButton from '@/app/components/selectionButton';
+import Hospital from '../../../../../../public/hospital.jpg'
+import School from '../../../../../../public/school.jpg';
+import Job from "../../../../../../public/job.jpg";
+import Chapter from "@/app/components/wrongChapters";
+import {usePathname} from "next/navigation";
+import {StaticImageData} from "next/image";
+import {current} from "immer";
 
-import { usePathname, useRouter } from 'next/navigation';
-import DoughnutChart from "@/app/components/donut";
+type LanguageItem = {
+  [key: string]: [string, StaticImageData];
+};
 
-interface ChapterProps {
-  imagePath: StaticImageData;
-  selectName: string;
-}
+const site: LanguageItem = {
+  'hospital': ['병원', Hospital],
+  'school': ['학교', School],
+    'job': ['직업', Job]
+};
 
-const ChapterList: React.FC<ChapterProps> = ({imagePath, selectName}) => {
-  const chapters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const currentPath = usePathname();
+export default function WrongChap() {
+    const currentPath = usePathname().split("/");
+    const place = currentPath[3];
+    const type = currentPath[2];
+    const isdeaf = (currentPath[4] === 'sign_wrong');
 
 
   return (
-    <div className="chapter">
-      <div className="spot-area">
-        <Image className='btn-image' src={imagePath} alt="btn-image" />
-        <div className="gradient-overlay"></div>
-        <span className="spot-text">{selectName}</span>
+    <>
+      <div className='path'>
+          <div className='detail_title'>오답노트 &gt; 단어 &gt; 문자</div>
+          <div className='top_hr'></div>
+          <Chapter imagePath={site[place][1]} selectName={site[place][0]} type={type} isdeaf={isdeaf}/>
       </div>
-      <div className="chapter-area">
-        {chapters.map((chapterNumber, index) => (
-          <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
-            <div className="chapter-btn"><div className="dnchart"><DoughnutChart/> </div> <div className='btnText'>Chapter {chapterNumber}</div></div>
-          </Link>
-        ))}
-      </div>
-    </div>
+
+    </>
+
+
   );
-};
-
-export default ChapterList;
-
+}

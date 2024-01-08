@@ -10,9 +10,10 @@ import Chart from "@/app/components/donut";
 import axios from "axios";
 
 interface ChapterProps {
-  imagePath: StaticImageData;
+  imagePath?: StaticImageData;
   selectName: string;
   type: string;
+  isdeaf: boolean;
 }
 
 interface CorrectData {
@@ -22,19 +23,22 @@ interface CorrectData {
   deaf_not_count: number;
 }
 
-const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type}) => {
+const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isdeaf}) => {
    const userId = typeof window !== 'undefined' ? localStorage.getItem('id') : null;
    const accessToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken'):null;
    const [islength, setIsChapLength] = useState<number>(0);
    const [correct, setCorrect] = useState<number[][]>([]);
    const currentPath = usePathname();
+   let URL:string;
    let param = {};
    if (type=='word'){
+       URL = "http://localhost:8000/api/wordwrongcount/"
        param = {
            id: userId, type: "단어", situation: selectName
        }
    }
    else if (type=='sentence'){
+       URL = "http://localhost:8000/api/sentencewrongcount/"
        param = {
            id: userId, type:"문장"
        }
@@ -45,7 +49,7 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type}) =>
     };
 
       useEffect(() => {
-          axios.post("http://localhost:8000/api/wordwrongcount/", param, {headers: {'Authorization': `Token ${accessToken}`}})
+          axios.post(URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
               .then((res) => {
                     const leng = res.data[selectName].length;
                     if (leng != undefined) {
@@ -53,6 +57,7 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type}) =>
                         console.log(islength);
 
                         const correctData: CorrectData[] = res.data[selectName];
+                        console.log(correctData);
 
                       const correct: number[][] = correctData.map(item => [
                         item.paper_all_count,
@@ -67,7 +72,6 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type}) =>
                   console.log(err)
               });
       }, []);
-       console.log(correct);
 
     const chapters = setChapLength(islength);
 
@@ -78,15 +82,19 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type}) =>
         <div className="gradient-overlay"></div>
         <span className="spot-text">{selectName}</span>
       </div>{islength > 0 &&(
-      <div className="chapter-area">
-
-        {chapters.map((chapterNumber, index) => (
-          <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
-            <div className="chapter-btn"><div className="dnchart"><Chart total={correct[0][0]} correct={correct[0][1]}/> </div> <div className='btnText'>Chapter {chapterNumber}</div></div>
-          </Link>
-        ))}
-
-      </div>)}
+        <div className="chapter-area">
+            {chapters.map((chapterNumber, index) => (
+              <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
+                <div className="chapter-btn"><div className="dnchart">
+                    <Chart
+                        allCount={correct[index][0]}
+                        correct={isdeaf ? correct[index][2] : correct[index][1]}
+                      />
+                </div>
+                    <div className='btnText'>Chapter {chapterNumber}</div></div>
+              </Link>
+            ))}
+        </div>)}
     </div>
   );
 };

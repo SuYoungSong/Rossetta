@@ -8,6 +8,7 @@ import Job from "../../../../../../public/job.jpg";
 import Chapter from "@/app/components/wrongChapters";
 import {usePathname} from "next/navigation";
 import {StaticImageData} from "next/image";
+import {current} from "immer";
 
 type LanguageItem = {
   [key: string]: [string, StaticImageData];
@@ -22,15 +23,16 @@ const site: LanguageItem = {
 export default function WrongChap() {
     const currentPath = usePathname().split("/");
     const place = currentPath[3];
-    const type = currentPath[2]
+    const type = currentPath[2];
+    const isdeaf = (currentPath[4] === 'sign_wrong');
 
 
   return (
     <>
       <div className='path'>
-          <div className='detail_title'>오답노트 &gt; 단어</div>
+          <div className='detail_title'>오답노트 &gt; 단어 &gt; 수어</div>
           <div className='top_hr'></div>
-          <Chapter imagePath={site[place][1]} selectName={site[place][0]} type={type}/>
+          <Chapter imagePath={site[place][1]} selectName={site[place][0]} type={type} isdeaf={isdeaf}/>
       </div>
 
     </>
