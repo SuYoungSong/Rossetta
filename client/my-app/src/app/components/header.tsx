@@ -117,7 +117,7 @@ const Header = ({username, status, token}: HeaderProps) => {
                 <Link  href="/" onClick={() => setActiveNavBtn(null)}><Image className="logo" src={RoLogo} alt='logo'/></Link>
                 <Link className={`nav_btn ${activeNavBtn === 'sign-edu' ? 'active' : ''}`} href='/sign-edu' onClick={() => setActiveNavBtn('sign-edu')}>수어교육</Link>
                 <Link className={`nav_btn ${activeNavBtn === 'chatbot' ? 'active' : ''}`} href='/chatbot' onClick={() => setActiveNavBtn('chatbot')}>수어실습</Link>
-                <Link className={`nav_btn ${activeNavBtn === 'wrong_note' ? 'active' : ''}`} href='/wrong_note' onClick={() => setActiveNavBtn('wrongnote')}>오답노트</Link>
+                <Link className={`nav_btn ${activeNavBtn === 'wrong_note' ? 'active' : ''}`} href='/wrong_note' onClick={() => setActiveNavBtn('wrong_note')}>오답노트</Link>
                 <Link className={`nav_btn ${activeNavBtn === 'board' ? 'active' : ''}`} href='/board' onClick={() => setActiveNavBtn('board')}>1:1 문의</Link>
             </div>
 
