@@ -173,7 +173,7 @@ export default function TextMemory() {
                           <div className="fixed-question">수화가 뜻하는 것은?</div>
                           <div>
                           {questions.map((word, idx) => (
-                                  <label className={`radio-btn ${selectedOption === word ? 'selected' : ''}`} htmlFor={`radio_${idx}`}>
+                                  <label className={`radio-btn ${selectedOption === word ? 'selected' : ''}`} htmlFor={`radio_${idx}`} key={idx}>
                                       <div className="plan">
                                           <input type="radio" id={`radio_${idx}`} name="input-radio" value={word} onChange={handleRadioChange}/>
                                           <span className="btn-choice">{word}</span>
