@@ -76,7 +76,7 @@ const WrongLecture: React.FC<LectureProps> = ({type, situation, chapter, is_deaf
                 <div className='back-title'>
                     <Image className="backbtn" src={backBtn} alt='back' onClick={() => router.back()}></Image>
                     <div className='title_collection'>
-                        <div className='detail_title'>{situation} &gt; 오답노트{chapter}</div>
+                        <div className='detail_title'>{situation ? `${situation} > 오답노트${chapter}` : `문장 > 오답노트${chapter}`}</div>
                         <div className='top_hr'></div>
                     </div>
                 </div>

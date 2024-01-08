@@ -9,7 +9,7 @@ import {StaticImageData} from "next/image";
 export default function WrongChap() {
     const currentPath = usePathname().split("/");
     const type = currentPath[2];
-    const isdeaf = (currentPath[3] === 'sign-wrong');
+    const isdeaf = (currentPath[3] === 'text-wrong');
 
 
   return (
