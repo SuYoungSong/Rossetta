@@ -824,7 +824,7 @@ class ScenarioView(APIView):
             return Response(data={"state": "해당 시나리오가 존재하지 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
-### 농아인 단어 오답문제 출제
+### 단어 오답문제 출제
 
 class WrongWordQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
@@ -885,7 +885,7 @@ class WrongWordQuestionView(APIView):
             return Response(data={"state": "틀린 문제가 없습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
-## 농아인 문장 오답 문제 출제
+## 문장 오답 문제 출제
 
 class WrongSentenceQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsTokenOwner]
@@ -943,6 +943,89 @@ class WrongSentenceQuestionView(APIView):
 
         except practice_note.DoesNotExist:
             return Response(data={"state": "틀린 문제가 없습니다"}, status=status.HTTP_404_NOT_FOUND)
+
+## 틀린 문제 정보
+class WordWrongQuestionInfoView(APIView):
+
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+
+    def post(self,request):
+        id = request.data.get('id')             # 사용자 아이디
+        type = request.data.get('type')         # 유형 (단어/문장)
+        situation = request.data.get('situation')   # 병원 학교 직업
+        chapter = request.data.get('chapter')    # 챕터 정보
+        is_deaf = request.data.get('is_deaf')    # 농아인 전용 문제  / 청각장애인 전용 문제
+
+        help_return = word_data_check(id, type, situation , chapter , is_deaf)
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+        if help_text != "":  # 예외 처리가 존재 한다면
+            if error_code == "400":
+                return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+            if error_code == "404":
+                return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+        result = dict()
+
+        try:
+            practice_notes = practice_note.objects.select_related('paper').filter(  # 이용자가 틀린 문제
+                paper__type=type,
+                paper__situation=situation,
+                paper__chapter=chapter,
+                user=id,
+                is_deaf=is_deaf,
+                is_answer=False
+            )
+            result['wrong'] = list()
+            for practice in practice_notes:
+                wrong_info = dict()
+                wrong_info["id"] = practice.paper.id
+                wrong_info["answer"] = practice.paper.sign_answer
+                wrong_info["video"] = practice.paper.sign_video_url.url
+                result['wrong'].append(wrong_info)
+            return Response(data=result , status=status.HTTP_200_OK)
+
+        except practice_note.DoesNotExist:
+            return Response(data={"state":"틀린문제가 조회되자 않습니다"} , status=status.HTTP_404_NOT_FOUND)
+
+
+class SentenceWrongQuestionInfoView(APIView):
+    permission_classes = [IsAuthenticated , IsTokenOwner]
+
+    def post(self, request):
+        id = request.data.get('id')  # 사용자 아이디
+        type = request.data.get('type')  # 유형 (단어/문장)
+        chapter = request.data.get('chapter')  # 챕터 정보
+        is_deaf = request.data.get('is_deaf')  # 농아인 전용 문제  / 청각장애인 전용 문제
+
+        help_return = sentence_data_check(id, type, chapter, is_deaf)
+        help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
+
+        if help_text != "":  # 예외 처리가 존재 한다면
+            if error_code == "400":
+                return Response(data={"state": help_text}, status=status.HTTP_400_BAD_REQUEST)
+            if error_code == "404":
+                return Response(data={"state": help_text}, status=status.HTTP_404_NOT_FOUND)
+        result = dict()
+
+        try:
+            practice_notes = practice_note.objects.select_related('paper').filter(  # 이용자가 틀린 문제
+                paper__type=type,
+                paper__chapter=chapter,
+                user=id,
+                is_deaf=is_deaf,
+                is_answer=False
+            )
+            result['wrong'] = list()
+            for practice in practice_notes:
+                wrong_info = dict()
+                wrong_info["id"] = practice.paper.id
+                wrong_info["answer"] = practice.paper.sign_answer
+                wrong_info["video"] = practice.paper.sign_video_url.url
+                result['wrong'].append(wrong_info)
+            return Response(data=result, status=status.HTTP_200_OK)
+
+        except practice_note.DoesNotExist:
+            return Response(data={"state": "틀린문제가 조회되자 않습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class WordWrongCountView(APIView):
