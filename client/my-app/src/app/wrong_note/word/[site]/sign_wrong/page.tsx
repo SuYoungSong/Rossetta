@@ -24,7 +24,7 @@ export default function WrongChap() {
     const currentPath = usePathname().split("/");
     const place = currentPath[3];
     const type = currentPath[2];
-    const isdeaf = (currentPath[4] === 'sign_wrong');
+    const isdeaf = (currentPath[4] === 'text_wrong');
 
 
   return (

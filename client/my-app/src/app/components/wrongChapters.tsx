@@ -47,6 +47,7 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isd
    const setChapLength = (n: number): number[] => {
       return Array.from({ length: n }, (_, index) => index + 1);
     };
+   console.log(accessToken)
 
       useEffect(() => {
           axios.post(URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
@@ -84,7 +85,7 @@ const wrongChapters: React.FC<ChapterProps> = ({imagePath, selectName, type, isd
       </div>{islength > 0 &&(
         <div className="chapter-area">
             {chapters.map((chapterNumber, index) => (
-              <Link href={`../../${currentPath}/${chapterNumber}/0`} key={index}>
+              <Link href={`../../../${currentPath}/${chapterNumber}/0?total=${isdeaf ? correct[index][0] - correct[index][2] : correct[index][0] - correct[index][1]}`} key={index}>
                 <div className="chapter-btn"><div className="dnchart">
                     <Chart
                         allCount={correct[index][0]}

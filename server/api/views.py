@@ -962,6 +962,7 @@ class WordWrongQuestionInfoView(APIView):
         chapter = request.data.get('chapter')    # 챕터 정보
         is_deaf = request.data.get('is_deaf')    # 농아인 전용 문제  / 청각장애인 전용 문제
 
+        chapter = int(chapter)
         help_return = word_data_check(id, type, situation , chapter , is_deaf)
         help_text, error_code = help_return[0], help_return[1]  # 예외 처리 결과
 
