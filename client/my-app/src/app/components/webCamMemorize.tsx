@@ -92,12 +92,10 @@ const WebCamMemorize: React.FC<CamProps> = ({onLandmarksChange, frameNumber, isS
              if(counterRef.current == frameNumber){
                  clearInterval(intervalId)
             }
-
         }, Math.floor(1000 / 30)); // 1초에 30번 불러옴
 
         return () => clearInterval(intervalId);
     }, [isStart]);
-
 
 
   /*  랜드마크들의 좌표를 콘솔에 출력 */

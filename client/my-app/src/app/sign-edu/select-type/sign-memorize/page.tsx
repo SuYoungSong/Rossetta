@@ -88,7 +88,7 @@ export default function SignMemory() {
             }
 
             // progressbar 값 설정
-            setProgress((prevProgress) => Math.min(Object.keys(landmarks).length, second*30));
+            setProgress(Object.keys(landmarks).length);
 
             if(Object.keys(landmarks).length == second*30){
                 const accessToken = localStorage.getItem('accessToken');
