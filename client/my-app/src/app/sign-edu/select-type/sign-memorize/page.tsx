@@ -12,7 +12,7 @@ import WebCamMemorize from "@/app/components/webCamMemorize";
 import {NormalizedLandmarkList} from "@mediapipe/holistic";
 import {Timer} from "@/app/components/timer";
 import "@/app/styles/text_memo.css";
-
+import ProgressBar from '@/app/components/ProgressBar';
 export default function SignMemory() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const searchParams = useSearchParams()
@@ -28,6 +28,7 @@ export default function SignMemory() {
     const [isStart, setIsStart] = useState<boolean>(false);
     const isInitialRender = useRef(true);
     const [questionNumber, setQuestionNumber] = useState(0);
+    const [progress, setProgress] = useState(0);
 
     const [disabled, setDisabled] = useState(false);
 
@@ -86,6 +87,9 @@ export default function SignMemory() {
               return;
             }
 
+            // progressbar 값 설정
+            setProgress((prevProgress) => Math.min(Object.keys(landmarks).length, second*30));
+
             if(Object.keys(landmarks).length == second*30){
                 const accessToken = localStorage.getItem('accessToken');
 
@@ -95,6 +99,7 @@ export default function SignMemory() {
                 }})
                 .then((res) => {
                     checkAnswer(res.data.predict);
+                    console.log('모델 예측값:',res.data.predict);
                 })
                 .catch((err) => {
                     console.log(err)
@@ -169,10 +174,13 @@ export default function SignMemory() {
               <div className="question">
                 <div className="quest-text">{answer}</div>
               </div>
+                <ProgressBar max={second*30} progress={progress}/>
                 <div className={`check ${disabled ? 'disabled' : ''}`} onClick={() => {if (!disabled) {setIsStart(true); setDisabled(true);}}}>
+
                     <div className='startQuiz'>문제 풀기</div>
                     <p>버튼을 클릭하면 <b>{second}초</b> 안에 <br/>동작을 해주세요. </p>
                 </div>
+
             </div>
               <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} />
           </div>
