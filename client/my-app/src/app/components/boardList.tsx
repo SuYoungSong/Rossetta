@@ -396,20 +396,6 @@ return (
                           <span></span>
                         </>
                       )}
-
-                      <div className='modalMainContent'>첨부 이미지</div>
-                      <div className='queryImageContent'>
-                        {modalContent?.images ? (
-                            modalContent.images.map((image, index) => {
-                              // 이미지 URL 수정
-                              const correctImageUrl = `http://localhost:8000${image}`;
-                              return <img key={index} src={correctImageUrl} alt={`Image ${index}`}/>;
-                            })
-                        ) : (
-                          
-                            <span>No images</span>
-                        )}
-                      </div>
                     </div>
 
                     <div className='staffMain'>
@@ -517,8 +503,6 @@ return (
                     </div>
                   )}
 
-
-
                     {state ? (
                         <div>
                           <div className='modalinnertitle'>답변</div>
@@ -541,20 +525,6 @@ return (
               </form>
           ))
       )}
-      {/* 선택된 항목 삭제 버튼 */}
-      {/*{selectedItems.length > 0 && (*/}
-      {/*    <div className='deleteButtonContainer'>*/}
-      {/*      <button*/}
-      {/*          className='waitBtn' style={{border: 'solid 1px'}}*/}
-      {/*          onClick={(e) => {*/}
-      {/*            e.stopPropagation();*/}
-      {/*            if (window.confirm('정말로 삭제하시겠습니까?')) {*/}
-      {/*              confirmDelete();*/}
-      {/*            }*/}
-      {/*          }}>항목삭제*/}
-      {/*      </button>*/}
-      {/*    </div>*/}
-      {/*)}*/}
     </div>
 );
 }
