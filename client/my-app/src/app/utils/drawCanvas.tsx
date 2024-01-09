@@ -12,8 +12,8 @@ export const drawCanvas = (ctx: CanvasRenderingContext2D, results: Results) => {
   ctx.translate(-width, 0);
   // capture image 그리기
   ctx.drawImage(results.image, 0, 0, width, height);
-   if (results.leftHandLandmarks || results.rightHandLandmarks) {
-        for (const landmarks of results.leftHandLandmarks) {
+   if (results.rightHandLandmarks) {
+        for (const landmarks of results.rightHandLandmarks) {
       drawConnectors(ctx, results.leftHandLandmarks, HAND_CONNECTIONS,
                  {color: '#CC0000', lineWidth: 5});
       drawLandmarks(ctx, results.leftHandLandmarks,
