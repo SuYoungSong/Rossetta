@@ -40,7 +40,7 @@ export default function wordSign({params}:{params : {chapters: number, words: nu
     const is_deaf = (currentPath[4] === 'text_wrong');
     const wordnums = parseInt(real_current[0].slice(-1)); // 단어 넘버
     const nextTxt = (wordnums === total-1) ? "암기 시작" : "다음";
-    const nextHref = (wordnums === total-1) ? `/wrong_note/record/text?type=${type}&chapter=${params.chapters}&situation=${place}` : nextPath + "/" + (wordnums+1) + `?total=${total}`;
+    const nextHref = (wordnums === total-1) ? `/wrong_note/record/text/0?type=${type}&chapter=${params.chapters}&total=${total}&situation=${place}` : nextPath + "/" + (wordnums+1) + `?total=${total}`;
 
     let URL:string;
     let param = {};

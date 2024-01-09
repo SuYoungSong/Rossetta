@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react';
 import ChapterList from '@/app/components/chapters';
 import '@/app/styles/condition.css'
-import Numpic from '../../../../public/numbers.jpg'
+import Numpic from '../../../../public/sentence_btn.jpg';
 
 export default function Sentence() {
     let chapter = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];

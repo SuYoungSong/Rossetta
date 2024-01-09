@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
 import '@/app/styles/selectBtn.css'
-import Sen from "../../../../../public/numbers.jpg";
+import Sen from "../../../../../public/sentence_btn.jpg";
 import Chapter from "@/app/components/wrongChapters";
 import {usePathname} from "next/navigation";
 import {StaticImageData} from "next/image";
@@ -10,7 +10,6 @@ export default function WrongChap() {
     const currentPath = usePathname().split("/");
     const type = currentPath[2];
     const isdeaf = (currentPath[3] === 'text-wrong');
-
 
   return (
     <>
