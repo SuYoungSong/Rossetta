@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import idkImage from "../../../public/idknow.png";
 import CorrectImage from "../../../public/correct_image.png";
 import IncorrectImage from "../../../public/incorrect_image.png";
+import "@/app/styles/answerModal.css"
 import Image from "next/image";
 import axios from "axios";
 import AnswerModalProps from "@/app/components/WrongModal";
@@ -224,9 +225,9 @@ const getQuests = () => {
                       </div>
                     </div>
                   )}
-                        </div>
-                    </>
-                );
+            </div>
+        </>
+    );
 };
 
 export default WrongTextQuest;
