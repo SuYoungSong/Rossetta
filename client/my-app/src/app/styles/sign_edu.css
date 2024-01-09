@@ -76,3 +76,14 @@
     margin: 1vh auto 0 auto;
     border-radius: 40px;
 }
+
+
+/* 오답노트 */
+
+.g_btn2{
+    background-color: #ffddcc;
+}
+
+.b_btn2{
+    background-color: #ffeecc;
+}

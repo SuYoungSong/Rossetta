@@ -9,13 +9,13 @@ export default function WrongNote(){
       <div className='top_hr'></div>
       <div className="e_btn_all">
         <Link href="/wrong_note/word">
-          <div className="edu_btn g_btn">
+          <div className="edu_btn g_btn2">
             <div className="edu_pic"><img src="../word.jpg" alt="단어"/></div>
             <div className="edu_btn_txt">단어</div>
           </div>
         </Link>
         <Link href="/wrong_note/sentence">
-          <div className="edu_btn b_btn">
+          <div className="edu_btn b_btn2">
             <div className="edu_pic"><img src="../sentence.jpg" alt="문장"/></div>
             <div className="edu_btn_txt">문장</div>
           </div>
