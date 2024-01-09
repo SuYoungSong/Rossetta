@@ -752,6 +752,7 @@ class WordQuestionView(APIView):
                             result[f'{i + 2}']['isAnswer'] = False
                         result['video'] = dict()
                         result['video']['url'] = answer_info.sign_video_url.url
+                        break
             else:  # 한글 이 보이면 수어를 따라해서 정답 여부
                 for paper_id in paper_ids:
                     if not practice_note.objects.filter(paper_id=paper_id, user_id=id,
@@ -760,6 +761,7 @@ class WordQuestionView(APIView):
                         result['answer'] = dict()
                         result['answer']['id'] = answer_info.id
                         result['answer']['word'] = answer_info.sign_answer
+                        break
             return Response(data={"문제": result}, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
             return Response(data={"state": "조회 가능한 문제가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
@@ -817,6 +819,7 @@ class SentenceQuestionView(APIView):
                             result[f'{i + 2}']['isAnswer'] = False
                         result['video'] = dict()
                         result['video']['url'] = answer_info.sign_video_url.url
+                        break
             else:  # 한글 이 보이면 수어를 따라해서 정답 여부
                 for paper_id in paper_ids:
                     if not practice_note.objects.filter(paper_id=paper_id, user_id=id,
@@ -825,6 +828,7 @@ class SentenceQuestionView(APIView):
                         result['answer'] = dict()
                         result['answer']['id'] = answer_info.id
                         result['answer']['word'] = answer_info.sign_answer
+                        break
             return Response(data={"문제": result}, status=status.HTTP_200_OK)
         except paper.DoesNotExist:
             return Response(data={"state": "조회 가능한 문제가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
