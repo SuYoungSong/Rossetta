@@ -60,6 +60,7 @@ const WrongTextQuest: React.FC<GetTextQuestions> = ({ type, situation="hospital"
 const getQuests = () => {
     axios.post(API_URL, param, { headers: { 'Authorization': `Token ${accessToken}` } })
       .then((res) => {
+
         const problems: Problem[] = res.data["문제"];
         if (problems !== undefined) {
           const videoList = problems.map(problem => "http://localhost:8000" + problem.video);
@@ -153,6 +154,8 @@ const getQuests = () => {
           if (isAnswerCorrect === null) {
             return { text: '모르겠어요', color: '#FFE6B5', image: idkImage };
           } else if (isAnswerCorrect) {
+              total = total - 1;
+              word_num = word_num - 1;
             return { text: '정답이에요', color: '#D0E8FF', image: CorrectImage };
           } else {
             return { text: '틀렸어요', color: '#FFC7C7', image: IncorrectImage };
