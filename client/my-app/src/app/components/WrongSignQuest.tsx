@@ -201,8 +201,8 @@ const getQuests = () => {
                 <div className="answer_btn">
                     <div className="question">
                         <div className="quest-text">{answer}</div>
-                        <ProgressBar max={second*30} progress={progress}/>
                     </div>
+                    <ProgressBar max={second*30} progress={progress}/>
                     <div className={`check ${disabled ? 'disabled' : ''}`} onClick={() => {
                         if (!disabled) {
                             setIsStart(true);
