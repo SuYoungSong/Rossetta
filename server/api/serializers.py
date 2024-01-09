@@ -222,7 +222,7 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):  # 비밀번호
             raise serializers.ValidationError("비밀번호 , 비밀번호 확인을 입력해주세요")
         else:
             if not password_match(password) or not password_match(password_check):  # 비밀번호 형식에 맞지 않을떄
-                raise serializers.ValidationError("비밀번호는 대문자 소문자 숫자 특수문자를 1자리 이상 포함한 8자리 이상으로 만들어주세요")
+                raise serializers.ValidationError("비밀번호는 대문자,소문자,숫자,특수문자를 포함한 8자 이상으로 구성해주세요")
             else:
                 if password != password_check:  # 비밀번호와 비밀번호 확인이 맞지 않을때
                     raise serializers.ValidationError("비밀번호와 비밀번호 확인이 맞지 않습니다")
