@@ -9,6 +9,7 @@ import AnswerModalProps from "@/app/components/WrongModal";
 import {usePathname} from "next/navigation";
 import WebCamMemorize from "@/app/components/webCamMemorize";
 import {NormalizedLandmarkList} from "@mediapipe/holistic";
+import ProgressBar from "@/app/components/ProgressBar";
 
 interface GetSignQuestions {
     type: string;
@@ -46,6 +47,8 @@ const WrongSignQuest: React.FC<GetSignQuestions> = ({ type, situation="hospital"
     const [answer_key, setKey] = useState<number>(0);
     const [questions, setQuestions] = useState<string[]>([]);
     const [videoUrl, setVideoUrl] = useState<string[]>([]);
+    const [progress, setProgress] = useState(0);
+
     const site: Record<string, string> = {'hospital': '병원', 'school': '학교', 'job': '직업'};
 
     let param = {};
@@ -98,6 +101,8 @@ const getQuests = () => {
               isInitialRender.current = false;
               return;
             }
+            // progressbar 값 설정
+            setProgress((prevProgress) => Math.min(Object.keys(landmarks).length, second*30));
 
             if(Object.keys(landmarks).length == second*30){
                 const accessToken = localStorage.getItem('accessToken');
@@ -108,6 +113,7 @@ const getQuests = () => {
                 }})
                 .then((res) => {
                     checkAnswer(res.data.predict);
+                    console.log('모델 예측값:', res.data.predict)
                 })
                 .catch((err) => {
                     console.log(err)
@@ -195,6 +201,7 @@ const getQuests = () => {
                 <div className="answer_btn">
                     <div className="question">
                         <div className="quest-text">{answer}</div>
+                        <ProgressBar max={second*30} progress={progress}/>
                     </div>
                     <div className={`check ${disabled ? 'disabled' : ''}`} onClick={() => {
                         if (!disabled) {
