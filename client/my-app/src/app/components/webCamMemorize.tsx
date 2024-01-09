@@ -120,7 +120,7 @@ const WebCamMemorize: React.FC<CamProps> = ({onLandmarksChange, frameNumber, isS
         overflow: hidden;
         display: flex;
         justify-content: center;
-        align-items: center;
+        //align-items: center;
       `,
       canvas: css`
         //width: auto;
