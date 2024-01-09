@@ -143,6 +143,8 @@ class UserLoginView(APIView):
         id = request.data.get('id')  # 사용자가 입력한 아이디
         password = request.data.get('password')  # 사용자가 입력한 비밀번호
         if id and password:
+            if Token.objects.filter(user_id=id).exists():
+                return Response(data={"state":"다른 장치에서 로그인중입니다"} , status=status.HTTP_400_BAD_REQUEST)
             user = authenticate(username=id, password=password)  # 로그인과 비밀번호가 일치한 유저 레코드 찾기
             if user is not None:
                 login(request, user)  # user 데이터가 존재하면 로그인
