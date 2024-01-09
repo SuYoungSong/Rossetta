@@ -21,11 +21,14 @@ const ProgressBar = ({ max, progress }) => {
   };
 
   return (
-    <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden', position: 'relative' }}>
-      <div style={style}>
-        <div style={textStyle}>{`${percentage.toFixed(0)}%`}</div>
-      </div>
-    </div>
+      <>
+        {/*<div style={{border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden', position: 'relative'}}>*/}
+        {/*  <div style={style}>*/}
+        {/*    <div style={textStyle}>{`${percentage.toFixed(0)}%`}</div>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+      </>
+
   );
 };
 
