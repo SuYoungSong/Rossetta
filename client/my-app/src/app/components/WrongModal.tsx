@@ -23,17 +23,7 @@ const answerModal: FC<AnswerModalProps> = ({ isOpen, isAnswerCorrect , wordNum, 
           }
         };
 
-      const getAnswer = getAnswers();
 
-      // 다음 문제를 푸는 로직
-        const handleNextQuestion = () => {
-            window.location.replace(`wrong_note/record/text/${wordNum + 1}${path}`)
-          };
-
-        // 문제 푸는걸 종료하고 메인으로 가는 로직
-          const handleClose = () => {
-            window.location.href = '/';
-          };
 
   return (
     <>

@@ -11,7 +11,6 @@ export default function WrongChap() {
     const type = currentPath[2];
     const isdeaf = (currentPath[3] === 'text-wrong');
 
-
   return (
     <>
       <div className='path'>

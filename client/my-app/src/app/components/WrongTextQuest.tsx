@@ -17,15 +17,15 @@ interface GetTextQuestions {
 }
 
 interface Problem {
-  1: { word: string };
-  2: { word: string };
-  3: { word: string };
-  4: { word: string };
+  1: {id:number, word: string };
+  2: {id:number, word: string };
+  3: {id:number, word: string };
+  4: {id:number, word: string };
   video: string;
 }
 
 //문제들 가져오기
-const WrongTextQuest: React.FC<GetTextQuestions> = ({ type, situation, chapter, word_num, total, path }) => {
+const WrongTextQuest: React.FC<GetTextQuestions> = ({ type, situation="hospital", chapter, word_num, total, path }) => {
     let accessToken = localStorage.getItem('accessToken');
     const [isLoading, setIsLoading] = useState(true);
     const [videoPath, setVideoPath] = useState("");
@@ -36,8 +36,10 @@ const WrongTextQuest: React.FC<GetTextQuestions> = ({ type, situation, chapter, 
     const [selectedOption, setSelectedOption] = useState(null);
     const [allTextQuestion, setTextQuestion] = useState<string[][]>([]);
     const [answer, setAnswer] = useState<string>('');
+    const [answer_key, setKey] = useState<number>(0);
     const [questions, setQuestions] = useState<string[]>([]);
     const [videoUrl, setVideoUrl] = useState<string[]>([]);
+    const site: Record<string, string> = {'hospital': '병원', 'school': '학교', 'job': '직업'};
 
     let param = {};
     let API_URL = '';
@@ -45,7 +47,7 @@ const WrongTextQuest: React.FC<GetTextQuestions> = ({ type, situation, chapter, 
     if (type == '단어') {
         API_URL = 'http://localhost:8000/api/wrongwordquestion/';
         param = {
-            id: userId, type: type, situation: situation, chapter: chapter, is_deaf: true
+            id: userId, type: type, situation: site[situation], chapter: chapter, is_deaf: true
         }
     } else {
         API_URL = 'http://localhost:8000/api/wrongsentecequestion/';
@@ -66,7 +68,14 @@ const getQuests = () => {
             problem[3].word,
             problem[4].word
           ]);
+          const keysList = problems.map(problem => [
+            problem[1].id,
+            problem[2].id,
+            problem[3].id,
+            problem[4].id
+          ]);
           setAnswer(wordsList[word_num][0]);
+          setKey(keysList[word_num][0]);
           setQuestions(shuffleArray(wordsList[word_num]));
           setVideoUrl(videoList);
           console.log(videoList);
@@ -95,13 +104,32 @@ const getQuests = () => {
         return shuffledArray;
     };
 
+    //오답노트 맞은 문제 처리
+    async function CorrectWrong(){
+        const apiUrl = 'http://localhost:8000/api/practice-note';
+        const correctId = Number(answer_key);
+          const dataToUpdate = {
+            is_deaf:true
+          };
+
+      try {
+        const response = await axios.put(`${apiUrl}/${correctId}/${userId}/`, dataToUpdate, { headers: { 'Authorization': `Token ${accessToken}` } });
+        console.log('Update successful:', response.data);
+        // Handle successful response
+      } catch (error) {
+        console.error('Error updating resource:', error);
+        // Handle error
+      }
+    }
+
+
     // 정답 여부 체크
     const checkAnswer = (selectedAnswer: string) => {
 
         // 정답 여부에 따라 표시되는 문구 설정
         if (selectedAnswer === answer) {
             setIsAnswerCorrect(true);
-
+            CorrectWrong();
         } else {
             setIsAnswerCorrect(false);
         }
@@ -118,6 +146,35 @@ const getQuests = () => {
     const handleRadioChange = (event) => {
         setSelectedOption(event.target.value);
     };
+
+    //채점 결과 띄우기
+    const getAnswers = () => {
+          if (isAnswerCorrect === null) {
+            return { text: '모르겠어요', color: '#FFE6B5', image: idkImage };
+          } else if (isAnswerCorrect) {
+            return { text: '정답이에요', color: '#D0E8FF', image: CorrectImage };
+          } else {
+            return { text: '틀렸어요', color: '#FFC7C7', image: IncorrectImage };
+          }
+        };
+
+    const getAnswer = getAnswers();
+
+      // 다음 문제를 푸는 로직
+        const handleNextQuestion = () => {
+            if (type == '단어'){
+                 window.location.replace(`${word_num + 1}?type=word&chapter=${chapter}&total=${total}&situation=${situation}`)
+            }
+            else{
+                 window.location.replace(`${word_num + 1}?type=sentence&chapter=${chapter}&total=${total}`)
+            }
+
+          };
+
+        // 문제 푸는걸 종료하고 메인으로 가는 로직
+          const handleClose = () => {
+            window.location.href = '/';
+          };
 
 
 
@@ -151,10 +208,25 @@ const getQuests = () => {
                         <div>{resultLabel}</div>
                     </div>
                 </div>
-                <AnswerModalProps isOpen={isModalOpen} isAnswerCorrect={isAnswerCorrect} wordNum={word_num} path={path}/>
-            </div>
-        </>
-    );
+                {isModalOpen && (
+                    <div className="answerCheckModal-overlay">
+                      <div className="answerCheckModal"  style={{backgroundColor: getAnswer.color}}>
+                        <div className="answerCheckModal-header">
+                          <h2>{getAnswer.text}</h2>
+                        </div>
+                        <div className="answerCheckModal-body">
+                            <Image className="answer_img" src={getAnswer.image} alt="answer_img"/>
+                        </div>
+                        <div className="answerCheckModal-footer">
+                          <button onClick={handleNextQuestion}>다음 문제 풀기</button>
+                          <button onClick={handleClose}>메인으로</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                        </div>
+                    </>
+                );
 };
 
 export default WrongTextQuest;

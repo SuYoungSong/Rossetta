@@ -47,6 +47,7 @@ const WrongLecture: React.FC<LectureProps> = ({type, situation, chapter, is_deaf
     useEffect(() => {
           axios.post(URL, param, {headers: {'Authorization': `Token ${accessToken}`}})
               .then((res) => {
+
                     const leng = res.data.wrong;
                     if (leng != undefined) {
                         setIsChapLength(leng)
