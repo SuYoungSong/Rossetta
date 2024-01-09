@@ -926,7 +926,7 @@ class WrongWordQuestionView(APIView):
                     paper_info = practice.paper  # 틀린 문제 정보
                     info = dict()
                     info['answer'] = dict()
-                    info['id'] = paper_info.id
+                    info['answer']['id'] = paper_info.id
                     info['answer']['word'] = paper_info.sign_answer
                     result['문제'].append(info)
             return Response(data=result, status=status.HTTP_200_OK)
