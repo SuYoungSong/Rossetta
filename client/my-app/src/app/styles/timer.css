@@ -1,0 +1,20 @@
+.auth_timer {
+    color: red;
+    position: absolute;
+    display: flex;
+    margin: 63.5vh 0vw 0vh 15vw;
+}
+
+.id_timer{
+    color: red;
+    position: absolute;
+    display: flex;
+    margin: 25.5vh 0vw 0vh 15vw;
+}
+
+.pass_timer{
+    color: red;
+    position: absolute;
+    display: flex;
+    margin: 37vh 0vw 0vh 15vw;
+}

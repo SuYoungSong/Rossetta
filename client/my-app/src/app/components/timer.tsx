@@ -1,10 +1,12 @@
 import React, {memo, useEffect, useState} from "react";
+import "@/app/styles/timer.css";
 interface TimerProps{
     min_num?:number;
     sec_num:number;
+    classname: string;
 }
 
-export const Timer: React.FC<TimerProps> = memo(({min_num, sec_num}) => {
+export const Timer: React.FC<TimerProps> = memo(({min_num, sec_num, classname}) => {
     const MINUTES_IN_MS = (min_num ? min_num * 60 * 1000 : sec_num * 1000);
     const INTERVAL = 1000;
     const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
@@ -21,7 +23,6 @@ export const Timer: React.FC<TimerProps> = memo(({min_num, sec_num}) => {
 
         if (timeLeft <= 0) {
             clearInterval(timer);
-            console.log('타이머가 종료되었습니다.');
         }
 
         return () => {
@@ -31,15 +32,21 @@ export const Timer: React.FC<TimerProps> = memo(({min_num, sec_num}) => {
 
     return (
         <>
-            {min_num ? (
-                        <div>
-                            {minutes} : {second}
-                        </div>
-                    ) : (
-                        <div>
-                            {second}초
-                        </div>
-                    )}
+            {timeLeft <= 0 ?
+                (<>
+                    <div className={classname}>인증 만료</div>
+                </>) :
+                (<>
+                    {min_num ? (
+                            <div className={classname}>
+                                {minutes} : {second}
+                            </div>
+                        ) : (
+                            <div className={classname}>
+                                {second}초
+                            </div>
+                        )}
+                </>)}
         </>
         )
     ;
