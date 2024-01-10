@@ -198,9 +198,8 @@ class AutoLogoutView(APIView):
 # 아이디 찾기 인증 코드 보내기
 class UserIDEmailSendView(APIView):
     def post(self, request):
-        name = request.data.get('name',None)
         email = request.data.get('email', None)  # 사용자가 입력한 이메일
-        if name and email:
+        if email:
             try:
                 user = User.objects.get(email=email)  # 이름 과 이메일이 동시 에 매칭되는 유저 조회
                 unique_number, six_digital_random = email_data_set(type="find_id", time=300)  # 고유번호랑 난수 받아오기
@@ -216,10 +215,8 @@ class UserIDEmailSendView(APIView):
 # 비밀번호 찾기 인증 코드 보내기
 class UserPasswordEmailSendView(APIView):
     def post(self, request):
-        id = request.data.get('id',None)
-        name = request.data.get('name',None)
         email = request.data.get('email', None)
-        if id and email and name:
+        if email:
             try:
                 user = User.objects.get(email=email)
                 unique_number, six_digital_random = email_data_set(type="find_pw", time=300)
@@ -229,7 +226,7 @@ class UserPasswordEmailSendView(APIView):
             except User.DoesNotExist:
                 return Response(data={"state": "해당하는 유저 정보가 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(data={"state": "이름 , 아이디 , 이메일을 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"state": "이메일 정보를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 회원가입 이메일 인증 코드 보내기
@@ -273,6 +270,10 @@ class EmailCheckView(APIView):
 # 인증 완료된 아이디 찾기
 class UserFindIDView(APIView):
     def post(self, request):
+        name = request.data.get('name',None)
+        email = request.data.get('email',None)
+        if not name or not email:
+            return Response(data={"state":"이름 , 이메일 정보를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
         serializer = UserFindIDSerializer(data=request.data)
         if serializer.is_valid():
             return Response(data={"id": serializer.data['id']}, status=status.HTTP_200_OK)
