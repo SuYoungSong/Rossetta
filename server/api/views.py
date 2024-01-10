@@ -206,7 +206,7 @@ class UserIDEmailSendView(APIView):
                 email_send(type="find_id", context_data=six_digital_random, email=email)  # 이메일 보내기
                 data = email_return_json(unique_number)  # 인증 전송 정상 여부 JSON
                 return Response(data=data, status=status.HTTP_200_OK)  # 정상 응답
-            except user.DoesNotExist:
+            except User.DoesNotExist:
                 return Response(data={"state": "이름과 이메일에 일치하는 유저가 존재하지 않습니다"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(data={"state": "이름 혹은 이메일을 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
@@ -223,7 +223,7 @@ class UserPasswordEmailSendView(APIView):
                 email_send(type="find_pw", context_data=six_digital_random, email=email)
                 data = email_return_json(unique_number=unique_number)
                 return Response(data=data, status=status.HTTP_200_OK)
-            except user.DoesNotExist:
+            except User.DoesNotExist:
                 return Response(data={"state": "해당하는 유저 정보가 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(data={"state": "이름 , 아이디 , 이메일을 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
