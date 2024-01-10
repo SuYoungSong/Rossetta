@@ -173,7 +173,7 @@ h2 {
   position: absolute;
   border: solid 2px;
   border-radius: 20px;
-  padding: 25px 10px 10px 5px;
+  padding: 25px 5px;
   width: 45%;
   height:45%;
   right: 10%;
@@ -183,10 +183,16 @@ h2 {
   position: absolute;
   border: solid 2px;
   border-radius: 20px;
-  padding: 50px 10px 10px 5px;
+  padding: 50px 5px;
   width: 45%;
   height:45%;
   right: 10%;
+}
+
+.wrong_img {
+  height: 44vh;
+  margin: auto;
+  width: auto;
 }
 
 /* 카드섹션 */

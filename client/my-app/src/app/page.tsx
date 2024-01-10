@@ -10,6 +10,7 @@ import child from '../../public/child.png'
 import { useRef, useEffect, useState } from "react";
 import word_lecture from '../../public/word_lecture.png';
 import signlanguage_practice from '../../public/signlanguage_practice.png'
+import wrong_image from '../../public/wrong_note.jpg';
 import subin_profile from '../../public/subin_profile.svg'
 import woojin_profile from '../../public/woojin_profile.svg'
 import hyeongho_profile from '../../public/hyeongho_profile.svg'
@@ -212,7 +213,9 @@ export default function Home() {
           </div>
           {/* <MainContentForth /> */}
           <div className="main_form">
-            <div className="form_img"></div>
+            <div className="form_img">
+               <Image className="wrong_img" alt="" src={wrong_image}/>
+            </div>
             <div ref={onebyRef} className={`${styles.oneby} ${onebyRefIsVisible ? styles.animateoneby : ''}`} >
               <h2>오답노트</h2>
               <h1>
