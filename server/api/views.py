@@ -198,8 +198,9 @@ class AutoLogoutView(APIView):
 # 아이디 찾기 인증 코드 보내기
 class UserIDEmailSendView(APIView):
     def post(self, request):
+        name = request.data.get('name',None)
         email = request.data.get('email', None)  # 사용자가 입력한 이메일
-        if email:
+        if name and email:
             try:
                 user = User.objects.get(email=email)  # 이름 과 이메일이 동시 에 매칭되는 유저 조회
                 unique_number, six_digital_random = email_data_set(type="find_id", time=300)  # 고유번호랑 난수 받아오기
@@ -215,8 +216,10 @@ class UserIDEmailSendView(APIView):
 # 비밀번호 찾기 인증 코드 보내기
 class UserPasswordEmailSendView(APIView):
     def post(self, request):
+        id = request.data.get('id',None)
+        name = request.data.get('name',None)
         email = request.data.get('email', None)
-        if email:
+        if id and email and name:
             try:
                 user = User.objects.get(email=email)
                 unique_number, six_digital_random = email_data_set(type="find_pw", time=300)
