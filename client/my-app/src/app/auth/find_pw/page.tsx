@@ -6,11 +6,16 @@ import WBInput from "@/app/components/inputwithbtn"
 import axios from 'axios';
 import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
+import {Timer} from "@/app/components/timer"
 
 const FindPw =()=>{
     const [getFocus, setGetFocus] = useState(false);
     const [email, setEmail] = useState("");
     const [emailnum, setEmailnum] = useState("");
+    const [emailnumValid, setEmailnumValid] = useState('');
+    const [timerstart, setTimerStart] = useState<number>(5);
+    const [timerKey, setTimerKey] = useState(0);
+
 
     const [emailisValid, setEmailIsValid] = useState(true);
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,16 +34,33 @@ const FindPw =()=>{
 
     const [emailbtntext, setemailBtntext] = useState("이메일 인증");
     const [uniqueNum, setUniqueNum] = useState('');
+    const [noneerror, setNoneerror] = useState(false);
+
+    const TimerStart = () => {
+        setTimerStart(5);
+        setTimerKey((prevKey) => prevKey + 1);
+    }
+
     const handleSendEmailClick = () => {
         if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/userpasswordemailsend/", { "email": email })
             .then((res) => {
                 // console.log("res >> ", res);
+                setIsemailcheck("");
+                setNoneerror(true)
+                setGetFocus(true);
                 setUniqueNum(res.data.unique_number);
                 setemailBtntext("재전송");
+                TimerStart();
+                setTimerKey((prevKey) => prevKey + 1);
+                setShowEmailVerification(true)
             })
             .catch((err) => {
-                // console.log("err >> ", err);
+                console.log("err >> ", err);
+                setNoneerror(false);
+                if (err.response && err.response.data && err.response.status === 400) {
+                const errorMessage = err.response.data.state;
+                setIsemailcheck(errorMessage);}
             });
         }
     
@@ -62,7 +84,7 @@ const FindPw =()=>{
               setIsEmailVerified(true);
           })
           .catch((err) => {
-            // console.log("err >> ", err.response.data);
+            console.log("err >> ", err.response.data);
             if (err.response && err.response.data && err.response.status === 400) {
                 const errorMessage = err.response.data.state;
                 setIsemailcheck(errorMessage);}
@@ -83,7 +105,7 @@ const FindPw =()=>{
             router.push('/auth/pw_change');
         })
         .catch((err) => {
-            // console.log("err >> ", err);
+             console.log("err >> ", err);
         });
     }
 
@@ -138,15 +160,17 @@ const FindPw =()=>{
                                         onclick={isEmailVerified ? null : () => {
                                             handleSendEmailClick();
                                             handleInputFocus();
-                                            emailisValid && email != "" ? setShowEmailVerification(true) : setShowEmailVerification(false);
+                                            (noneerror && emailisValid && email != "") ? setShowEmailVerification(true) : setShowEmailVerification(false);
                                         }}
                                         btntext={isEmailVerified ? "인증 완료" : emailbtntext}
                                     />
 
                                     {(!emailisValid || email == "") && (getFocus) &&
                                         <p className="error-message">유효한 이메일을 입력해주세요.</p>}
+                            {emailisValid && (getFocus) && (<div className="error-message"> {isemailcheck} </div>)}
 
                                     {emailisValid && showEmailVerification && (
+                                        <>
                                         <WBInput
                                             label="이메일 인증번호"
                                             onChange={(ev: any) => {
@@ -161,8 +185,11 @@ const FindPw =()=>{
                                             spetextclassName={isEmailVerified ? "graytext" : "greentext"}
                                             btntext={isEmailVerified ? "인증 완료" : "인증번호 확인"}
                                         />
+                                        {!isEmailVerified && (<Timer key={timerKey} min_num={timerstart} sec_num={0} classname={"pass_timer"}/>)}
+                                        </>
+
                                     )}
-                                    {(emailisValid) && <div className="error-message"> {isemailcheck} </div>}
+
                                     <button className="auth-button" onClick={handleFindPw}>
                             비밀번호변경
                         </button>

@@ -8,7 +8,9 @@ import '@/app/auth/auth.css'
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from "next/link";
- 
+import {Timer} from "@/app/components/timer"
+
+
 const Auth =()=>{
     const [uniqueNum, setUniqueNum] = useState('');
     // const [loginName, setloginName] = useState(''); //로그인-이름
@@ -53,6 +55,8 @@ const Auth =()=>{
     const [isnameSignAvailable, setnameIsSignAvailable] = useState("");
     const [ispassSignAvailable, setpassIsSignAvailable] = useState("");
     const [isemailAvailable, setemailAvailable] = useState(null);
+    const [timerstart, setTimerStart] = useState<number>(5);
+    const [timerKey, setTimerKey] = useState(0);
 
 
 
@@ -69,6 +73,11 @@ const Auth =()=>{
         }
     };
 
+    const TimerStart = () => {
+        setTimerStart(5);
+        setTimerKey((prevKey) => prevKey + 1);
+    }
+
     const handleSendEmailClick = () => {
         if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/signupemailsend/", { "email": email })
@@ -76,6 +85,8 @@ const Auth =()=>{
                 // console.log("res >> ", res);
                 setemailAvailable(null);
                 setUniqueNum(res.data.unique_number);
+                TimerStart();
+                setTimerKey((prevKey) => prevKey + 1);
                 setemailBtntext("재전송");
                 setShowEmailVerification(true)
             })
@@ -89,6 +100,7 @@ const Auth =()=>{
         }
     
   }
+
 
   const headers= {
         "uniquenumber":uniqueNum
@@ -287,6 +299,7 @@ const Auth =()=>{
                                     {<div className="error-message">{isemailAvailable}</div>}
 
                                     {emailisValid && showEmailVerification && (
+                                        <>
                                         <WBInput
                                             label="이메일 인증번호"
                                             onChange={(ev: any) => {
@@ -302,6 +315,9 @@ const Auth =()=>{
                                             disabled={isEmailVerified ? true : null}
                                             btntext={isEmailVerified ? "인증 완료" : "인증번호 확인"}
                                         />
+                                            {!isEmailVerified && (<Timer key={timerKey} min_num={timerstart} sec_num={0} classname={"auth_timer"}/>)}
+
+                                            </>
                                     )}
                                     {(emailisValid) && <div className="error-message"> {isemailcheck} </div>}
                                 </>

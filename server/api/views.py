@@ -273,7 +273,7 @@ class UserFindIDView(APIView):
         name = request.data.get('name',None)
         email = request.data.get('email',None)
         if not name or not email:
-            return Response(data={"state":"이름 , 이메일 정보를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"state":"이름 또는 이메일 정보를 입력해주세요"} , status=status.HTTP_400_BAD_REQUEST)
         serializer = UserFindIDSerializer(data=request.data)
         if serializer.is_valid():
             return Response(data={"id": serializer.data['id']}, status=status.HTTP_200_OK)

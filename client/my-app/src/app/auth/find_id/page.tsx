@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import WBInput from "@/app/components/inputwithbtn"
 import axios from 'axios';
 import '@/app/auth/auth.css'
+import {Timer} from "@/app/components/timer"
 
 const FindId =()=>{
     const [getFocus, setGetFocus] = useState(false);
@@ -12,6 +13,10 @@ const FindId =()=>{
     const [emailnum, setEmailnum] = useState("");
 
     const [emailisValid, setEmailIsValid] = useState(true);
+    const [emailnumValid, setEmailnumValid] = useState('');
+    const [timerstart, setTimerStart] = useState<number>(5);
+    const [timerKey, setTimerKey] = useState(0);
+
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newEmail = event.target.value;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,26 +28,42 @@ const FindId =()=>{
         }
     };
 
+    const TimerStart = () => {
+        setTimerStart(5);
+        setTimerKey((prevKey) => prevKey + 1);
+    }
+
     const [showEmailVerification, setShowEmailVerification] = useState(false);
 
 
     const [emailbtntext, setemailBtntext] = useState("이메일 인증");
     const [uniqueNum, setUniqueNum] = useState('');
+    const [noneerror, setNoneerror] = useState(false);
     const handleSendEmailClick = () => {
         if(emailisValid && email != ""){
             axios.post("http://localhost:8000/api/useridemailsend/", { "email": email })
             .then((res) => {
                 // console.log("res >> ", res);
+                setNoneerror(true)
+                setGetFocus(true);
+                setIsemailcheck("");
                 setUniqueNum(res.data.unique_number);
+                TimerStart();
+                setTimerKey((prevKey) => prevKey + 1);
                 setemailBtntext("재전송");
+                setShowEmailVerification(true)
             })
             .catch((err) => {
-                // console.log("err >> ", err);
+                setNoneerror(false);
+                if (err.response && err.response.data && err.response.status === 400) {
+                const errorMessage = err.response.data.state;
+                setIsemailcheck(errorMessage);}
             });
         }
     }
 
 
+    const [inputcheck, setInputCheck] = useState('');
     const [isemailcheck, setIsemailcheck] = useState("")
     const [authBool, setAuthBool] = useState('');
     const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -53,7 +74,7 @@ const FindId =()=>{
         axios.post("http://localhost:8000/api/emailcheck/", {"input_number": emailnum},{ headers: headers })
           .then((res) => {
             //   console.log("res >>",res);
-              setIsemailcheck("");
+              setEmailnumValid("");
               setAuthBool(res.data.is_auth);
               const errorMessage = res.data.state;
               alert(errorMessage);
@@ -63,7 +84,7 @@ const FindId =()=>{
             // console.log("err >> ", err.response.data);
             if (err.response && err.response.data && err.response.status === 400) {
                 const errorMessage = err.response.data.state;
-                setIsemailcheck(errorMessage);}
+                setEmailnumValid(errorMessage);}
           });
       }
     
@@ -78,13 +99,17 @@ const FindId =()=>{
         {"name": name, "email": email, "is_auth": authBool})
         .then((res) =>{
             // console.log("res >>",res);
+            setInputCheck("");
             setVariant("find")
             if (res.data && res.data.id) {
                 setUserId(res.data.id); 
               }
         })
         .catch((err) => {
-            // console.log("err >> ", err);
+            console.log("err >> ", err);
+             if (err.response && err.response.data && err.response.status === 400) {
+                const errorMessage = err.response.data.state;
+                setInputCheck(errorMessage);}
         });
     }
 
@@ -138,15 +163,17 @@ const FindId =()=>{
                                         onclick={isEmailVerified ? null : () => {
                                             handleSendEmailClick();
                                             handleInputFocus();
-                                            emailisValid && email != "" ? setShowEmailVerification(true) : setShowEmailVerification(false);
+                                            (noneerror && emailisValid && email != "") ? setShowEmailVerification(true) : setShowEmailVerification(false);
                                         }}
                                         btntext={isEmailVerified ? "인증 완료" : emailbtntext}
                                     />
 
                                     {(!emailisValid || email == "") && (getFocus) &&
                                         <p className="error-message">유효한 이메일을 입력해주세요.</p>}
+                            {emailisValid && (getFocus) && (<div className="error-message"> {isemailcheck} </div>)}
 
-                                    {emailisValid && showEmailVerification && (
+                            {emailisValid && showEmailVerification && (
+                                        <>
                                         <WBInput
                                             label="이메일 인증번호"
                                             onChange={(ev: any) => {
@@ -161,11 +188,13 @@ const FindId =()=>{
                                             spetextclassName={isEmailVerified ? "graytext" : "greentext"}
                                             btntext={isEmailVerified ? "인증 완료" : "인증번호 확인"}
                                         />
+                                        {!isEmailVerified && (<Timer key={timerKey} min_num={timerstart} sec_num={0} classname={"id_timer"}/>)}
+                                            </>
                                     )}
-                                    {(emailisValid) && <div className="error-message"> {isemailcheck} </div>}
                                     <button className="auth-button" onClick={handleFindId}>
                             아이디찾기
                         </button>
+                            <div className="error-message">{inputcheck}</div>
                         </>
                         )}
                         {variant === 'find' && (
