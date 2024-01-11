@@ -23,6 +23,12 @@
 
 <br>
 
+## 🔎프로젝트 시연
+### [메인 페이지]
+![main (1)](https://github.com/SuYoungSong/Rossetta/assets/98371516/d20e721b-e1a7-469d-a8e1-748f7c5e9914)
+
+<br>
+
 ## 🔧개발 내용
 
 
