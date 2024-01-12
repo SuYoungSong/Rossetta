@@ -468,7 +468,7 @@ return (
                           
                           <div className='attachBtn'>
                             <input id="file" type="file" onChange={handleFileChange} multiple/>
-                            <label htmlFor="file">첨부하기</label>
+                            <label className='insertfile' htmlFor="file">첨부하기</label>
                             <input className="fileName" value={newFileName} placeholder="첨부파일 추가하기" readOnly/>
                           </div>
                           <div className='queryImageContent'>
