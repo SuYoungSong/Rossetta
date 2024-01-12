@@ -5,6 +5,18 @@
 - Next.js, Django, SQLite3, MediaPipe, Tensorflow, OpenCV
 <!-- - ✉️officialrossetta@gmail.com -->
 
+![25조  4기 25조 발표자료_pages-to-jpg-0001](https://github.com/SuYoungSong/Rossetta/assets/98371516/191749c3-8dce-4f6d-b868-fb64b596d811)
+![25조  4기 25조 발표자료_pages-to-jpg-0004](https://github.com/SuYoungSong/Rossetta/assets/98371516/dcb4ca23-f4d3-4d47-a73b-9e21395b57c9)
+![25조  4기 25조 발표자료_pages-to-jpg-0005](https://github.com/SuYoungSong/Rossetta/assets/98371516/8bdb0f67-7574-4496-9db4-b182f010f90f)
+![25조  4기 25조 발표자료_pages-to-jpg-0006](https://github.com/SuYoungSong/Rossetta/assets/98371516/d82e6c83-97bd-439b-8b41-ca9b56d42fc7)
+![25조  4기 25조 발표자료_pages-to-jpg-0008](https://github.com/SuYoungSong/Rossetta/assets/98371516/75f10642-46c0-476c-a2b5-a1f4b63f2bed)
+![25조  4기 25조 발표자료_pages-to-jpg-0036](https://github.com/SuYoungSong/Rossetta/assets/98371516/ac089b75-07a9-4d7b-9385-72fbf41c4ae8)
+![25조  4기 25조 발표자료_pages-to-jpg-0037](https://github.com/SuYoungSong/Rossetta/assets/98371516/9ef4140c-f11b-4be3-96d9-13ea5fbf6def)
+![25조  4기 25조 발표자료_pages-to-jpg-0009](https://github.com/SuYoungSong/Rossetta/assets/98371516/6f62066e-8883-4e4d-b2b4-629cc6dac71f)
+![25조  4기 25조 발표자료_pages-to-jpg-0011](https://github.com/SuYoungSong/Rossetta/assets/98371516/874c7416-c5c0-449c-837f-467f755aa208)
+
+
+
 <br>
 
 ## 👨‍👩‍👧‍👧팀원
