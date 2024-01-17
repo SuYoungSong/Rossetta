@@ -7,12 +7,6 @@
 
 </br>
 
-**■프로젝트 수행 내용(본인)**
-- 프로젝트 초기 DB 설계
-- 수어 문장을 행동하는 AI 모델 제작 ( LSTM, GRU, 1D-CNN, MLP, RNN )
-- Django REST API 일부 구축
-- Next.js Client API 연동
-- Client, Back, AI 모델 연동
 
 </br>
 
@@ -23,6 +17,16 @@
  - server 경로에서 백엔드 서버 실행 python manage.py runserver
 
    </br>
+   
+## 🔧개발 내용
+- 초반 DB 구조를 설계하였습니다.
+- Django를 활용하여 REST API 백엔드 서버를 구축하였습니다.
+- Next.js를 활용한 Client에서 API를 연동하는 작업을 진행하였습니다.
+- 수어 문장에 관련된 행동을 진행하면 어떤 행동인지 분류하는 AI 모델을 제작하였습니다.
+- Front-End, Back-End에 AI 모델을 결합하는 작업을 수행하였습니다.
+  
+
+   
 ![25조  4기 25조 발표자료_pages-to-jpg-0001](https://github.com/SuYoungSong/Rossetta/assets/98371516/191749c3-8dce-4f6d-b868-fb64b596d811)
 ![25조  4기 25조 발표자료_pages-to-jpg-0004](https://github.com/SuYoungSong/Rossetta/assets/98371516/dcb4ca23-f4d3-4d47-a73b-9e21395b57c9)
 ![25조  4기 25조 발표자료_pages-to-jpg-0005](https://github.com/SuYoungSong/Rossetta/assets/98371516/8bdb0f67-7574-4496-9db4-b182f010f90f)
@@ -95,7 +99,7 @@
 
 <br>
 
-## 🔧개발 내용
+
 
 
 <br>
