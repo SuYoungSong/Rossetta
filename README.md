@@ -5,6 +5,15 @@
 - Next.js, Django, SQLite3, MediaPipe, Tensorflow, OpenCV
 <!-- - ✉️officialrossetta@gmail.com -->
 
+</br>
+
+**프로젝트 실행 방법**
+ - Node.js 설치 후 client/my-app 경로에서 라이브러리 설치 ( 명령어: npm i )
+ - 백엔드 서버 requirements.txt 설치하기
+ - client/my-app 경로에서 클라이언트 서버 실행 ( 명령어: npm run dev )
+ - server 경로에서 백엔드 서버 실행 python manage.py runserver
+
+   </br>
 ![25조  4기 25조 발표자료_pages-to-jpg-0001](https://github.com/SuYoungSong/Rossetta/assets/98371516/191749c3-8dce-4f6d-b868-fb64b596d811)
 ![25조  4기 25조 발표자료_pages-to-jpg-0004](https://github.com/SuYoungSong/Rossetta/assets/98371516/dcb4ca23-f4d3-4d47-a73b-9e21395b57c9)
 ![25조  4기 25조 발표자료_pages-to-jpg-0005](https://github.com/SuYoungSong/Rossetta/assets/98371516/8bdb0f67-7574-4496-9db4-b182f010f90f)
@@ -38,6 +47,42 @@
 ## 🔎프로젝트 시연
 ### [메인 페이지]
 ![main (1)](https://github.com/SuYoungSong/Rossetta/assets/98371516/d20e721b-e1a7-469d-a8e1-748f7c5e9914)
+
+### [회원가입]
+![회원가입](https://github.com/SuYoungSong/Rossetta/assets/80526924/a60b3d02-cb63-4fc6-a2f1-be289cbacc84)
+
+### [로그인]
+![로그인](https://github.com/SuYoungSong/Rossetta/assets/80526924/8bcfd62a-c7f8-4a62-9c30-5b110f58773d)
+
+### [수어 교육]
+![수어교육](https://github.com/SuYoungSong/Rossetta/assets/80526924/0c043c93-6702-43d2-bdf1-ac297e66d63a)
+
+
+### [수어 암기 - 문자 암기]
+![수어암기-문자](https://github.com/SuYoungSong/Rossetta/assets/80526924/494b0f62-bffb-48cc-88d8-421c2967e53a)
+
+### [오답노트]
+![오답노트](https://github.com/SuYoungSong/Rossetta/assets/80526924/9521e9f4-ae8d-4b7b-88e1-20f6849a33e5)
+
+### [수어실습]
+![수어실습](https://github.com/SuYoungSong/Rossetta/assets/80526924/732139db-ada4-4c27-916a-ab26e4470c2c)
+
+
+### [문의게시판 - 삭제]
+![게시글삭제](https://github.com/SuYoungSong/Rossetta/assets/80526924/e22a0f48-50b2-4d95-886a-f742b64a2ea6)
+
+
+### [문의게시판 - 등록]
+![게시글올리기](https://github.com/SuYoungSong/Rossetta/assets/80526924/ad73ff38-6fbb-400d-8c19-8f76748722ef)
+
+
+### [문의게시판 - 수정]
+![게시글 수정](https://github.com/SuYoungSong/Rossetta/assets/80526924/eb0df803-a986-45de-b925-d44027e28b9c)
+
+
+### [문의게시판 - 운영자 답변달기 ]
+![게시글답변(운영자)](https://github.com/SuYoungSong/Rossetta/assets/80526924/193dd174-8888-4fe4-b23d-2272c86e6c79)
+
 
 <br>
 
