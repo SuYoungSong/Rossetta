@@ -1,13 +1,22 @@
 
 ## 📌프로젝트 소개
-**KT AIVLE School 4기 빅프로젝트**
+**■KT AIVLE School 4기 빅프로젝트**
 - AI 기반 수어 교육 플랫폼
 - Next.js, Django, SQLite3, MediaPipe, Tensorflow, OpenCV
 <!-- - ✉️officialrossetta@gmail.com -->
 
 </br>
 
-**프로젝트 실행 방법**
+**■프로젝트 수행 내용(본인)**
+- 프로젝트 초기 DB 설계
+- 수어 문장을 행동하는 AI 모델 제작 ( LSTM, GRU, 1D-CNN, MLP, RNN )
+- Django REST API 일부 구축
+- Next.js Client API 연동
+- Client, Back, AI 모델 연동
+
+</br>
+
+**■프로젝트 실행 방법**
  - Node.js 설치 후 client/my-app 경로에서 라이브러리 설치 ( 명령어: npm i )
  - 백엔드 서버 requirements.txt 설치하기
  - client/my-app 경로에서 클라이언트 서버 실행 ( 명령어: npm run dev )
